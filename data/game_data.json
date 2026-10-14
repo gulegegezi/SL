@@ -1,0 +1,7009 @@
+{
+  "REGIONS": {
+    "山河四省": {
+      "provinces": [
+        "山东",
+        "河北",
+        "山西",
+        "河南"
+      ],
+      "bonus": {
+        "health": 1,
+        "money": -1
+      },
+      "flavor": "高考大省，卷生卷死，但胃里永远有热乎的。"
+    },
+    "江浙沪": {
+      "provinces": [
+        "江苏",
+        "浙江",
+        "上海"
+      ],
+      "bonus": {
+        "int": 1,
+        "money": 1
+      },
+      "flavor": "包邮区，房价也包邮。"
+    },
+    "珠三角": {
+      "provinces": [
+        "广东",
+        "福建"
+      ],
+      "bonus": {
+        "luck": 2
+      },
+      "flavor": "遍地是机会，遍地是房东。"
+    },
+    "东三省": {
+      "provinces": [
+        "辽宁",
+        "吉林",
+        "黑龙江"
+      ],
+      "bonus": {
+        "health": 2,
+        "money": -1
+      },
+      "flavor": "冬天很冷，但人很热，澡堂很烫。"
+    },
+    "大西北": {
+      "provinces": [
+        "陕西",
+        "甘肃",
+        "青海",
+        "宁夏",
+        "新疆"
+      ],
+      "bonus": {
+        "health": 2
+      },
+      "flavor": "风大，天蓝，面食管饱。"
+    },
+    "大西南": {
+      "provinces": [
+        "四川",
+        "重庆",
+        "云南",
+        "贵州",
+        "西藏"
+      ],
+      "bonus": {
+        "luck": 1,
+        "charm": 1
+      },
+      "flavor": "麻将声里过一生，火锅面前无烦恼。"
+    },
+    "京津冀": {
+      "provinces": [
+        "北京",
+        "天津"
+      ],
+      "bonus": {
+        "money": 2,
+        "int": 1
+      },
+      "flavor": "户口含金量很高，学区房含金量更高。",
+      "hard": true
+    },
+    "中部": {
+      "provinces": [
+        "湖北",
+        "湖南",
+        "江西",
+        "安徽"
+      ],
+      "bonus": {
+        "int": 1
+      },
+      "flavor": "九省通衢，辣椒与过早齐飞。"
+    },
+    "其他": {
+      "provinces": [
+        "内蒙古",
+        "广西",
+        "海南",
+        "香港",
+        "澳门",
+        "台湾"
+      ],
+      "bonus": {
+        "luck": 1
+      },
+      "flavor": "辽阔的土地上，总有你的位置。"
+    }
+  },
+  "BODY_TYPES": [
+    {
+      "name": "瘦弱",
+      "delta": -2,
+      "desc": "风大一点要扶着电线杆。"
+    },
+    {
+      "name": "标准",
+      "delta": 0,
+      "desc": "人形标准件，验货合格。"
+    },
+    {
+      "name": "微胖",
+      "delta": 1,
+      "desc": "看着有福气，亲戚很满意。"
+    },
+    {
+      "name": "壮实",
+      "delta": 2,
+      "desc": "搬家公司看见你眼睛发光。"
+    },
+    {
+      "name": "肥胖",
+      "delta": -1,
+      "desc": "健康是个需要认真对待的词了。"
+    }
+  ],
+  "HEALTH_TYPES": [
+    {
+      "name": "铁人",
+      "lifespan": 12,
+      "desc": "从没进过医院（除了出生那次）。"
+    },
+    {
+      "name": "健康",
+      "lifespan": 5,
+      "desc": "体检报告全是正常。"
+    },
+    {
+      "name": "小毛病",
+      "lifespan": 0,
+      "desc": "换季必感冒，量变引起质变。"
+    },
+    {
+      "name": "老慢病",
+      "lifespan": -10,
+      "desc": "出生就带着几项指标异常。"
+    },
+    {
+      "name": "先天不足",
+      "lifespan": -18,
+      "desc": "人生开局就调成了困难模式。"
+    }
+  ],
+  "TIERS": [
+    {
+      "key": "lawanle",
+      "name": "拉完了",
+      "weight": 30,
+      "money": 0,
+      "normalRate": 0.2,
+      "bonus": {},
+      "desc": "命中注定要折腾。"
+    },
+    {
+      "key": "npc",
+      "name": "NPC",
+      "weight": 40,
+      "money": 5,
+      "normalRate": 0.35,
+      "bonus": {},
+      "desc": "你是人群里的一个像素。"
+    },
+    {
+      "key": "renshangren",
+      "name": "人上人",
+      "weight": 22,
+      "money": 15,
+      "normalRate": 0.65,
+      "bonus": {
+        "int": 2,
+        "charm": 1
+      },
+      "desc": "起跑线在别人终点线旁边。"
+    },
+    {
+      "key": "hang",
+      "name": "夯",
+      "weight": 8,
+      "money": 30,
+      "normalRate": 0.85,
+      "bonus": {
+        "int": 2,
+        "health": 2,
+        "charm": 2,
+        "luck": 2
+      },
+      "lives": 1,
+      "desc": "你出生就带天赋树。"
+    }
+  ],
+  "FAMILIES": [
+    {
+      "name": "和睦家庭",
+      "effects": {
+        "charm": 2,
+        "abstract": -3
+      },
+      "desc": "爸妈感情好，饭桌上有说有笑。"
+    },
+    {
+      "name": "鸡娃家庭",
+      "effects": {
+        "int": 3,
+        "health": -2,
+        "abstract": 2
+      },
+      "desc": "你的周末被五个补习班填满。"
+    },
+    {
+      "name": "放养家庭",
+      "effects": {
+        "luck": 2,
+        "health": 1,
+        "int": -1
+      },
+      "desc": "爸妈的原则是：活着回来就行。"
+    },
+    {
+      "name": "离异家庭",
+      "effects": {
+        "charm": -2,
+        "int": 1,
+        "abstract": 5
+      },
+      "desc": "你在两个家之间来回搬行李箱。"
+    },
+    {
+      "name": "三代同堂",
+      "effects": {
+        "charm": 1,
+        "money": 3,
+        "abstract": -2
+      },
+      "desc": "奶奶永远觉得你瘦。"
+    },
+    {
+      "name": "留守儿童",
+      "effects": {
+        "health": 2,
+        "charm": -2,
+        "abstract": 3
+      },
+      "desc": "视频通话里的爸妈像素有点低。"
+    }
+  ],
+  "TALENTS": [
+    {
+      "name": "数学天赋",
+      "effects": {
+        "int": 4
+      },
+      "desc": "你三年级就能解二元一次方程，但没人信。"
+    },
+    {
+      "name": "体育天赋",
+      "effects": {
+        "health": 4
+      },
+      "desc": "立定跳远永远比别人多半个身位。"
+    },
+    {
+      "name": "嘴皮子",
+      "effects": {
+        "charm": 4
+      },
+      "desc": "你能把老师说到点头，把同学说到鼓掌。"
+    },
+    {
+      "name": "游戏天赋",
+      "effects": {
+        "int": 1,
+        "abstract": 6,
+        "luck": 1
+      },
+      "desc": "你打游戏的手速，能让网吧老板记住你名字。"
+    },
+    {
+      "name": "毫无天赋",
+      "effects": {
+        "luck": 1
+      },
+      "desc": "平平无奇，但平平无奇也很不容易。"
+    },
+    {
+      "name": "艺术细胞",
+      "effects": {
+        "charm": 3,
+        "abstract": 3
+      },
+      "desc": "你能在课本边角画出整个宇宙。"
+    }
+  ],
+  "PARENT_JOBS": [
+    {
+      "name": "工厂双职工",
+      "effects": {
+        "health": 1
+      },
+      "desc": "三班倒的爸妈，你脖子上挂着钥匙长大。"
+    },
+    {
+      "name": "小学老师",
+      "effects": {
+        "int": 2
+      },
+      "desc": "你在办公室写作业，全年级老师都认识你。"
+    },
+    {
+      "name": "开小卖部",
+      "effects": {
+        "money": 3,
+        "charm": 1
+      },
+      "desc": "你的童年零食自由，是全班同学的羡慕来源。"
+    },
+    {
+      "name": "跑长途货运",
+      "effects": {
+        "luck": 1,
+        "abstract": 2
+      },
+      "desc": "爸爸总在路上，妈妈守着你和一部座机。"
+    },
+    {
+      "name": "医院护士长",
+      "effects": {
+        "health": 2
+      },
+      "desc": "你从小就知道，感冒了先多喝水，再捂汗是谣言。"
+    },
+    {
+      "name": "体制内科员",
+      "effects": {
+        "money": 2
+      },
+      "desc": "家里最多的东西是报纸和保温杯。"
+    },
+    {
+      "name": "个体户夫妻店",
+      "effects": {
+        "money": 4,
+        "health": -1
+      },
+      "desc": "你在柜台后面写作业，学会了看人脸色和找零钱。"
+    },
+    {
+      "name": "网吧老板",
+      "effects": {
+        "abstract": 6,
+        "int": 1
+      },
+      "desc": "别的小孩偷着进网吧，你是网吧里长大的。"
+    },
+    {
+      "name": "菜贩子",
+      "effects": {
+        "health": 2,
+        "money": 1
+      },
+      "desc": "凌晨三点的批发市场，是你的第二个摇篮。"
+    },
+    {
+      "name": "程序员爸妈",
+      "effects": {
+        "int": 3,
+        "abstract": 2
+      },
+      "desc": "你家有五台电脑，你三岁就会用鼠标。"
+    },
+    {
+      "name": "下岗再就业",
+      "effects": {
+        "luck": 2,
+        "money": -2
+      },
+      "desc": "爸妈摆过摊、开过摩的，什么苦都吃过。"
+    },
+    {
+      "name": "文艺工作者",
+      "effects": {
+        "charm": 3,
+        "abstract": 3
+      },
+      "desc": "你家饭桌上的话题，是单位里谁又评上职称了。"
+    }
+  ],
+  "BIRTH_HOURS": [
+    {
+      "name": "凌晨 3 点",
+      "desc": "夜最深的时辰，护士打了三个哈欠。"
+    },
+    {
+      "name": "清晨 6 点",
+      "desc": "天刚亮，产房外已经围了一圈人。"
+    },
+    {
+      "name": "上午 10 点",
+      "desc": "阳光正好，医生心情也不错。"
+    },
+    {
+      "name": "正午 12 点",
+      "desc": "你出生在饭点，注定一生惦记吃。"
+    },
+    {
+      "name": "下午 4 点",
+      "desc": "放学的时间，你的第一声啼哭很准时。"
+    },
+    {
+      "name": "晚上 8 点",
+      "desc": "黄金档时间，你的人生自带片头曲。"
+    },
+    {
+      "name": "深夜 11 点",
+      "desc": "奶奶说是\"亥时生人，命里带静\"，你后来证明她想多了。"
+    }
+  ],
+  "BIRTH_DREAMS": [
+    "奶奶梦见一条锦鲤跳进了家门，第二天你就出生了。",
+    "妈妈说怀你时特别爱吃酸的，你出生时果然皱着眉头。",
+    "外婆梦见一轮满月落在房顶上，全家人都觉得你要成大器。",
+    "据说你出生那天下了那年唯一一场雪，护士说这孩子命里带凉。",
+    "爸爸梦见一只老虎冲他点了点头，然后你就来了。",
+    "没有胎梦，你出生得平平无奇，像你之后的大部分人生。",
+    "妈妈梦见一片星空，后来你确实总在深夜才清醒。"
+  ],
+  "ENDINGS": [
+    {
+      "id": "E_N01",
+      "line": "normal",
+      "tier": "renshangren",
+      "name": "编制人生",
+      "desc": "你成功上岸。父母逢人就说：我家孩子是公务员。",
+      "condStr": "s => s.tags.编制 && s.money >= 50 && s.debtFree"
+    },
+    {
+      "id": "E_N02",
+      "line": "normal",
+      "tier": "renshangren",
+      "name": "学区房战神",
+      "desc": "你有房，孩子有学区，你有 30 年贷款。",
+      "condStr": "s => s.tags.有房 && s.int >= 16"
+    },
+    {
+      "id": "E_N03",
+      "line": "normal",
+      "tier": "hang",
+      "name": "上市公司 CEO",
+      "desc": "你敲钟那天，想起了小学门口五毛钱的辣条。",
+      "condStr": "s => s.money >= 300"
+    },
+    {
+      "id": "E_N04",
+      "line": "normal",
+      "tier": "npc",
+      "name": "大厂螺丝钉",
+      "desc": "工位换了很多个，工牌换了很多个，你还是你。",
+      "condStr": "s => s.int >= 14 && !s.tags.创业"
+    },
+    {
+      "id": "E_N05",
+      "line": "normal",
+      "tier": "lawanle",
+      "name": "三和大神",
+      "desc": "干一天，玩三天。你活成了很多人不敢承认的梦想。",
+      "condStr": "s => s.money < 5 && !s.tags.编制"
+    },
+    {
+      "id": "E_N06",
+      "line": "normal",
+      "tier": "npc",
+      "name": "平平淡淡才是真",
+      "desc": "你的一生没有大起大落，像一首循环播放的 BGM。",
+      "condStr": "s => s.int >= 8 && s.int <= 12 && s.health >= 8 && s.health <= 12"
+    },
+    {
+      "id": "E_N07",
+      "line": "normal",
+      "tier": "renshangren",
+      "name": "老来得子",
+      "desc": "你 48 岁当爹，同学的孩子已经大学毕业。",
+      "condStr": "s => s.tags.晚育"
+    },
+    {
+      "id": "E_N08",
+      "line": "normal",
+      "tier": "lawanle",
+      "name": "猝死工位",
+      "desc": "你把最后一封邮件写完，然后趴在了键盘上。",
+      "condStr": "s => s.health <= 0 && s.tags.work"
+    },
+    {
+      "id": "E_N09",
+      "line": "normal",
+      "tier": "renshangren",
+      "name": "自由职业者",
+      "desc": "没有老板，没有通勤，也没有稳定收入，但你笑了。",
+      "condStr": "s => !s.tags.编制 && s.money >= 30 && s.debtFree"
+    },
+    {
+      "id": "E_N10",
+      "line": "normal",
+      "tier": "hang",
+      "name": "归隐田园",
+      "desc": "你在城郊租了块地，种菜，喂鸡，晒太阳。",
+      "condStr": "s => s.money >= 100 && s.health >= 15"
+    },
+    {
+      "id": "E_N11",
+      "line": "normal",
+      "tier": "renshangren",
+      "name": "退休大爷",
+      "desc": "你每天六点起床，公园里你是太极拳第一人。",
+      "condStr": "s => s.age >= 80 && s.health >= 8"
+    },
+    {
+      "id": "E_N12",
+      "line": "normal",
+      "tier": "lawanle",
+      "name": "无人送终",
+      "desc": "房子很安静，安静得能听见钟表走。",
+      "condStr": "s => s.age >= 70 && s.charm <= 4"
+    },
+    {
+      "id": "E_A01",
+      "line": "absurd",
+      "tier": "renshangren",
+      "name": "精神状态良好（反讽）",
+      "desc": "医生说你状态很好，你笑了，医生也笑了。",
+      "condStr": "s => s.abstract >= 70 && s.age >= 60"
+    },
+    {
+      "id": "E_A02",
+      "line": "absurd",
+      "tier": "hang",
+      "name": "网络活化石",
+      "desc": "你见证了互联网的每一次改版，并且每次都骂了。",
+      "condStr": "s => s.abstract >= 90 && s.age >= 40"
+    },
+    {
+      "id": "E_A03",
+      "line": "absurd",
+      "tier": "hang",
+      "name": "抽象大师",
+      "desc": "你已经不是人了，你是一个文化现象。",
+      "condStr": "s => s.abstract >= 100"
+    },
+    {
+      "id": "E_A04",
+      "line": "absurd",
+      "tier": "npc",
+      "name": "赛博亡魂",
+      "desc": "你的名字最后一次出现，是在一个早已关服的排行榜上。",
+      "condStr": "s => s.tags.退役 && s.abstract >= 40"
+    },
+    {
+      "id": "E_A05",
+      "line": "absurd",
+      "tier": "renshangren",
+      "name": "一夜爆火",
+      "desc": "你火了 48 小时，然后被下一条热点淹没。",
+      "condStr": "s => s.tags.上热搜"
+    },
+    {
+      "id": "E_A06",
+      "line": "absurd",
+      "tier": "hang",
+      "name": "梗图永生",
+      "desc": "你不在了，但你的表情包还在群里流转。",
+      "condStr": "s => s.tags.表情包"
+    },
+    {
+      "id": "E_A07",
+      "line": "absurd",
+      "tier": "lawanle",
+      "name": "网吧常客",
+      "desc": "包夜十块，泡面加蛋两块，这就是你的一日三餐。",
+      "condStr": "s => s.money < 10 && s.abstract >= 50 && s.tags.网瘾 && s.tags.退役"
+    },
+    {
+      "id": "E_A08",
+      "line": "absurd",
+      "tier": "npc",
+      "name": "电子木鱼",
+      "desc": "你今天敲了两万下木鱼，功德 +2，视力 -0.1。",
+      "condStr": "s => s.abstract >= 80 && s.health <= 5"
+    },
+    {
+      "id": "E_A09",
+      "line": "absurd",
+      "tier": "lawanle",
+      "name": "被 AI 取代",
+      "desc": "AI 在你面前写完了你一辈子写不出的方案，还问你需不需要帮忙。",
+      "condStr": "s => s.int <= 12 && s.tags.遇到AI"
+    },
+    {
+      "id": "E_A10",
+      "line": "absurd",
+      "tier": "hang",
+      "name": "抽象圣人",
+      "desc": "他们说你是怪物，崇拜你，又害怕你。",
+      "condStr": "s => s.abstract >= 100 && s.charm >= 15"
+    },
+    {
+      "id": "E_A11",
+      "line": "absurd",
+      "tier": "renshangren",
+      "name": "谐音梗之王",
+      "desc": "你每句话都是包袱，朋友一半在笑，一半在报警。",
+      "condStr": "s => s.tags.谐音 >= 5"
+    },
+    {
+      "id": "E_A12",
+      "line": "absurd",
+      "tier": "npc",
+      "name": "格格不入",
+      "desc": "你在一群疯子里保持清醒，这让你显得更疯。",
+      "condStr": "s => s.line === 'absurd' && s.abstract <= 20"
+    },
+    {
+      "id": "E_G01",
+      "line": "any",
+      "tier": "hang",
+      "name": "魔法少女退役",
+      "hidden": true,
+      "desc": "你把灵魂宝石锁进抽屉最深处。听说隔壁街区，又出现了新的魔女。",
+      "condStr": "s => s.tags.契约 && s.tags.退役 && s.age >= 40"
+    },
+    {
+      "id": "E_G02",
+      "line": "any",
+      "tier": "renshangren",
+      "name": "峡谷宗师",
+      "hidden": true,
+      "desc": "你的段位截图，至今还是网吧墙上的镇店之宝。",
+      "condStr": "s => s.tags.宗师"
+    },
+    {
+      "id": "E_G03",
+      "line": "any",
+      "tier": "renshangren",
+      "name": "圣衣传承",
+      "hidden": true,
+      "desc": "你老了。但那件挂在衣柜里的\"圣衣\"，你从没让孙子碰过。",
+      "condStr": "s => s.tags.圣衣"
+    },
+    {
+      "id": "E_G04",
+      "line": "any",
+      "tier": "lawanle",
+      "name": "白银皇帝",
+      "hidden": true,
+      "desc": "十年了，你的段位还是白银。但你的喷人水平，是王者。",
+      "condStr": "s => s.tags.峡谷 && !s.tags.宗师 && s.age >= 30"
+    },
+    {
+      "id": "E_X01",
+      "line": "any",
+      "tier": "hang",
+      "name": "山河大学荣誉生",
+      "hidden": true,
+      "desc": "山河四省的孩子，用一整个青春期换了一纸通知书。",
+      "condStr": "s => s.achieved.山河大学 && s.int >= 16 && s.age >= 20"
+    },
+    {
+      "id": "E_X02",
+      "line": "any",
+      "tier": "hang",
+      "name": "双线人生",
+      "hidden": true,
+      "desc": "你走过两个极端，也活成了两份人生。",
+      "condStr": "s => s.abstractPeaked >= 80 && s.abstractDropped <= 15"
+    },
+    {
+      "id": "E_X03",
+      "line": "any",
+      "tier": "hang",
+      "name": "天选之子",
+      "hidden": true,
+      "desc": "开局一张白纸，你硬是把日子画成了清明上河图。",
+      "condStr": "s => s.tier === 'lawanle' && s.rating === 'hang'"
+    },
+    {
+      "id": "E_X04",
+      "line": "any",
+      "tier": "renshangren",
+      "name": "死了但没完全死",
+      "hidden": true,
+      "desc": "死神见了你三次，每次都说了句\"下次吧\"。",
+      "condStr": "s => s.nearDeath >= 3"
+    }
+  ],
+  "ACHIEVEMENTS": [
+    {
+      "id": "A01",
+      "name": "山河大学",
+      "desc": "出生在山东 / 河北 / 山西 / 河南"
+    },
+    {
+      "id": "A02",
+      "name": "山河四省满贯",
+      "desc": "四个省各出生一次"
+    },
+    {
+      "id": "A03",
+      "name": "天命之子",
+      "desc": "抽到出身档位「夯」"
+    },
+    {
+      "id": "A04",
+      "name": "天崩开局",
+      "desc": "出身「拉完了」且抽中正常线"
+    },
+    {
+      "id": "A05",
+      "name": "抽象逆袭",
+      "desc": "出身「拉完了」抽中抽象线并把抽象度推到 90+"
+    },
+    {
+      "id": "A06",
+      "name": "全图鉴",
+      "desc": "收集全部 28 个结局"
+    },
+    {
+      "id": "A07",
+      "name": "第一天就死了",
+      "desc": "10 岁前死亡"
+    },
+    {
+      "id": "A08",
+      "name": "老不死",
+      "desc": "活到 100 岁"
+    },
+    {
+      "id": "A09",
+      "name": "穷得叮当响",
+      "desc": "单局金钱归零 5 次以上"
+    },
+    {
+      "id": "A10",
+      "name": "富可敌国",
+      "desc": "单局金钱达到 500"
+    },
+    {
+      "id": "A11",
+      "name": "契约成立",
+      "desc": "与神秘的白色生物签订契约，成为魔法少女"
+    },
+    {
+      "id": "A12",
+      "name": "峡谷传说",
+      "desc": "在召唤师峡谷打上宗师段位"
+    },
+    {
+      "id": "A13",
+      "name": "燃烧吧小宇宙",
+      "desc": "接受了圣斗士的托孤"
+    }
+  ],
+  "EVENTS": [
+    {
+      "id": "C01",
+      "title": "抓周",
+      "cond": {
+        "minAge": 1,
+        "maxAge": 3
+      },
+      "text": "你一周岁，家里在桌上摆了一圈东西：算盘、笔、钞票、玩具枪，还有一部旧手机。",
+      "choices": [
+        {
+          "label": "抓笔",
+          "effects": {
+            "int": 2
+          },
+          "result": "亲戚们齐声叫好，说你以后要当大官。"
+        },
+        {
+          "label": "抓钞票",
+          "effects": {
+            "money": 5
+          },
+          "result": "全家人笑得合不拢嘴，说你将来有出息（指有钱）。"
+        },
+        {
+          "label": "抓手机",
+          "effects": {
+            "abstract": 5
+          },
+          "result": "你死死攥着手机不撒手，大人们陷入了沉默。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C02",
+      "title": "幼儿园文艺汇演",
+      "cond": {
+        "minAge": 4,
+        "maxAge": 7
+      },
+      "text": "老师让你表演节目，全班同学都盯着你。",
+      "choices": [
+        {
+          "label": "唱一首《小星星》",
+          "effects": {
+            "charm": 2
+          },
+          "result": "你跑调了，但掌声很热烈。"
+        },
+        {
+          "label": "跳一段广场舞",
+          "effects": {
+            "charm": 1,
+            "abstract": 3
+          },
+          "result": "你把奶奶的广场舞完整复刻了一遍，全场沸腾。"
+        },
+        {
+          "label": "假装肚子疼",
+          "effects": {
+            "int": 1,
+            "abstract": 2
+          },
+          "result": "老师信了，你在厕所里待了二十分钟。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C03",
+      "title": "兴趣班选择",
+      "cond": {
+        "minAge": 5,
+        "maxAge": 10
+      },
+      "text": "爸妈说，选一个你喜欢的，然后我们替你决定。",
+      "choices": [
+        {
+          "label": "奥数班",
+          "effects": {
+            "int": 3,
+            "health": -1
+          },
+          "result": "你的童年从此由鸡兔同笼构成。"
+        },
+        {
+          "label": "游泳班",
+          "effects": {
+            "health": 3
+          },
+          "result": "你学会了游泳，也学会了在泳池里假装没听见教练。"
+        },
+        {
+          "label": "什么都不上",
+          "effects": {
+            "abstract": 4,
+            "luck": 1
+          },
+          "result": "你在小区里疯跑了一整个暑假，快乐得像个野人。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C04",
+      "title": "压岁钱",
+      "cond": {
+        "minAge": 5,
+        "maxAge": 12
+      },
+      "text": "过年了，你收到了一个鼓鼓的红包。",
+      "choices": [
+        {
+          "label": "交给妈妈保管",
+          "effects": {
+            "money": -2,
+            "charm": 1
+          },
+          "result": "妈妈说\"帮你存着\"，你信了。"
+        },
+        {
+          "label": "偷偷藏起来",
+          "effects": {
+            "money": 8,
+            "abstract": 3
+          },
+          "result": "你把钱塞进了枕套，每天晚上都要摸一摸。"
+        },
+        {
+          "label": "请全班吃辣条",
+          "effects": {
+            "money": -5,
+            "charm": 4
+          },
+          "result": "你成了班里的风云人物，为期三天。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C05",
+      "title": "第一台游戏机",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "你在同学家玩了十分钟游戏，回家后念念不忘。",
+      "choices": [
+        {
+          "label": "求爸妈买",
+          "effects": {
+            "charm": -1,
+            "abstract": 4
+          },
+          "result": "你哭了两个小时，成功了。"
+        },
+        {
+          "label": "自己攒钱",
+          "effects": {
+            "int": 2,
+            "money": -3
+          },
+          "result": "你攒了半年，买回来发现是山寨机。"
+        },
+        {
+          "label": "算了，专心学习",
+          "effects": {
+            "int": 3
+          },
+          "result": "你成绩上去了，快乐下去了。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C06",
+      "title": "被狗追",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "上学路上，一条大黄狗盯上了你。",
+      "choices": [
+        {
+          "label": "撒腿就跑",
+          "effects": {
+            "health": 2,
+            "abstract": 2
+          },
+          "result": "你跑出了此生最快的一百米。"
+        },
+        {
+          "label": "站着不动",
+          "effects": {
+            "health": -2,
+            "charm": 1
+          },
+          "result": "狗闻了闻你，走了。你腿抖了十分钟。"
+        },
+        {
+          "label": "蹲下假装捡石头",
+          "effects": {
+            "int": 2,
+            "luck": 1
+          },
+          "result": "狗被吓跑了，这是你人生第一次用智商取胜。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C07",
+      "title": "班级黑板报",
+      "cond": {
+        "minAge": 7,
+        "maxAge": 12
+      },
+      "text": "老师问谁愿意负责黑板报。",
+      "choices": [
+        {
+          "label": "举手",
+          "effects": {
+            "charm": 2,
+            "int": 1
+          },
+          "result": "你画了三天，粉笔灰吸了一肚子。"
+        },
+        {
+          "label": "低头装死",
+          "effects": {
+            "abstract": 2
+          },
+          "result": "你成功隐身，但老师在记名字时看了你一眼。"
+        },
+        {
+          "label": "推荐同桌",
+          "effects": {
+            "charm": -1,
+            "int": 2
+          },
+          "result": "同桌恨了你一学期。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C08",
+      "title": "暑假作业",
+      "cond": {
+        "minAge": 7,
+        "maxAge": 13
+      },
+      "text": "距离开学还有三天，你的暑假作业还剩 90%。",
+      "choices": [
+        {
+          "label": "熬夜补完",
+          "effects": {
+            "health": -2,
+            "int": 2
+          },
+          "result": "你两天两夜没合眼，字迹像心电图。"
+        },
+        {
+          "label": "抄同学的",
+          "effects": {
+            "int": -1,
+            "luck": 1
+          },
+          "result": "你抄得太急，连同学的名字一起抄了。"
+        },
+        {
+          "label": "编一个理由",
+          "effects": {
+            "charm": 2,
+            "abstract": 2
+          },
+          "result": "\"我家狗把作业吃了\"——老师问：你家不是养猫吗？"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C09",
+      "title": "升旗仪式",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "你被选为升旗手，站在全校师生面前。",
+      "choices": [
+        {
+          "label": "认真完成",
+          "effects": {
+            "charm": 3
+          },
+          "result": "你把国旗升得又稳又慢，校长在台上点了点头。"
+        },
+        {
+          "label": "紧张到手抖",
+          "effects": {
+            "charm": -1,
+            "abstract": 3
+          },
+          "result": "你把国旗升反了，全校憋笑。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C10",
+      "title": "被起外号",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "因为你的体型，同学给你起了个外号。",
+      "choices": [
+        {
+          "label": "接受并自嘲",
+          "effects": {
+            "charm": 3,
+            "abstract": 3
+          },
+          "result": "你把这个外号变成了自己的招牌。"
+        },
+        {
+          "label": "跟人打一架",
+          "effects": {
+            "health": -2,
+            "charm": -2,
+            "abstract": 2
+          },
+          "result": "你赢了，但也挨了批评。"
+        },
+        {
+          "label": "告老师",
+          "effects": {
+            "charm": -1,
+            "int": 1
+          },
+          "result": "老师批评了他们，下课后他们更来劲了。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C11",
+      "title": "捡到钱",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "你在操场角落捡到了一张皱巴巴的十块钱。",
+      "choices": [
+        {
+          "label": "交公",
+          "effects": {
+            "charm": 2,
+            "money": 0
+          },
+          "result": "你在广播里被表扬，虽然没人记得你名字。"
+        },
+        {
+          "label": "自己花了",
+          "effects": {
+            "money": 8,
+            "abstract": 2
+          },
+          "result": "你买了三包辣条和一瓶汽水，那是天堂的味道。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C12",
+      "title": "第一次撒谎",
+      "cond": {
+        "minAge": 5,
+        "maxAge": 10
+      },
+      "text": "你打碎了家里的花瓶，妈妈问是不是你干的。",
+      "choices": [
+        {
+          "label": "承认",
+          "effects": {
+            "charm": 2,
+            "abstract": -2
+          },
+          "result": "你被打了一顿，但心里很干净。"
+        },
+        {
+          "label": "甩锅给猫",
+          "effects": {
+            "abstract": 5,
+            "charm": -1
+          },
+          "result": "猫被骂了一顿，你看着它的眼睛，有点愧疚。"
+        },
+        {
+          "label": "沉默",
+          "effects": {
+            "int": 1,
+            "abstract": 2
+          },
+          "result": "你什么也没说，妈妈也没再问，但这件事你记了一辈子。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C13",
+      "title": "体检",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "学校组织体检，医生说你的身体有点问题。",
+      "choices": [
+        {
+          "label": "认真听医嘱",
+          "effects": {
+            "health": 3
+          },
+          "result": "你开始按时睡觉，虽然只坚持了一周。"
+        },
+        {
+          "label": "不当回事",
+          "effects": {
+            "health": -3,
+            "abstract": 3
+          },
+          "result": "你把体检单塞进了抽屉最底层。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C14",
+      "title": "转学",
+      "cond": {
+        "minAge": 6,
+        "maxAge": 12
+      },
+      "text": "爸爸工作调动，你要转去一个陌生的学校。",
+      "choices": [
+        {
+          "label": "主动交朋友",
+          "effects": {
+            "charm": 3,
+            "abstract": -2
+          },
+          "result": "你在三天内混进了班里的小圈子。"
+        },
+        {
+          "label": "安静观察",
+          "effects": {
+            "int": 2,
+            "charm": -1
+          },
+          "result": "你用了一个月才记住全班同学的名字。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C15",
+      "title": "第一次上台领奖",
+      "cond": {
+        "minAge": 7,
+        "maxAge": 12
+      },
+      "text": "你考了全班第一，被叫上台领奖状。",
+      "choices": [
+        {
+          "label": "挺胸抬头",
+          "effects": {
+            "charm": 3,
+            "int": 1
+          },
+          "result": "你享受了三秒钟的全场注目。"
+        },
+        {
+          "label": "紧张到踩空",
+          "effects": {
+            "health": -1,
+            "abstract": 4
+          },
+          "result": "你在台阶上摔了个屁股蹲，笑声比掌声响。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C16",
+      "title": "养宠物",
+      "cond": {
+        "minAge": 5,
+        "maxAge": 12
+      },
+      "text": "你在楼下捡到一只小奶猫。",
+      "choices": [
+        {
+          "label": "带回家养",
+          "effects": {
+            "charm": 2,
+            "money": -3,
+            "abstract": -2
+          },
+          "result": "它成了你童年最好的听众。"
+        },
+        {
+          "label": "送人",
+          "effects": {
+            "abstract": 2
+          },
+          "result": "你把它送给了同学，之后总忍不住打听它的消息。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C17",
+      "title": "被老师点名",
+      "cond": {
+        "minAge": 7,
+        "maxAge": 12
+      },
+      "text": "你在课上走神，被老师叫起来回答问题。",
+      "choices": [
+        {
+          "label": "胡编一个答案",
+          "effects": {
+            "abstract": 4,
+            "charm": 1
+          },
+          "result": "你答得离谱，全班笑了，老师也差点没绷住。"
+        },
+        {
+          "label": "老实说不知道",
+          "effects": {
+            "int": 1,
+            "charm": -1
+          },
+          "result": "老师让你站着听课，你站着睡着了。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C18",
+      "title": "邻居家的小孩",
+      "cond": {
+        "minAge": 8,
+        "maxAge": 13
+      },
+      "text": "邻居家小孩每次考试都比你高 5 分，「别人家的孩子」名副其实。",
+      "choices": [
+        {
+          "label": "暗中较劲",
+          "effects": {
+            "int": 3,
+            "health": -1
+          },
+          "result": "你熬夜刷题，终于在期末反超了 2 分。"
+        },
+        {
+          "label": "一起玩",
+          "effects": {
+            "charm": 2,
+            "luck": 1
+          },
+          "result": "你们成了朋友，后来他抄了你的作业。"
+        },
+        {
+          "label": "彻底躺平",
+          "effects": {
+            "abstract": 4
+          },
+          "result": "你想通了：人和人是不一样的，尤其是别人家的孩子。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C19",
+      "title": "家庭争吵",
+      "cond": {
+        "minAge": 5,
+        "maxAge": 13
+      },
+      "text": "半夜你听见客厅里爸妈在吵架。",
+      "choices": [
+        {
+          "label": "出去劝架",
+          "effects": {
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "他们停下了，抱着你哭了。"
+        },
+        {
+          "label": "蒙住被子",
+          "effects": {
+            "abstract": 5,
+            "health": -1
+          },
+          "result": "你把音量调到最低，直到听不见。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "C20",
+      "title": "第一次上网",
+      "cond": {
+        "minAge": 10,
+        "maxAge": 15
+      },
+      "text": "你在网吧门口犹豫了很久，最后还是走了进去。",
+      "choices": [
+        {
+          "label": "打游戏",
+          "effects": {
+            "abstract": 5,
+            "int": 1
+          },
+          "result": "你打了四个小时，被老板赶出来，但记住了那个登录界面。"
+        },
+        {
+          "label": "看论坛",
+          "effects": {
+            "int": 2,
+            "abstract": 4
+          },
+          "result": "你第一次见识到，原来世界上有这么多奇怪的人。"
+        },
+        {
+          "label": "转身走了",
+          "effects": {
+            "int": 1,
+            "abstract": -2
+          },
+          "result": "你回家写了作业，那是你最后一次赢过诱惑。"
+        }
+      ],
+      "line": "common",
+      "stage": "child",
+      "weight": 10
+    },
+    {
+      "id": "N01",
+      "title": "中考",
+      "cond": {
+        "minAge": 14,
+        "maxAge": 16
+      },
+      "text": "中考成绩出来那天，全家人的表情比你还紧张。",
+      "choices": [
+        {
+          "label": "拼命考进重点高中",
+          "effects": {
+            "int": 3,
+            "health": -2
+          },
+          "result": "你进了重点班，座位在最后一排靠窗。"
+        },
+        {
+          "label": "去普通高中",
+          "effects": {
+            "luck": 2,
+            "abstract": 2
+          },
+          "result": "你在普通高中当了三年鸡头。"
+        },
+        {
+          "label": "读职高学技术",
+          "effects": {
+            "health": 2,
+            "money": 3,
+            "int": -1
+          },
+          "result": "你学会了焊电路板，手艺很稳。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N02",
+      "title": "文理分科",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 17
+      },
+      "text": "老师说，选一个你擅长的，然后我又不让你选。",
+      "choices": [
+        {
+          "label": "理科",
+          "effects": {
+            "int": 3
+          },
+          "result": "你从此和物理题死磕了两年。"
+        },
+        {
+          "label": "文科",
+          "effects": {
+            "charm": 3
+          },
+          "result": "你背完了五本历史书，也开始爱上看新闻。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N03",
+      "title": "高考",
+      "cond": {
+        "minAge": 16,
+        "maxAge": 19
+      },
+      "text": "考场上，你盯着作文题，脑子里一片空白。",
+      "choices": [
+        {
+          "label": "稳住，从头写",
+          "effects": {
+            "int": 3,
+            "health": -2
+          },
+          "result": "你超常发挥，出考场时腿是软的。"
+        },
+        {
+          "label": "心态崩了",
+          "effects": {
+            "int": -2,
+            "abstract": 4
+          },
+          "result": "你在考场上哭了一会儿，然后胡乱填完了。"
+        },
+        {
+          "label": "提前交卷",
+          "effects": {
+            "luck": 3,
+            "abstract": 3
+          },
+          "result": "你是第一个出考场的，门口家长看你眼神复杂。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N04",
+      "title": "填志愿",
+      "text": "分数出来了，摆在你面前的是几十个专业名称。",
+      "choices": [
+        {
+          "label": "冲名校冷门专业",
+          "effects": {
+            "int": 3,
+            "abstract": 2
+          },
+          "result": "你进了名校，读了个没人听说过的专业。"
+        },
+        {
+          "label": "稳妥选热门专业",
+          "effects": {
+            "int": 1,
+            "money": 5
+          },
+          "result": "你选了计算机，四年后发现自己晚了三年。"
+        },
+        {
+          "label": "听爸妈的",
+          "effects": {
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "你读了爸妈希望的专业，也没那么糟。"
+        }
+      ],
+      "cond": {
+        "minAge": 16,
+        "maxAge": 20,
+        "minInt": 8
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N05",
+      "title": "大学室友",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 20
+      },
+      "text": "你推开门，四个陌生人在整理行李。",
+      "choices": [
+        {
+          "label": "主动打招呼",
+          "effects": {
+            "charm": 3
+          },
+          "result": "你成了宿舍长，也成了四年后群里唯一的活人。"
+        },
+        {
+          "label": "默默收拾",
+          "effects": {
+            "int": 2,
+            "abstract": 2
+          },
+          "result": "你和室友四年说过的话，加起来不超过三百句。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N06",
+      "title": "社团招新",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 23
+      },
+      "text": "操场上摆满了帐篷，学长学姐举着牌子朝你微笑。",
+      "choices": [
+        {
+          "label": "加入学生会",
+          "effects": {
+            "charm": 3,
+            "int": -1
+          },
+          "result": "你学会了写通知、摆椅子、以及在群里回复\"收到\"。"
+        },
+        {
+          "label": "加入辩论队",
+          "effects": {
+            "int": 3,
+            "charm": 2
+          },
+          "result": "你开始习惯把任何话题拆成三段论。"
+        },
+        {
+          "label": "回宿舍打游戏",
+          "effects": {
+            "abstract": 4,
+            "health": -1
+          },
+          "result": "你的大学社团活动就是宿舍开黑。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N07",
+      "title": "第一次挂科",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 24
+      },
+      "text": "成绩单上，一门专业课写着 58 分。",
+      "choices": [
+        {
+          "label": "暑假补考",
+          "effects": {
+            "int": 2,
+            "health": -1
+          },
+          "result": "你在别人旅游时啃完了整本书。"
+        },
+        {
+          "label": "找老师求情",
+          "effects": {
+            "charm": 3,
+            "abstract": 2
+          },
+          "result": "老师叹了口气，给你加了 2 分。"
+        },
+        {
+          "label": "挂就挂了",
+          "effects": {
+            "abstract": 5
+          },
+          "result": "你把这门课忘得一干二净，直到毕业前才想起来。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N08",
+      "title": "考研还是就业",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 26
+      },
+      "text": "大四开学，宿舍里的话题只剩下两个选项。",
+      "choices": [
+        {
+          "label": "考研",
+          "effects": {
+            "int": 3,
+            "money": -5,
+            "health": -2
+          },
+          "result": "你考上了，也秃了一点。"
+        },
+        {
+          "label": "就业",
+          "effects": {
+            "money": 8,
+            "charm": 2
+          },
+          "result": "你成了宿舍里第一个拿到 offer 的人。"
+        },
+        {
+          "label": "考公",
+          "effects": {
+            "int": 2,
+            "money": 3
+          },
+          "result": "你上岸了一个离家两百公里的岗位。",
+          "tags": [
+            "编制"
+          ]
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N09",
+      "title": "第一份工作",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 28
+      },
+      "text": "你的第一份工作，月薪和你想象的差了一个数量级。",
+      "choices": [
+        {
+          "label": "认真干",
+          "effects": {
+            "int": 3,
+            "money": 5,
+            "health": -1
+          },
+          "result": "你成了组里最能扛活的人，也成了最能加班的人。",
+          "tags": [
+            "work"
+          ]
+        },
+        {
+          "label": "一边干一边找",
+          "effects": {
+            "money": 3,
+            "luck": 2
+          },
+          "result": "你半年后跳槽，涨了 2000。"
+        },
+        {
+          "label": "辞职自由职业",
+          "effects": {
+            "abstract": 5,
+            "money": -3,
+            "luck": 2
+          },
+          "result": "你开始接受人生的不确定性。",
+          "tags": [
+            "创业"
+          ]
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N10",
+      "title": "租房",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 35
+      },
+      "text": "你看了七套房，最后只剩两个选择。",
+      "choices": [
+        {
+          "label": "离公司近的贵房",
+          "effects": {
+            "money": -10,
+            "health": 2
+          },
+          "result": "你每天能多睡 40 分钟，这 40 分钟无价。"
+        },
+        {
+          "label": "通勤两小时的便宜房",
+          "effects": {
+            "money": 5,
+            "health": -2,
+            "abstract": 2
+          },
+          "result": "你成了地铁上看书最快的人。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N11",
+      "title": "第一次相亲",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 38
+      },
+      "text": "妈妈的朋友的儿子/女儿的同事，坐在你对面。",
+      "choices": [
+        {
+          "label": "认真聊",
+          "effects": {
+            "charm": 2
+          },
+          "result": "你们聊得还行，加了微信，然后没有然后。"
+        },
+        {
+          "label": "直说要什么",
+          "effects": {
+            "charm": 3,
+            "abstract": 2
+          },
+          "result": "你把条件列成了表格，对方说你很真诚。"
+        },
+        {
+          "label": "全程沉默",
+          "effects": {
+            "abstract": 4,
+            "charm": -2
+          },
+          "result": "你们吃完了一顿最安静的火锅。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N12",
+      "title": "加班到凌晨",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 45
+      },
+      "text": "凌晨两点，办公室只剩下你和保洁阿姨。",
+      "choices": [
+        {
+          "label": "继续干",
+          "effects": {
+            "money": 6,
+            "health": -3,
+            "int": 1
+          },
+          "result": "方案过了，你的黑眼圈也过了。",
+          "tags": [
+            "work"
+          ]
+        },
+        {
+          "label": "打车回家",
+          "effects": {
+            "health": 1,
+            "money": -2
+          },
+          "result": "你在出租车上睡了一路。"
+        },
+        {
+          "label": "在工位睡",
+          "effects": {
+            "health": -2,
+            "money": 2,
+            "abstract": 3
+          },
+          "result": "你第一次体会到，公司也可以是家。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N13",
+      "title": "涨薪谈判",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 50
+      },
+      "text": "你觉得自己该涨薪了，但不知道该不该开口。",
+      "choices": [
+        {
+          "label": "直接提",
+          "effects": {
+            "money": 12,
+            "charm": -1
+          },
+          "result": "领导皱眉，但还是批了。"
+        },
+        {
+          "label": "等领导良心发现",
+          "effects": {
+            "money": 3,
+            "abstract": 3
+          },
+          "result": "你等了八个月，等来了一句\"再等等\"。"
+        },
+        {
+          "label": "跳槽",
+          "effects": {
+            "money": 15,
+            "luck": 2,
+            "abstract": 2
+          },
+          "result": "新公司给了你一个更好的数字。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N14",
+      "title": "买房",
+      "text": "中介带你看了一套 60 平，总价是你一辈子工资的三分之一。",
+      "choices": [
+        {
+          "label": "贷款买下",
+          "effects": {
+            "money": -30,
+            "charm": 3,
+            "health": -1
+          },
+          "result": "你有了自己的家，也有了三十年的月供。",
+          "tags": [
+            "有房",
+            "负债"
+          ]
+        },
+        {
+          "label": "再等等",
+          "effects": {
+            "money": 5,
+            "abstract": 3
+          },
+          "result": "你等了五年，房价涨了 60%。"
+        },
+        {
+          "label": "回老家买",
+          "effects": {
+            "money": -12,
+            "charm": 2
+          },
+          "result": "你在老家有了房，但在大城市还是没有家。",
+          "tags": [
+            "有房",
+            "负债"
+          ]
+        }
+      ],
+      "cond": {
+        "maxAge": 45,
+        "minAge": 25
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N15",
+      "title": "结婚",
+      "text": "你们的婚礼办在一个小酒店，来了 80 桌亲戚。",
+      "choices": [
+        {
+          "label": "办得体面",
+          "effects": {
+            "money": -20,
+            "charm": 4
+          },
+          "result": "你妈在亲戚面前很有面子，你欠了点钱。",
+          "tags": [
+            "负债"
+          ]
+        },
+        {
+          "label": "旅行结婚",
+          "effects": {
+            "money": -8,
+            "charm": 2,
+            "abstract": 2
+          },
+          "result": "你们在海边办了个只有两个人的仪式。"
+        }
+      ],
+      "cond": {
+        "maxAge": 40,
+        "minAge": 24,
+        "minCharm": 8
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N16",
+      "title": "生娃",
+      "text": "医院的走廊里，你第一次听到了哭声。",
+      "choices": [
+        {
+          "label": "全力养",
+          "effects": {
+            "money": -20,
+            "charm": 3,
+            "health": -1
+          },
+          "result": "你开始了长达十八年的碎钞机生涯。"
+        },
+        {
+          "label": "佛系养",
+          "effects": {
+            "money": -8,
+            "abstract": 3
+          },
+          "result": "你决定不鸡娃，只求他健康快乐。"
+        }
+      ],
+      "cond": {
+        "maxAge": 55,
+        "minAge": 26,
+        "minMoney": 10
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N17",
+      "title": "孩子上学",
+      "text": "学区房、民办、还是就近入学，三道题摆在面前。",
+      "choices": [
+        {
+          "label": "砸钱买学区房",
+          "effects": {
+            "money": -35,
+            "int": 2
+          },
+          "result": "你为了一个学位，把自己又绑了十年。",
+          "tags": [
+            "负债"
+          ]
+        },
+        {
+          "label": "就近入学",
+          "effects": {
+            "money": -3,
+            "abstract": 2
+          },
+          "result": "你选择了让孩子快乐，代价是每天多接送一小时。"
+        }
+      ],
+      "cond": {
+        "minAge": 32
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N18",
+      "title": "中年危机",
+      "text": "你 38 岁，公司新来的同事 24 岁，工资比你低一半。",
+      "choices": [
+        {
+          "label": "学习新技能",
+          "effects": {
+            "int": 3,
+            "health": -2,
+            "money": -3
+          },
+          "result": "你报了个班，晚上十点还在看网课。"
+        },
+        {
+          "label": "转型管理",
+          "effects": {
+            "charm": 3,
+            "money": 8
+          },
+          "result": "你开始管人，也开始被人管。"
+        },
+        {
+          "label": "认命",
+          "effects": {
+            "abstract": 5,
+            "money": -3
+          },
+          "result": "你想通了：来日方长，不如躺平。"
+        }
+      ],
+      "cond": {
+        "minAge": 33
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N19",
+      "title": "父母生病",
+      "text": "凌晨三点，你接到老家的电话。",
+      "choices": [
+        {
+          "label": "全力治疗",
+          "effects": {
+            "money": -25,
+            "health": -2,
+            "charm": 3
+          },
+          "result": "你把积蓄全掏了出来，也把年假全请了。"
+        },
+        {
+          "label": "保守治疗",
+          "effects": {
+            "money": -8,
+            "abstract": 4
+          },
+          "result": "你在\"孝顺\"和\"现实\"之间来回撕裂。"
+        }
+      ],
+      "cond": {
+        "minAge": 30
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N20",
+      "title": "同学聚会",
+      "cond": {
+        "minAge": 25,
+        "maxAge": 55
+      },
+      "text": "十年没见的同学，现在开着车来了。",
+      "choices": [
+        {
+          "label": "坦然赴约",
+          "effects": {
+            "charm": 3,
+            "money": -2
+          },
+          "result": "你发现混得最好的那个，当年成绩最差。"
+        },
+        {
+          "label": "借故不去",
+          "effects": {
+            "abstract": 4,
+            "charm": -1
+          },
+          "result": "你在群里发了个笑脸，然后关了手机。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N21",
+      "title": "被裁员",
+      "text": "HR 约你去小会议室，手里拿着一张纸。",
+      "choices": [
+        {
+          "label": "拿赔偿走人",
+          "effects": {
+            "money": 10,
+            "abstract": 3
+          },
+          "result": "你拿到了 N+1，在家躺了三个月。"
+        },
+        {
+          "label": "争取留下",
+          "effects": {
+            "charm": 2,
+            "money": 3,
+            "health": -2
+          },
+          "result": "你留下了，但工位换到了角落。"
+        },
+        {
+          "label": "当场创业",
+          "effects": {
+            "money": -10,
+            "abstract": 6,
+            "luck": 2
+          },
+          "result": "你注册了一家公司，法人是你自己。",
+          "tags": [
+            "创业"
+          ]
+        }
+      ],
+      "cond": {
+        "maxAge": 58,
+        "minAge": 26
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N22",
+      "title": "体检报告",
+      "text": "报告单上，医生用红笔圈出了几个指标。",
+      "choices": [
+        {
+          "label": "开始健身",
+          "effects": {
+            "health": 4,
+            "money": -4
+          },
+          "result": "你办了张健身卡，一开始每周去三次。"
+        },
+        {
+          "label": "继续熬夜",
+          "effects": {
+            "health": -4,
+            "abstract": 4
+          },
+          "result": "你把报告单收起来，继续刷手机到两点。"
+        }
+      ],
+      "cond": {
+        "maxAge": 60,
+        "minAge": 25
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N23",
+      "title": "投资",
+      "text": "同事说他有个\"稳赚不赔\"的机会。",
+      "choices": [
+        {
+          "label": "投一笔",
+          "effects": {
+            "money": -8,
+            "luck": 4,
+            "abstract": 3
+          },
+          "result": "你赚了点，然后加仓，然后亏了。"
+        },
+        {
+          "label": "只投一点点",
+          "effects": {
+            "money": 3,
+            "luck": 2
+          },
+          "result": "你小赚一笔，见好就收。"
+        },
+        {
+          "label": "不投",
+          "effects": {
+            "money": 2,
+            "int": 2
+          },
+          "result": "后来你听说那是个骗局。"
+        }
+      ],
+      "cond": {
+        "minAge": 22,
+        "minMoney": 12
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N24",
+      "title": "升职机会",
+      "text": "部门要提拔一个主管，你和另一个同事是热门人选。",
+      "choices": [
+        {
+          "label": "正面竞争",
+          "effects": {
+            "charm": 3,
+            "health": -2,
+            "money": 10
+          },
+          "result": "你赢了，代价是失去了一个朋友。"
+        },
+        {
+          "label": "让给对方",
+          "effects": {
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "你成了部门里最受欢迎的人，也是最没前途的人。"
+        }
+      ],
+      "cond": {
+        "maxAge": 55,
+        "minAge": 28,
+        "minInt": 10
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N25",
+      "title": "换城市",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 50
+      },
+      "text": "一个外地 offer 摆在你面前，薪水翻倍。",
+      "choices": [
+        {
+          "label": "去",
+          "effects": {
+            "money": 15,
+            "charm": -2,
+            "abstract": 2
+          },
+          "result": "你在新城市租了个房，认识了三个人。"
+        },
+        {
+          "label": "留",
+          "effects": {
+            "charm": 3,
+            "money": 3
+          },
+          "result": "你留在了熟悉的街道，安心但也安稳。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N26",
+      "title": "婚礼份子钱",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 45
+      },
+      "text": "大学同学结婚，你翻了翻微信余额。",
+      "choices": [
+        {
+          "label": "随大流",
+          "effects": {
+            "money": -5,
+            "charm": 2
+          },
+          "result": "你随了 800，然后开始盘算自己的婚礼。"
+        },
+        {
+          "label": "量力而行",
+          "effects": {
+            "money": -2,
+            "abstract": 2
+          },
+          "result": "你随了 200，同学在群里发了个微笑表情。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N27",
+      "title": "孩子叛逆期",
+      "text": "你儿子把门摔上，说\"你根本不懂我\"。",
+      "choices": [
+        {
+          "label": "耐心沟通",
+          "effects": {
+            "charm": 3,
+            "abstract": -2
+          },
+          "result": "你在门口站了半小时，门开了。"
+        },
+        {
+          "label": "强硬到底",
+          "effects": {
+            "charm": -2,
+            "abstract": 3
+          },
+          "result": "你们冷战了一个月。"
+        }
+      ],
+      "cond": {
+        "minAge": 42
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N28",
+      "title": "还贷压力",
+      "text": "每个月 15 号，你的银行卡都会突然瘦一圈。",
+      "choices": [
+        {
+          "label": "咬牙坚持",
+          "effects": {
+            "money": -8,
+            "health": -2
+          },
+          "result": "你取消了所有订阅，只留了最便宜的。"
+        },
+        {
+          "label": "提前还一部分",
+          "effects": {
+            "money": -20,
+            "charm": 2
+          },
+          "result": "你手里的存款少了，心里的石头也小了。"
+        }
+      ],
+      "cond": {
+        "minAge": 30
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N29",
+      "title": "副业",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 58
+      },
+      "text": "同事在下班后摆摊，一个月多赚了两千。",
+      "choices": [
+        {
+          "label": "也去摆摊",
+          "effects": {
+            "money": 8,
+            "health": -3,
+            "charm": 2
+          },
+          "result": "你卖了两个月的烤肠，认识了整条街的摊主。"
+        },
+        {
+          "label": "做自媒体",
+          "effects": {
+            "money": 4,
+            "abstract": 5,
+            "charm": 2
+          },
+          "result": "你发了一百条视频，涨了三百个粉。"
+        },
+        {
+          "label": "不折腾",
+          "effects": {
+            "health": 2,
+            "int": 1
+          },
+          "result": "你下班后睡了两个小时，觉得这才是人生。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N30",
+      "title": "年终奖",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 62
+      },
+      "text": "公司群里发了个红包，你一抢，5 块 2。",
+      "choices": [
+        {
+          "label": "吐槽",
+          "effects": {
+            "charm": 1,
+            "abstract": 3
+          },
+          "result": "你在群里发了句\"够买一杯奶茶了\"，被主管点赞。"
+        },
+        {
+          "label": "默默收下",
+          "effects": {
+            "money": 5
+          },
+          "result": "你没说话，默默打开了购物车。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N31",
+      "title": "父母催婚",
+      "text": "妈妈在电话里第 47 次提到隔壁王家的小孩。",
+      "choices": [
+        {
+          "label": "妥协去相亲",
+          "effects": {
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "你去了，见了，然后被问\"房子买了吗\"。"
+        },
+        {
+          "label": "明确拒绝",
+          "effects": {
+            "charm": 1,
+            "abstract": 2,
+            "health": -1
+          },
+          "result": "你们在电话里吵了一架，然后都沉默了。"
+        }
+      ],
+      "cond": {
+        "maxAge": 40,
+        "minAge": 25
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N32",
+      "title": "停车位",
+      "text": "你终于买了车，但小区停车位要排队三年。",
+      "choices": [
+        {
+          "label": "买一个车位",
+          "effects": {
+            "money": -15,
+            "charm": 1
+          },
+          "result": "你花了一辆车的钱，买了一块水泥地。"
+        },
+        {
+          "label": "路边随便停",
+          "effects": {
+            "money": -3,
+            "abstract": 3
+          },
+          "result": "你收到了第三张罚单。"
+        }
+      ],
+      "cond": {
+        "minAge": 28,
+        "minMoney": 20
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N33",
+      "title": "老朋友借钱",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 65
+      },
+      "text": "多年不见的朋友突然发来消息：在吗？",
+      "choices": [
+        {
+          "label": "借",
+          "effects": {
+            "money": -10,
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "你借了，然后这个人从地球上消失了。"
+        },
+        {
+          "label": "不借",
+          "effects": {
+            "charm": -1,
+            "int": 2
+          },
+          "result": "你说了句\"最近手头紧\"，他回了句\"理解\"。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N34",
+      "title": "二手烟",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 65
+      },
+      "text": "你在电梯里被同事的烟味熏了三分钟。",
+      "choices": [
+        {
+          "label": "委婉提醒",
+          "effects": {
+            "charm": 2
+          },
+          "result": "他下次在楼道里抽了，至少没在电梯。"
+        },
+        {
+          "label": "忍了",
+          "effects": {
+            "health": -2,
+            "abstract": 2
+          },
+          "result": "你回家洗了三遍衣服。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N35",
+      "title": "绩效考核",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 58
+      },
+      "text": "年底了，你的绩效排名是全组倒数第三。",
+      "choices": [
+        {
+          "label": "找领导谈心",
+          "effects": {
+            "charm": 2,
+            "money": 5
+          },
+          "result": "你被\"充分沟通\"了一小时，拿到了安慰奖。"
+        },
+        {
+          "label": "准备跳槽",
+          "effects": {
+            "int": 2,
+            "luck": 2
+          },
+          "result": "你更新了简历，第二天就收到了两个面试。"
+        },
+        {
+          "label": "摆烂",
+          "effects": {
+            "abstract": 5,
+            "health": 2
+          },
+          "result": "你想通了：绩效排名不影响你活着。"
+        }
+      ],
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N36",
+      "title": "宠物去世",
+      "text": "陪了你十二年的那只猫，今天早上没醒来。",
+      "choices": [
+        {
+          "label": "好好告别",
+          "effects": {
+            "charm": 3,
+            "abstract": -2
+          },
+          "result": "你把它埋在了楼下花园，种了棵小树。"
+        },
+        {
+          "label": "不敢面对",
+          "effects": {
+            "abstract": 5
+          },
+          "result": "你把它托付给了朋友，一个人在酒店住了一周。"
+        }
+      ],
+      "cond": {
+        "maxAge": 70,
+        "minAge": 26
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N37",
+      "title": "朋友创业",
+      "text": "老同学说要拉你入伙，做一个小程序。",
+      "choices": [
+        {
+          "label": "投钱一起干",
+          "effects": {
+            "money": -15,
+            "luck": 3,
+            "abstract": 4
+          },
+          "result": "你们做了半年，用户 800 人。",
+          "tags": [
+            "创业",
+            "负债"
+          ]
+        },
+        {
+          "label": "只给建议",
+          "effects": {
+            "int": 2,
+            "charm": 2
+          },
+          "result": "你给他出了几个点子，他请你吃了顿烧烤。"
+        }
+      ],
+      "cond": {
+        "minAge": 22,
+        "maxAge": 50,
+        "minMoney": 15
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N38",
+      "title": "孩子高考",
+      "text": "轮到你站在考场外等了。",
+      "choices": [
+        {
+          "label": "请假全程陪考",
+          "effects": {
+            "charm": 3,
+            "money": -3
+          },
+          "result": "你在马路边上站了两天，比当年自己考还紧张。"
+        },
+        {
+          "label": "正常上班",
+          "effects": {
+            "money": 5,
+            "abstract": 3
+          },
+          "result": "你在工位上刷了一天成绩查询网站。"
+        }
+      ],
+      "cond": {
+        "minAge": 44
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N39",
+      "title": "交通事故",
+      "text": "你被一辆电动车撞了一下，膝盖擦破了。",
+      "choices": [
+        {
+          "label": "私了",
+          "effects": {
+            "health": -3,
+            "money": 3
+          },
+          "result": "你收了 200 块，瘸了一周。"
+        },
+        {
+          "label": "报警走流程",
+          "effects": {
+            "health": -2,
+            "money": 5,
+            "charm": 1
+          },
+          "result": "你等了两个小时，拿到了赔偿。"
+        }
+      ],
+      "cond": {
+        "maxAge": 80,
+        "minAge": 18
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N40",
+      "title": "退休规划",
+      "text": "你算了算，按现在的缴纳，你 63 岁能领到 3000 块。",
+      "choices": [
+        {
+          "label": "继续攒钱",
+          "effects": {
+            "money": 10,
+            "abstract": -2
+          },
+          "result": "你开始把每一笔支出都记在小本子上。"
+        },
+        {
+          "label": "及时行乐",
+          "effects": {
+            "money": -10,
+            "charm": 3,
+            "abstract": 3
+          },
+          "result": "你去了一趟想去十年的地方。"
+        }
+      ],
+      "cond": {
+        "minAge": 45
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N41",
+      "title": "广场舞",
+      "text": "退休第一天，楼下的音响比闹钟还早。",
+      "choices": [
+        {
+          "label": "加入",
+          "effects": {
+            "health": 3,
+            "charm": 2
+          },
+          "result": "你在第二排找到了自己的位置。"
+        },
+        {
+          "label": "投诉物业",
+          "effects": {
+            "charm": -2,
+            "abstract": 3,
+            "health": 1
+          },
+          "result": "你成了小区群里最活跃的人。"
+        }
+      ],
+      "cond": {
+        "minAge": 55
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N42",
+      "title": "孙子出生",
+      "text": "你抱起了那个软软的小东西，手有点抖。",
+      "choices": [
+        {
+          "label": "主动带娃",
+          "effects": {
+            "health": -3,
+            "charm": 4
+          },
+          "result": "你重新学会了泡奶粉和换尿布。"
+        },
+        {
+          "label": "量力而行",
+          "effects": {
+            "health": 1,
+            "abstract": 2
+          },
+          "result": "你说：\"带娃可以，但周末我要休息。\""
+        }
+      ],
+      "cond": {
+        "minAge": 55
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N43",
+      "title": "晚年兴趣",
+      "text": "你有大把时间，但不知道该干点什么。",
+      "choices": [
+        {
+          "label": "学书法",
+          "effects": {
+            "int": 2,
+            "charm": 2,
+            "health": 1
+          },
+          "result": "你写了三年，写坏了两支笔。"
+        },
+        {
+          "label": "学智能手机",
+          "effects": {
+            "abstract": 5,
+            "int": 1
+          },
+          "result": "你学会了发朋友圈，然后每天发八条。"
+        },
+        {
+          "label": "钓鱼",
+          "effects": {
+            "health": 2,
+            "abstract": 3
+          },
+          "result": "你在河边坐了一天，钓上来两条小鲫鱼。"
+        }
+      ],
+      "cond": {
+        "minAge": 58
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N44",
+      "title": "社区活动",
+      "text": "居委会通知，明天上午九点有义诊。",
+      "choices": [
+        {
+          "label": "去",
+          "effects": {
+            "health": 3,
+            "charm": 1
+          },
+          "result": "你测了血压，医生说你少熬夜。"
+        },
+        {
+          "label": "不去",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "你在家看了三小时戏曲频道。"
+        }
+      ],
+      "cond": {
+        "minAge": 55
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "N45",
+      "title": "老友离世",
+      "text": "你接到电话，说老张昨天走了。",
+      "choices": [
+        {
+          "label": "去送一程",
+          "effects": {
+            "charm": 3,
+            "abstract": 2
+          },
+          "result": "你站在人群里，忽然觉得自己也老了。"
+        },
+        {
+          "label": "在家待着",
+          "effects": {
+            "abstract": 4,
+            "health": -1
+          },
+          "result": "你翻出了年轻时的照片，看了一晚上。"
+        }
+      ],
+      "cond": {
+        "minAge": 60
+      },
+      "line": "normal",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A001",
+      "title": "抽象开局",
+      "cond": {
+        "minAge": 0,
+        "maxAge": 2
+      },
+      "text": "你出生那天，产房的灯闪了三下，护士说：这孩子以后要出大事。",
+      "choices": [
+        {
+          "label": "笑一个",
+          "effects": {
+            "abstract": 5,
+            "charm": 2
+          },
+          "result": "你笑了。护士说：你看他笑了。护士的手有点抖。"
+        },
+        {
+          "label": "哭一个",
+          "effects": {
+            "abstract": 3,
+            "health": 2
+          },
+          "result": "你哭得很有节奏感，像在打拍子。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A002",
+      "title": "幼儿园哲学",
+      "cond": {
+        "minAge": 3,
+        "maxAge": 6
+      },
+      "text": "老师问：小朋友，你们知道我是谁吗？",
+      "choices": [
+        {
+          "label": "你是老师",
+          "effects": {
+            "int": 2
+          },
+          "result": "老师很满意，给了一颗糖。"
+        },
+        {
+          "label": "你是我妈的同事",
+          "effects": {
+            "abstract": 6
+          },
+          "result": "老师愣了三秒，然后笑了：这孩子有点东西。"
+        },
+        {
+          "label": "我是一个问题",
+          "effects": {
+            "abstract": 8,
+            "int": 3
+          },
+          "result": "老师把这段写进了家长会的发言稿。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A003",
+      "title": "小学作文",
+      "cond": {
+        "minAge": 7,
+        "maxAge": 12
+      },
+      "text": "作文题：《我的爸爸》。你爸今天刚吼了你一顿。",
+      "choices": [
+        {
+          "label": "写他伟大",
+          "effects": {
+            "charm": 2,
+            "abstract": 2
+          },
+          "result": "你爸看完，眼眶红了，给你买了根冰棍。"
+        },
+        {
+          "label": "实话实说",
+          "effects": {
+            "abstract": 7,
+            "int": 1
+          },
+          "result": "老师在办公室笑了十分钟，作文被贴到走廊。"
+        },
+        {
+          "label": "写成科幻",
+          "effects": {
+            "abstract": 10,
+            "int": 2
+          },
+          "result": "你写了《我的爸爸是外星人》，全班传阅。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A004",
+      "title": "网吧通宵",
+      "cond": {
+        "minAge": 14,
+        "maxAge": 26
+      },
+      "text": "你第一次通宵，天亮了，你看见了初升的太阳。",
+      "choices": [
+        {
+          "label": "继续",
+          "effects": {
+            "abstract": 8,
+            "health": -3,
+            "int": 1
+          },
+          "result": "你打到了下午三点，在椅子上睡着了。"
+        },
+        {
+          "label": "回家睡觉",
+          "effects": {
+            "health": 1,
+            "abstract": 3
+          },
+          "result": "你睡到晚上八点，醒来觉得世界变了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A005",
+      "title": "被做成表情包",
+      "cond": {
+        "minAge": 9,
+        "maxAge": 60
+      },
+      "text": "同学拍下你翻白眼的瞬间，配字\"我悟了\"，发到了群里。",
+      "choices": [
+        {
+          "label": "认领",
+          "effects": {
+            "charm": 4,
+            "abstract": 6
+          },
+          "result": "你把头像换成了这张图，从此人设固定。"
+        },
+        {
+          "label": "让他删",
+          "effects": {
+            "charm": -2,
+            "abstract": 3
+          },
+          "result": "他删了，但你已经下载了原图。"
+        }
+      ],
+      "tags": [
+        "表情包"
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A006",
+      "title": "抽象室友",
+      "cond": {
+        "minAge": 18,
+        "maxAge": 25
+      },
+      "text": "你的室友每天凌晨三点起来背英语，说要考研去国外。",
+      "choices": [
+        {
+          "label": "一起卷",
+          "effects": {
+            "int": 3,
+            "health": -2,
+            "abstract": 3
+          },
+          "result": "你们一起背了半个月，然后一起放弃了。"
+        },
+        {
+          "label": "给他倒水",
+          "effects": {
+            "charm": 3,
+            "abstract": 4
+          },
+          "result": "你们成了最好的朋友，他后来真的出国了。"
+        },
+        {
+          "label": "装睡",
+          "effects": {
+            "abstract": 5,
+            "health": -1
+          },
+          "result": "你在被窝里听了三个月英语听力。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A007",
+      "title": "网恋",
+      "cond": {
+        "minAge": 14,
+        "maxAge": 40
+      },
+      "text": "你在网上认识了一个人，头像很糊，声音很好听。",
+      "choices": [
+        {
+          "label": "奔现",
+          "effects": {
+            "luck": 5,
+            "charm": 3,
+            "abstract": 5
+          },
+          "result": "你去了，发现对方和照片差了二十斤和一个性别。"
+        },
+        {
+          "label": "继续网聊",
+          "effects": {
+            "abstract": 6,
+            "charm": 2
+          },
+          "result": "你们聊了两年，从没视频过。"
+        },
+        {
+          "label": "拉黑",
+          "effects": {
+            "int": 2,
+            "abstract": 3
+          },
+          "result": "你很有原则，虽然有点舍不得。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A008",
+      "title": "考试作弊被AI抓了",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 26
+      },
+      "text": "考场上，监考老师不是人，是一台摄像头。",
+      "choices": [
+        {
+          "label": "老实答题",
+          "effects": {
+            "int": 2
+          },
+          "result": "你考了 61 分，AI 给了你一个\"及格\"的表情。"
+        },
+        {
+          "label": "试图欺骗AI",
+          "effects": {
+            "abstract": 8,
+            "int": 1,
+            "luck": -2
+          },
+          "result": "摄像头转了个角度，红灯亮了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A009",
+      "title": "短视频爆火",
+      "cond": {
+        "minAge": 13,
+        "maxAge": 50
+      },
+      "text": "你随手拍的一段视频，第二天早上播放量 300 万。",
+      "choices": [
+        {
+          "label": "趁热打铁",
+          "effects": {
+            "charm": 5,
+            "money": 15,
+            "abstract": 6
+          },
+          "result": "你连发十条，只有第一条火了。",
+          "tags": [
+            "上热搜"
+          ]
+        },
+        {
+          "label": "删掉",
+          "effects": {
+            "abstract": 8,
+            "int": 2
+          },
+          "result": "你删了，但已经被人搬运到五个平台。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A010",
+      "title": "凌晨三点的外卖",
+      "cond": {
+        "minAge": 16,
+        "maxAge": 70
+      },
+      "text": "你点了份炸鸡，骑手的头像是一朵云。",
+      "choices": [
+        {
+          "label": "聊聊",
+          "effects": {
+            "charm": 3,
+            "abstract": 5
+          },
+          "result": "骑手说他白天是程序员，晚上送外卖，因为\"想看星星\"。"
+        },
+        {
+          "label": "拿完就关门",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "你关门的那一瞬间，看见他抬头看了看月亮。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A011",
+      "title": "电子木鱼",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "你下载了一个敲木鱼 App，敲一下，功德 +1。",
+      "choices": [
+        {
+          "label": "敲到凌晨",
+          "effects": {
+            "abstract": 10,
+            "health": -2
+          },
+          "result": "你敲了两万下，功德 +20000，视力 -0.1。",
+          "tags": [
+            "网瘾"
+          ]
+        },
+        {
+          "label": "卸载",
+          "effects": {
+            "int": 2,
+            "abstract": -4,
+            "health": 1
+          },
+          "result": "你卸载了三次，又装回来了三次。这次你终于金盆洗手。",
+          "tags": [
+            "退役"
+          ]
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A012",
+      "title": "相亲对象是 AI",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 42
+      },
+      "text": "对面的\"人\"回答问题的方式非常完美，完美得不像人。",
+      "choices": [
+        {
+          "label": "当场质问",
+          "effects": {
+            "int": 3,
+            "abstract": 6
+          },
+          "result": "它说：你很敏锐。然后发了一串乱码。",
+          "tags": [
+            "遇到AI"
+          ]
+        },
+        {
+          "label": "继续约会",
+          "effects": {
+            "charm": 3,
+            "abstract": 8
+          },
+          "result": "你们约会了三个月，它记得你所有喜好。"
+        }
+      ],
+      "tags": [
+        "遇到AI"
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A013",
+      "title": "朋友圈被截图",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "你深夜发的一条感慨，被人截图发到了大群。",
+      "choices": [
+        {
+          "label": "正面回应",
+          "effects": {
+            "charm": 3,
+            "abstract": 5
+          },
+          "result": "你在群里发了个\"是的，我精神状态很好\"。"
+        },
+        {
+          "label": "清空朋友圈",
+          "effects": {
+            "abstract": 7,
+            "charm": -2
+          },
+          "result": "你的朋友圈从此只剩三条横线。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A014",
+      "title": "被家里逼着相亲三十次",
+      "cond": {
+        "minAge": 24,
+        "maxAge": 42
+      },
+      "text": "你已经练到能在三分钟内问完对方全部信息的程度。",
+      "choices": [
+        {
+          "label": "把相亲做成表格",
+          "effects": {
+            "int": 3,
+            "abstract": 8
+          },
+          "result": "你做了一个 Excel 排名表，被家族群疯传。"
+        },
+        {
+          "label": "随机抽签决定",
+          "effects": {
+            "luck": 5,
+            "abstract": 9
+          },
+          "result": "你掷骰子选了一个，居然成了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A015",
+      "title": "半夜刷到\"人生重开模拟器\"",
+      "cond": {
+        "minAge": 13,
+        "maxAge": 50
+      },
+      "text": "你玩到凌晨四点，重开了 87 次。",
+      "choices": [
+        {
+          "label": "再来一把",
+          "effects": {
+            "abstract": 10,
+            "health": -2
+          },
+          "result": "第 88 次，你抽到了\"天崩开局\"。",
+          "tags": [
+            "网瘾"
+          ]
+        },
+        {
+          "label": "卸载，从此养生",
+          "effects": {
+            "health": 3,
+            "abstract": -6,
+            "int": 1
+          },
+          "result": "你卸载了游戏，买了个泡脚桶，宣布自己是前玩家。",
+          "tags": [
+            "退役"
+          ]
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A016",
+      "title": "穿汉服上班",
+      "cond": {
+        "minAge": 19,
+        "maxAge": 45
+      },
+      "text": "你今天穿着一整套明制汉服去了公司。",
+      "choices": [
+        {
+          "label": "从容走进电梯",
+          "effects": {
+            "charm": 5,
+            "abstract": 8
+          },
+          "result": "同事说：你今天很有气场。领导说：你今天很危险。"
+        },
+        {
+          "label": "在楼下换回来",
+          "effects": {
+            "abstract": 5,
+            "charm": -1
+          },
+          "result": "你在公厕换衣服时，被保洁阿姨看了一眼。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A017",
+      "title": "抽象面试",
+      "cond": {
+        "minAge": 19,
+        "maxAge": 35
+      },
+      "text": "面试官问：你觉得你有什么缺点？",
+      "choices": [
+        {
+          "label": "我没有缺点",
+          "effects": {
+            "charm": 2,
+            "abstract": 5
+          },
+          "result": "面试官笑了：年轻人，很有精神。"
+        },
+        {
+          "label": "缺点是不太正常",
+          "effects": {
+            "abstract": 10
+          },
+          "result": "面试官说：\"我们公司正好缺这种人。\"你被录用了。"
+        }
+      ],
+      "altText": "面试官问：如果你是公司的一颗螺丝钉，你希望自己是十字的还是内六角的？",
+      "altChoices": [
+        {
+          "label": "我想当螺纹",
+          "effects": {
+            "abstract": 10,
+            "int": 2
+          },
+          "result": "面试官沉默了三秒，说：\"明天来上班。\""
+        },
+        {
+          "label": "我是自攻的",
+          "effects": {
+            "abstract": 12,
+            "charm": 3
+          },
+          "result": "全场安静，然后有人鼓掌。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A018",
+      "title": "谐音梗攻击",
+      "cond": {
+        "minAge": 13,
+        "maxAge": 70
+      },
+      "text": "你在群里发了一句\"这个方案真的泰裤辣\"。",
+      "choices": [
+        {
+          "label": "继续输出",
+          "effects": {
+            "abstract": 8,
+            "charm": 3
+          },
+          "result": "群里安静了五秒，然后刷了一屏\"哈哈哈哈\"。"
+        },
+        {
+          "label": "道歉",
+          "effects": {
+            "abstract": 3,
+            "charm": -1
+          },
+          "result": "没人理你，梗已经出去了。"
+        }
+      ],
+      "tags": [
+        "谐音"
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A019",
+      "title": "在评论区吵架",
+      "cond": {
+        "minAge": 13,
+        "maxAge": 60
+      },
+      "text": "你在一条视频下面，和陌生人吵了 47 层楼。",
+      "choices": [
+        {
+          "label": "继续吵",
+          "effects": {
+            "abstract": 8,
+            "health": -2,
+            "charm": -2
+          },
+          "result": "你赢了，但也失眠了。"
+        },
+        {
+          "label": "删评论",
+          "effects": {
+            "abstract": 3,
+            "int": 1
+          },
+          "result": "你删了，对方还在那个楼里艾特你。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A020",
+      "title": "买了一堆没用的东西",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 55
+      },
+      "text": "你半夜刷直播，买了七件你根本不需要的东西。",
+      "choices": [
+        {
+          "label": "全部退货",
+          "effects": {
+            "money": 5,
+            "abstract": 2
+          },
+          "result": "你跑了三个快递点，退掉了六件。"
+        },
+        {
+          "label": "留着",
+          "effects": {
+            "money": -12,
+            "abstract": 8
+          },
+          "result": "三个月后，你才发现包裹还没拆。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A021",
+      "title": "抽象健身",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "你在健身房看到有人一边跑步一边背单词。",
+      "choices": [
+        {
+          "label": "一起卷",
+          "effects": {
+            "health": 3,
+            "int": 3,
+            "abstract": 5
+          },
+          "result": "你一边举铁一边听网课，效率翻倍（并没有）。"
+        },
+        {
+          "label": "拍照发圈",
+          "effects": {
+            "abstract": 8,
+            "charm": 2
+          },
+          "result": "配文：\"自律的人生不需要解释。\""
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A022",
+      "title": "假装很忙",
+      "cond": {
+        "minAge": 19,
+        "maxAge": 62
+      },
+      "text": "你在工位上打开三个文档，其实一个字没写。",
+      "choices": [
+        {
+          "label": "装到底",
+          "effects": {
+            "abstract": 6,
+            "charm": 1
+          },
+          "result": "领导路过，看了看你，点了点头。"
+        },
+        {
+          "label": "摸鱼刷手机",
+          "effects": {
+            "abstract": 8,
+            "health": -1
+          },
+          "result": "你看了一下午的\"如何高效工作\"。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A023",
+      "title": "朋友借钱给AI",
+      "cond": {
+        "minAge": 20,
+        "maxAge": 55
+      },
+      "text": "你朋友说他把钱借给了一个 AI 创业项目。",
+      "choices": [
+        {
+          "label": "劝他撤",
+          "effects": {
+            "int": 2,
+            "charm": 2
+          },
+          "result": "他撤了，两个月后那个项目暴雷。"
+        },
+        {
+          "label": "跟着投",
+          "effects": {
+            "money": -10,
+            "abstract": 8,
+            "luck": -2
+          },
+          "result": "你成了这个 AI 的\"早期投资人\"，也是\"最后一批\"。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A024",
+      "title": "抽象相亲文案",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 45
+      },
+      "text": "你在相亲平台写了自我介绍：\"精神状态良好，偶尔抽象。\"",
+      "choices": [
+        {
+          "label": "保持风格",
+          "effects": {
+            "abstract": 8,
+            "charm": 3
+          },
+          "result": "有 30 个人发来\"哈哈哈哈哈\"，其中 3 个约了你。"
+        },
+        {
+          "label": "改正常版本",
+          "effects": {
+            "charm": 2,
+            "abstract": -5
+          },
+          "result": "消息少了，但来的都很认真。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A025",
+      "title": "被拉进一个奇怪的群",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "群名是\"凌晨三点的深圳\"，群里有 500 人。",
+      "choices": [
+        {
+          "label": "潜水观察",
+          "effects": {
+            "abstract": 6,
+            "int": 2
+          },
+          "result": "你看了半年，发现群里的人真的凌晨三点都醒着。"
+        },
+        {
+          "label": "主动发言",
+          "effects": {
+            "charm": 4,
+            "abstract": 7
+          },
+          "result": "你说了一句\"我也醒着\"，收到 87 个赞。"
+        },
+        {
+          "label": "退群",
+          "effects": {
+            "abstract": -2,
+            "health": 1
+          },
+          "result": "你退群了，但你记住了那个群名。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A026",
+      "title": "抽象书法",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 80
+      },
+      "text": "你写了幅字，挂在客厅，来的人都说看不懂。",
+      "choices": [
+        {
+          "label": "解释含义",
+          "effects": {
+            "int": 2,
+            "charm": 2,
+            "abstract": 5
+          },
+          "result": "你讲了二十分钟，客人越听越迷糊。"
+        },
+        {
+          "label": "不解释",
+          "effects": {
+            "abstract": 10
+          },
+          "result": "越来越多人来看，说这是\"后现代\"。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A027",
+      "title": "地铁上睡着",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 70
+      },
+      "text": "你在地铁上睡着了，醒来发现坐到了终点站。",
+      "choices": [
+        {
+          "label": "原路返回",
+          "effects": {
+            "health": -1,
+            "abstract": 4
+          },
+          "result": "你多花了一小时，看完了两集剧。"
+        },
+        {
+          "label": "就地逛逛",
+          "effects": {
+            "luck": 4,
+            "abstract": 6
+          },
+          "result": "你在这个陌生的站附近发现了一家很好吃的面馆。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A028",
+      "title": "抽象网名",
+      "cond": {
+        "minAge": 13,
+        "maxAge": 60
+      },
+      "text": "你花了一晚上想了个新网名：\"宇宙的边角料\"。",
+      "choices": [
+        {
+          "label": "全平台统一",
+          "effects": {
+            "abstract": 9,
+            "charm": 2
+          },
+          "result": "老同学在评论区认出了你：\"你还是这么抽象。\""
+        },
+        {
+          "label": "算了",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "你还是叫回了原来的名字。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A029",
+      "title": "被算命先生说中",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 70
+      },
+      "text": "路边摊的先生说：你这人命里带\"梗\"。",
+      "choices": [
+        {
+          "label": "给钱听下去",
+          "effects": {
+            "money": -5,
+            "abstract": 8
+          },
+          "result": "他讲了一个小时，核心是你适合做自媒体。"
+        },
+        {
+          "label": "不信",
+          "effects": {
+            "int": 2,
+            "abstract": 3
+          },
+          "result": "你走了，三天后你的视频爆了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A030",
+      "title": "抽象告白",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 40
+      },
+      "text": "你喜欢的人问你：你喜欢我哪一点？",
+      "choices": [
+        {
+          "label": "认真回答",
+          "effects": {
+            "charm": 3
+          },
+          "result": "你说了一堆理由，对方笑了，但没答应。"
+        },
+        {
+          "label": "回答\"全部\"",
+          "effects": {
+            "abstract": 6,
+            "charm": 2
+          },
+          "result": "对方说：\"你这个人真抽象。\"然后牵了你的手。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A031",
+      "title": "AI 帮你写年终总结",
+      "cond": {
+        "minAge": 21,
+        "maxAge": 55
+      },
+      "text": "你让 AI 写了一版，领导看完说：\"这篇写得很好，不像你。\"",
+      "choices": [
+        {
+          "label": "承认",
+          "effects": {
+            "abstract": 8,
+            "charm": 1
+          },
+          "result": "领导说：\"那你以后就这么写。\"",
+          "tags": [
+            "遇到AI"
+          ]
+        },
+        {
+          "label": "装是自己写的",
+          "effects": {
+            "int": -1,
+            "abstract": 5,
+            "charm": 2
+          },
+          "result": "你硬撑了半小时，被问了三个细节后破功。"
+        }
+      ],
+      "tags": [
+        "遇到AI"
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A032",
+      "title": "抽象健身目标",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "你定了新年目标：一年瘦 30 斤。",
+      "choices": [
+        {
+          "label": "认真执行",
+          "effects": {
+            "health": 4,
+            "charm": 2,
+            "money": -3
+          },
+          "result": "你瘦了 12 斤，也算成功了一半。"
+        },
+        {
+          "label": "改成\"一年胖 30 斤\"",
+          "effects": {
+            "abstract": 9,
+            "health": -2
+          },
+          "result": "你超额完成了目标。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A033",
+      "title": "半夜的决定",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 65
+      },
+      "text": "凌晨两点，你突然决定要学一门新语言。",
+      "choices": [
+        {
+          "label": "立刻买课",
+          "effects": {
+            "money": -6,
+            "int": 3,
+            "abstract": 5
+          },
+          "result": "你学了三天，课程还在\"第一课\"。"
+        },
+        {
+          "label": "先睡觉",
+          "effects": {
+            "health": 2,
+            "abstract": 2
+          },
+          "result": "第二天醒来，你已经忘了这件事。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A034",
+      "title": "抽象室友2",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 32
+      },
+      "text": "室友把客厅改造成了\"冥想空间\"，铺了满地垫子。",
+      "choices": [
+        {
+          "label": "一起冥想",
+          "effects": {
+            "abstract": 8,
+            "health": 2
+          },
+          "result": "你冥想了二十分钟，睡着了。"
+        },
+        {
+          "label": "搬出去",
+          "effects": {
+            "money": -8,
+            "abstract": 4
+          },
+          "result": "你搬走了，但偶尔会想起那个垫子。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A035",
+      "title": "被做成鬼畜视频",
+      "cond": {
+        "minAge": 18,
+        "maxAge": 60
+      },
+      "text": "你在年会上唱的那首歌，被人做成了鬼畜。",
+      "choices": [
+        {
+          "label": "转发",
+          "effects": {
+            "charm": 5,
+            "abstract": 10
+          },
+          "result": "播放量 50 万，你成了公司最有名的人。",
+          "tags": [
+            "表情包",
+            "上热搜"
+          ]
+        },
+        {
+          "label": "让公司处理",
+          "effects": {
+            "charm": -2,
+            "abstract": 5
+          },
+          "result": "视频下架了，但你已经被人记住了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A036",
+      "title": "抽象养生",
+      "cond": {
+        "minAge": 19,
+        "maxAge": 60
+      },
+      "text": "你开始喝养生茶，同时熬到凌晨三点。",
+      "choices": [
+        {
+          "label": "先改熬夜",
+          "effects": {
+            "health": 4,
+            "abstract": -3
+          },
+          "result": "你十一点睡了，第一天失眠了两小时。"
+        },
+        {
+          "label": "继续这样",
+          "effects": {
+            "abstract": 8,
+            "health": -3
+          },
+          "result": "你的养生茶和黑眼圈成了你的标志。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A037",
+      "title": "抽象投资",
+      "cond": {
+        "minAge": 19,
+        "maxAge": 60
+      },
+      "text": "你买了一种叫\"赛博朋克概念股\"的东西。",
+      "choices": [
+        {
+          "label": "全仓",
+          "effects": {
+            "money": -15,
+            "luck": -3,
+            "abstract": 8
+          },
+          "result": "三天后跌停，你把它写进了人生教训。"
+        },
+        {
+          "label": "小仓位",
+          "effects": {
+            "luck": 3,
+            "abstract": 5
+          },
+          "result": "你赚了一点点，刚好够请朋友吃顿饭。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A038",
+      "title": "凌晨的便利店",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 70
+      },
+      "text": "你在便利店买泡面，收银员对你说：\"今天第三次见你了。\"",
+      "choices": [
+        {
+          "label": "聊两句",
+          "effects": {
+            "charm": 4,
+            "abstract": 6
+          },
+          "result": "你们成了夜班的朋友，他说他也睡不着。"
+        },
+        {
+          "label": "尴尬离开",
+          "effects": {
+            "abstract": 4
+          },
+          "result": "你第二天换了一家便利店。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A039",
+      "title": "抽象朋友圈",
+      "cond": {
+        "minAge": 14,
+        "maxAge": 70
+      },
+      "text": "你发了一条只有三个句号的朋友圈：\"。。。\"",
+      "choices": [
+        {
+          "label": "不管了",
+          "effects": {
+            "abstract": 9
+          },
+          "result": "有 47 个人来问你\"出什么事了\"。"
+        },
+        {
+          "label": "删掉",
+          "effects": {
+            "abstract": 3,
+            "charm": -1
+          },
+          "result": "你删了，但已经有截图在流传。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A040",
+      "title": "抽象相亲2",
+      "cond": {
+        "minAge": 22,
+        "maxAge": 45
+      },
+      "text": "对方问你：\"你的理想生活是什么样的？\"",
+      "choices": [
+        {
+          "label": "老实说",
+          "effects": {
+            "charm": 2
+          },
+          "result": "\"有房有车，家人健康。\"对方点了点头。"
+        },
+        {
+          "label": "说\"每天不用上班\"",
+          "effects": {
+            "abstract": 10,
+            "charm": 1
+          },
+          "result": "对方沉默了一会，说：\"我也是。\""
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A041",
+      "title": "抽象健身教练",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "你的教练让你做 20 个深蹲，说这是\"人生的隐喻\"。",
+      "choices": [
+        {
+          "label": "认真做",
+          "effects": {
+            "health": 3,
+            "abstract": 5
+          },
+          "result": "你做了 20 个，腿抖得像筛子。"
+        },
+        {
+          "label": "问隐喻是什么",
+          "effects": {
+            "int": 2,
+            "abstract": 8
+          },
+          "result": "教练说：\"起起落落，你懂了吗。\"你说：\"我腿酸。\""
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A042",
+      "title": "抽象综艺",
+      "cond": {
+        "minAge": 17,
+        "maxAge": 50
+      },
+      "text": "你被朋友拉去参加一个素人综艺，主题是\"普通人如何变得不普通\"。",
+      "choices": [
+        {
+          "label": "全力表现",
+          "effects": {
+            "charm": 5,
+            "abstract": 8,
+            "money": 8
+          },
+          "result": "你在节目里火了三天，成了\"那个抽象的选手\"。",
+          "tags": [
+            "上热搜"
+          ]
+        },
+        {
+          "label": "全程配合",
+          "effects": {
+            "charm": 2,
+            "money": 4,
+            "abstract": 4
+          },
+          "result": "你安稳地录完了，没火，但拿了通告费。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A043",
+      "title": "抽象心理咨询",
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "text": "你去看了心理咨询，医生说：\"你只是有点太正常了。\"",
+      "choices": [
+        {
+          "label": "那我不看了",
+          "effects": {
+            "abstract": 8,
+            "charm": 1
+          },
+          "result": "你走出诊室，觉得自己更健康了。"
+        },
+        {
+          "label": "继续聊",
+          "effects": {
+            "int": 3,
+            "abstract": 5,
+            "health": 2
+          },
+          "result": "你们聊了六次，最后一次他请你喝了杯咖啡。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A044",
+      "title": "抽象创业",
+      "cond": {
+        "minAge": 21,
+        "maxAge": 55
+      },
+      "text": "你决定做一个\"帮人整理手机相册\"的 App。",
+      "choices": [
+        {
+          "label": "全力投入",
+          "effects": {
+            "money": -15,
+            "abstract": 10,
+            "luck": 2
+          },
+          "result": "用户 3000 人，其中 2900 是你自己拉来的。",
+          "tags": [
+            "创业"
+          ]
+        },
+        {
+          "label": "想想算了",
+          "effects": {
+            "int": 2,
+            "abstract": 3
+          },
+          "result": "三个月后，你看到一款一模一样的 App 上线了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "A045",
+      "title": "抽象终局",
+      "cond": {
+        "minAge": 30,
+        "maxAge": 80
+      },
+      "text": "某天早上，你照镜子，发现自己笑得很平静。",
+      "choices": [
+        {
+          "label": "接受这个自己",
+          "effects": {
+            "abstract": 10,
+            "charm": 3
+          },
+          "result": "你终于和那个抽象的、乱七八糟的自己和解了。"
+        },
+        {
+          "label": "决定改变",
+          "effects": {
+            "abstract": -10,
+            "health": 3
+          },
+          "result": "你剪了头发，早睡早起，朋友圈也清空了。"
+        }
+      ],
+      "line": "absurd",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M01",
+      "title": "捡到一百块",
+      "cond": {
+        "minAge": 6
+      },
+      "text": "你在路边捡到一张一百块。",
+      "choices": [
+        {
+          "label": "交给警察",
+          "effects": {
+            "charm": 2
+          },
+          "result": "警察登记了你的名字，说\"好人一生平安\"。"
+        },
+        {
+          "label": "收下",
+          "effects": {
+            "money": 10,
+            "luck": 1
+          },
+          "result": "你买了顿好的，吃得很香。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M02",
+      "title": "感冒",
+      "cond": {
+        "minAge": 3
+      },
+      "text": "你打了一整天喷嚏。",
+      "choices": [
+        {
+          "label": "去医院",
+          "effects": {
+            "money": -3,
+            "health": 3
+          },
+          "result": "医生开了药，你睡了个好觉。"
+        },
+        {
+          "label": "硬扛",
+          "effects": {
+            "health": -3,
+            "abstract": 2
+          },
+          "result": "你扛了一周，扛过去了。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M03",
+      "title": "彩票",
+      "cond": {
+        "minAge": 18
+      },
+      "text": "你路过彩票店，鬼使神差走了进去。",
+      "choices": [
+        {
+          "label": "买一张",
+          "effects": {
+            "money": -2,
+            "luck": 4,
+            "abstract": 2
+          },
+          "result": "你中了 20 块，然后继续买了十张。"
+        },
+        {
+          "label": "不买",
+          "effects": {
+            "int": 1
+          },
+          "result": "你路过的时候，看见有人中了 500，心里痒了一下。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M04",
+      "title": "手机丢了",
+      "cond": {
+        "minAge": 10
+      },
+      "text": "你摸遍全身，发现手机不见了。",
+      "choices": [
+        {
+          "label": "报警+挂失",
+          "effects": {
+            "money": -5,
+            "health": -1,
+            "int": 1
+          },
+          "result": "手机没找回来，但你学会了备份。"
+        },
+        {
+          "label": "先借别人手机打自己电话",
+          "effects": {
+            "luck": 4,
+            "charm": 2
+          },
+          "result": "有人接了，说在便利店等你。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M05",
+      "title": "被搭讪",
+      "cond": {
+        "minAge": 13
+      },
+      "text": "有人在街上拍了拍你的肩，说：\"你是不是那个……\"",
+      "choices": [
+        {
+          "label": "承认",
+          "effects": {
+            "charm": 3,
+            "abstract": 4
+          },
+          "result": "你们聊了十分钟，他记错了人。"
+        },
+        {
+          "label": "否认",
+          "effects": {
+            "abstract": 2
+          },
+          "result": "你说\"认错了\"，然后快步走开。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M06",
+      "title": "老同学来电",
+      "cond": {
+        "minAge": 22
+      },
+      "text": "一个很久没联系的同学突然给你打电话。",
+      "choices": [
+        {
+          "label": "接",
+          "effects": {
+            "charm": 3
+          },
+          "result": "他其实只是想卖你一份保险。"
+        },
+        {
+          "label": "不接",
+          "effects": {
+            "int": 1,
+            "abstract": 2
+          },
+          "result": "他发了条消息：\"在吗？\" 你没回。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M07",
+      "title": "下雨没带伞",
+      "cond": {
+        "minAge": 8
+      },
+      "text": "你站在地铁口，看着雨越下越大。",
+      "choices": [
+        {
+          "label": "冲进雨里",
+          "effects": {
+            "health": -2,
+            "abstract": 4
+          },
+          "result": "你跑回家，全身湿透，但很爽。"
+        },
+        {
+          "label": "等雨停",
+          "effects": {
+            "abstract": 3,
+            "health": 1
+          },
+          "result": "你等了四十分钟，雨没停，你买了把伞。"
+        },
+        {
+          "label": "买伞",
+          "effects": {
+            "money": -2,
+            "health": 1
+          },
+          "result": "你家的伞又多了一把。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M08",
+      "title": "深夜emo",
+      "cond": {
+        "minAge": 15
+      },
+      "text": "凌晨一点，你突然觉得人生很没意思。",
+      "choices": [
+        {
+          "label": "找人聊聊",
+          "effects": {
+            "charm": 3,
+            "abstract": 2
+          },
+          "result": "你和朋友聊到三点，两个人都笑了。"
+        },
+        {
+          "label": "一个人扛",
+          "effects": {
+            "abstract": 5,
+            "health": -2
+          },
+          "result": "你刷手机刷到天亮。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M09",
+      "title": "健身卡到期",
+      "cond": {
+        "minAge": 20
+      },
+      "text": "健身房给你发消息：您的年卡即将到期。",
+      "choices": [
+        {
+          "label": "续费",
+          "effects": {
+            "money": -10,
+            "health": 2
+          },
+          "result": "你续了，然后去了三次。"
+        },
+        {
+          "label": "不续",
+          "effects": {
+            "money": 3,
+            "abstract": 3
+          },
+          "result": "你决定在家做俯卧撑，做了两天。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M10",
+      "title": "同事请你吃饭",
+      "cond": {
+        "minAge": 20
+      },
+      "text": "同事说今天他请客，让你随便点。",
+      "choices": [
+        {
+          "label": "点贵的",
+          "effects": {
+            "money": 3,
+            "charm": -1
+          },
+          "result": "你点了个最贵的，同事脸抽了一下。"
+        },
+        {
+          "label": "点普通的",
+          "effects": {
+            "charm": 3
+          },
+          "result": "你点了两个家常菜，同事说下次还请你。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M11",
+      "title": "被夸了",
+      "cond": {
+        "minAge": 20
+      },
+      "text": "领导在群里说：\"这次的方案，多亏了 XXX。\"",
+      "choices": [
+        {
+          "label": "谦虚回复",
+          "effects": {
+            "charm": 3
+          },
+          "result": "你回了句\"都是团队的努力\"。"
+        },
+        {
+          "label": "不回复",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "你看着那条消息，笑了很久，没点赞。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M12",
+      "title": "快递被偷",
+      "cond": {
+        "minAge": 14
+      },
+      "text": "你去驿站取件，发现包裹已经被人取走了。",
+      "choices": [
+        {
+          "label": "查监控",
+          "effects": {
+            "int": 2,
+            "money": 3
+          },
+          "result": "你查了两小时，找回来了。"
+        },
+        {
+          "label": "算了",
+          "effects": {
+            "money": -5,
+            "abstract": 4
+          },
+          "result": "你点了\"确认收货\"，心里骂了一句。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M13",
+      "title": "手机电量 1%",
+      "cond": {
+        "minAge": 12
+      },
+      "text": "你在外面，手机只剩下 1% 电。",
+      "choices": [
+        {
+          "label": "找充电宝",
+          "effects": {
+            "money": -3,
+            "luck": 3
+          },
+          "result": "你借到了一个，续命成功。"
+        },
+        {
+          "label": "强撑",
+          "effects": {
+            "abstract": 4,
+            "luck": -2
+          },
+          "result": "你在最关键的时候关机了。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M14",
+      "title": "牙疼",
+      "cond": {
+        "minAge": 16,
+        "maxAge": 45
+      },
+      "text": "你的智齿开始隐隐作痛。",
+      "choices": [
+        {
+          "label": "去拔掉",
+          "effects": {
+            "money": -8,
+            "health": 3
+          },
+          "result": "拔完之后脸肿了三天，但从此不疼了。"
+        },
+        {
+          "label": "忍",
+          "effects": {
+            "health": -3,
+            "abstract": 3
+          },
+          "result": "你疼了半年，最后在一个深夜冲去了急诊。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M15",
+      "title": "搬家",
+      "cond": {
+        "minAge": 20
+      },
+      "text": "你打包了 12 个箱子，发现自己东西真多。",
+      "choices": [
+        {
+          "label": "断舍离",
+          "effects": {
+            "abstract": 3,
+            "charm": 2
+          },
+          "result": "你扔掉了三分之二，包括大学毕业照的相框。"
+        },
+        {
+          "label": "全都带走",
+          "effects": {
+            "money": -5,
+            "health": -2
+          },
+          "result": "你把所有东西都搬走了，包括那台坏了的电风扇。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M16",
+      "title": "偶遇前任",
+      "text": "你在商场里，看见了那个曾经很熟悉的人。",
+      "choices": [
+        {
+          "label": "打招呼",
+          "effects": {
+            "charm": 3,
+            "abstract": 3
+          },
+          "result": "你们寒暄了两句，各自走开，都不太自然。"
+        },
+        {
+          "label": "低头走开",
+          "effects": {
+            "abstract": 5
+          },
+          "result": "你假装在看手机，直到他消失在转角。"
+        }
+      ],
+      "cond": {
+        "minAge": 22
+      },
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M17",
+      "title": "被推销",
+      "cond": {
+        "minAge": 18
+      },
+      "text": "你在商场被一个销售拦住了，对方嘴很甜。",
+      "choices": [
+        {
+          "label": "听他说完",
+          "effects": {
+            "charm": 2,
+            "money": -5
+          },
+          "result": "你买了一套你其实用不上的护肤品。"
+        },
+        {
+          "label": "婉拒",
+          "effects": {
+            "int": 2
+          },
+          "result": "你说了声\"谢谢\"，快步走开。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M18",
+      "title": "突然的假期",
+      "cond": {
+        "minAge": 20
+      },
+      "text": "公司突然通知放假三天。",
+      "choices": [
+        {
+          "label": "出门旅行",
+          "effects": {
+            "money": -10,
+            "charm": 3,
+            "health": 2
+          },
+          "result": "你临时买了张票，去了一个没去过的城市。"
+        },
+        {
+          "label": "在家躺着",
+          "effects": {
+            "health": 3,
+            "abstract": 3
+          },
+          "result": "你睡了三天，睡到分不清白天黑夜。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M19",
+      "title": "外卖超时",
+      "cond": {
+        "minAge": 16
+      },
+      "text": "你的外卖已经超时 40 分钟了。",
+      "choices": [
+        {
+          "label": "投诉",
+          "effects": {
+            "money": 3,
+            "charm": -2
+          },
+          "result": "平台赔了你 5 块，骑手被扣了钱。"
+        },
+        {
+          "label": "算了",
+          "effects": {
+            "charm": 3,
+            "money": -2
+          },
+          "result": "你收到时，骑手连声道歉，你说没关系。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "M20",
+      "title": "一个普通的下午",
+      "cond": {
+        "minAge": 6
+      },
+      "text": "阳光斜斜地照进窗户，你突然觉得这一刻很好。",
+      "choices": [
+        {
+          "label": "记下来",
+          "effects": {
+            "charm": 2,
+            "abstract": -2,
+            "health": 1
+          },
+          "result": "你拍了张照，发了个不配文的朋友圈。"
+        },
+        {
+          "label": "继续发呆",
+          "effects": {
+            "abstract": 4,
+            "health": 1
+          },
+          "result": "你就这么坐了一个下午，什么也没干。"
+        }
+      ],
+      "line": "common",
+      "stage": "adult",
+      "weight": 10
+    },
+    {
+      "id": "S_XHSD",
+      "title": "山河大学",
+      "text": "你出生在山河四省。这里的孩子，从小学开始就在为一场考试做准备。",
+      "choices": [
+        {
+          "label": "认了",
+          "effects": {
+            "int": 3,
+            "health": -1
+          },
+          "result": "你成了那台巨大机器里最标准的一颗齿轮。"
+        },
+        {
+          "label": "不服",
+          "effects": {
+            "int": 1,
+            "abstract": 5,
+            "luck": 2
+          },
+          "result": "你决定走另一条路，虽然不知道路在哪。"
+        }
+      ],
+      "cond": {
+        "onlyProvince": [
+          "山东",
+          "河北",
+          "山西",
+          "河南"
+        ]
+      },
+      "weight": 30,
+      "line": "common",
+      "stage": "special"
+    },
+    {
+      "id": "S_NEAR",
+      "title": "濒死体验",
+      "text": "你在这一刻，离死亡很近。",
+      "choices": [
+        {
+          "label": "拼命活下来",
+          "effects": {
+            "health": 3,
+            "abstract": 3
+          },
+          "result": "你活下来了，从此看开了很多事。",
+          "nearDeath": true
+        },
+        {
+          "label": "顺其自然",
+          "effects": {
+            "lifespan": -5,
+            "abstract": 6
+          },
+          "result": "你在医院躺了一个月，醒来时窗外在下雪。",
+          "nearDeath": true
+        }
+      ],
+      "cond": {
+        "minAge": 20,
+        "maxHealth": 6
+      },
+      "weight": 26,
+      "line": "common",
+      "stage": "special"
+    },
+    {
+      "id": "S_ICU",
+      "title": "又一次抢救",
+      "text": "救护车的灯在你眼前转，你已经数不清这是第几次了。",
+      "choices": [
+        {
+          "label": "再撑一下",
+          "effects": {
+            "health": 4,
+            "abstract": 4
+          },
+          "result": "你又赢了。医生说你命硬，你说是命贱。",
+          "nearDeath": true
+        },
+        {
+          "label": "签下放弃抢救",
+          "effects": {
+            "lifespan": -8,
+            "abstract": 8
+          },
+          "result": "你在纸上签了字，手很稳。",
+          "nearDeath": true
+        }
+      ],
+      "cond": {
+        "minAge": 25,
+        "maxHealth": 4
+      },
+      "weight": 40,
+      "line": "common",
+      "stage": "special"
+    },
+    {
+      "id": "S_RETIRE",
+      "title": "金盆洗手",
+      "text": "某个清晨，你把所有的账号、装备、收藏夹，一次性清空了。",
+      "choices": [
+        {
+          "label": "退出江湖，好好做人",
+          "effects": {
+            "health": 5,
+            "abstract": -20,
+            "int": 2
+          },
+          "result": "你把签名改成了\"此人已退役\"，然后真的退役了。",
+          "tags": [
+            "退役",
+            "退休"
+          ]
+        },
+        {
+          "label": "退一半",
+          "effects": {
+            "health": 2,
+            "abstract": -5
+          },
+          "result": "你卸了游戏，但保留了论坛账号和一堆表情包。",
+          "tags": [
+            "退役"
+          ]
+        }
+      ],
+      "cond": {
+        "minAge": 25
+      },
+      "weight": 22,
+      "line": "common",
+      "stage": "special"
+    },
+    {
+      "id": "S_HOT",
+      "title": "上热搜了",
+      "text": "你的名字出现在了热搜第 17 位。",
+      "choices": [
+        {
+          "label": "回应",
+          "effects": {
+            "charm": 5,
+            "abstract": 6,
+            "money": 5
+          },
+          "result": "你发了一条长文，评论区一半在夸你，一半在骂你。",
+          "tags": [
+            "上热搜"
+          ]
+        },
+        {
+          "label": "消失",
+          "effects": {
+            "abstract": 8
+          },
+          "result": "你关了评论，退了所有群，消失了两周。",
+          "tags": [
+            "上热搜"
+          ]
+        }
+      ],
+      "cond": {
+        "minAge": 18
+      },
+      "weight": 6,
+      "line": "common",
+      "stage": "special"
+    },
+    {
+      "id": "S_LOTTERY",
+      "title": "中了大奖",
+      "text": "你盯着手机屏幕上的号码，手一直在抖。",
+      "choices": [
+        {
+          "label": "领奖，低调生活",
+          "effects": {
+            "money": 120,
+            "abstract": -3
+          },
+          "result": "你换了房，换了车，然后继续上班。"
+        },
+        {
+          "label": "先告诉所有人",
+          "effects": {
+            "money": 100,
+            "charm": -3,
+            "abstract": 5
+          },
+          "result": "你的亲戚一夜之间多了二十个。"
+        }
+      ],
+      "cond": {
+        "minAge": 20
+      },
+      "weight": 2,
+      "line": "common",
+      "stage": "special"
+    },
+    {
+      "id": "P01",
+      "title": "乳牙掉了",
+      "text": "你啃苹果的时候，一颗门牙\"咔\"地留在了果肉上。你举着那块苹果，愣了三秒，然后跑去给全家人看。",
+      "choices": [
+        {
+          "label": "把牙扔房顶",
+          "effects": {
+            "luck": 2,
+            "abstract": 2
+          },
+          "result": "奶奶说下牙扔房顶，上牙扔床底，新牙才长得直。你信了。"
+        },
+        {
+          "label": "收藏起来",
+          "effects": {
+            "abstract": 5
+          },
+          "result": "你把它装进铁皮盒，和玻璃弹珠放在一起。这颗牙陪你搬了三次家。"
+        }
+      ],
+      "cond": {
+        "minAge": 5,
+        "maxAge": 8
+      },
+      "weight": 22,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P02",
+      "title": "变声期",
+      "text": "某天上课回答问题，你的声音突然劈叉，全班回头。你的喉结不知什么时候鼓了起来，说话像信号不好的收音机。",
+      "choices": [
+        {
+          "label": "少说话，装深沉",
+          "effects": {
+            "charm": 2,
+            "abstract": 2
+          },
+          "result": "你沉默了一个学期，意外收获了\"高冷\"人设。"
+        },
+        {
+          "label": "故意压着嗓子",
+          "effects": {
+            "health": -1,
+            "charm": 1
+          },
+          "result": "你练就了一副刻意低沉的嗓音，后来成了读课文专用腔。"
+        },
+        {
+          "label": "该说说，该唱唱",
+          "effects": {
+            "abstract": 5,
+            "charm": 2
+          },
+          "result": "你在合唱比赛上独唱了一段，破音破得荡气回肠，全场鼓掌。"
+        }
+      ],
+      "cond": {
+        "minAge": 12,
+        "maxAge": 15
+      },
+      "weight": 24,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P03",
+      "title": "第一颗青春痘",
+      "text": "早晨洗脸，你在额头上摸到了一个小凸起。镜子前研究了十分钟，你得出结论：这就是传说中的青春痘。",
+      "choices": [
+        {
+          "label": "果断挤掉",
+          "effects": {
+            "health": -1,
+            "abstract": 3
+          },
+          "result": "第二天它红肿成了火山，你戴着刘海过了两周。"
+        },
+        {
+          "label": "科学护肤",
+          "effects": {
+            "charm": 3,
+            "money": -2
+          },
+          "result": "你买了人生第一支洗面奶，从此走上护肤不归路。"
+        },
+        {
+          "label": "随它去",
+          "effects": {
+            "health": 1,
+            "abstract": 2
+          },
+          "result": "它自己消了。你妈说得对：\"上火，多喝水。\""
+        }
+      ],
+      "cond": {
+        "minAge": 13,
+        "maxAge": 18
+      },
+      "weight": 22,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P04",
+      "title": "猛长期",
+      "text": "一个暑假过去，你的裤脚短了两寸，饭量翻了一倍。半夜腿抽筋疼醒，你妈端来一杯热牛奶：\"长个呢。\"",
+      "choices": [
+        {
+          "label": "猛喝牛奶多睡觉",
+          "effects": {
+            "health": 4
+          },
+          "result": "你一个学期蹿了 8 公分，座位从第一排调到了倒数第二排。"
+        },
+        {
+          "label": "打球拉伸",
+          "effects": {
+            "health": 3,
+            "charm": 2
+          },
+          "result": "你天天泡在球场，个子没怎么长，弹跳倒是练出来了。"
+        },
+        {
+          "label": "熬夜打游戏",
+          "effects": {
+            "health": -2,
+            "abstract": 5
+          },
+          "result": "你长个的窗口期，被你拿去通宵了。上帝叹息了一声。"
+        }
+      ],
+      "cond": {
+        "minAge": 11,
+        "maxAge": 15
+      },
+      "weight": 24,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P05",
+      "title": "近视了",
+      "text": "你发现黑板越来越模糊，要眯着眼才能看清。视力表查下来，你妈捏着单子叹气：\"这才上学几年，就 300 度了。\"",
+      "choices": [
+        {
+          "label": "乖乖配眼镜",
+          "effects": {
+            "int": 2,
+            "charm": -1
+          },
+          "result": "你戴上眼镜的那一刻，世界清晰得有点陌生。"
+        },
+        {
+          "label": "配隐形眼镜",
+          "effects": {
+            "charm": 2,
+            "money": -5,
+            "health": -1
+          },
+          "result": "你学会了在眼球上放小片片，代价是每天干眼到崩溃。"
+        },
+        {
+          "label": "不配，硬眯",
+          "effects": {
+            "int": -2,
+            "abstract": 3
+          },
+          "result": "你眯了两年，眯出了川字纹，也眯低了成绩。"
+        }
+      ],
+      "cond": {
+        "minAge": 10,
+        "maxAge": 16
+      },
+      "weight": 20,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P06",
+      "title": "第一次熬通宵",
+      "text": "大学宿舍，你第一次熬到天亮。凌晨四点，宿舍楼道的声控灯忽明忽暗，你的心跳有点快，胃在叫。",
+      "choices": [
+        {
+          "label": "看日出，拍照发圈",
+          "effects": {
+            "abstract": 5,
+            "charm": 2
+          },
+          "result": "配文\"早安，世界\"。评论区第一条是你室友：睡你麻痹起来嗨。"
+        },
+        {
+          "label": "睡到下午两点",
+          "effects": {
+            "health": -2
+          },
+          "result": "你醒来时头痛欲裂，一整天没缓过来。年轻，但也没那么年轻。"
+        },
+        {
+          "label": "补个午觉就满血",
+          "effects": {
+            "health": 1
+          },
+          "result": "你眯了两小时，居然真的满血复活。那是你身体最后的倔强。"
+        }
+      ],
+      "cond": {
+        "minAge": 17,
+        "maxAge": 24
+      },
+      "weight": 18,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P07",
+      "title": "代谢下降",
+      "text": "25 岁生日过完的某个深夜，你吃了顿烧烤。第二天早上，体重秤给了你答案：代谢这个东西，是真的会走。",
+      "choices": [
+        {
+          "label": "办卡健身",
+          "effects": {
+            "health": 3,
+            "money": -8
+          },
+          "result": "你去了两个月，第三个月教练比你先放弃。"
+        },
+        {
+          "label": "管住嘴",
+          "effects": {
+            "health": 2,
+            "abstract": -2
+          },
+          "result": "你戒了夜宵。第一个月掉了 4 斤，然后平台期长达一年。"
+        },
+        {
+          "label": "躺平接受",
+          "effects": {
+            "health": -3,
+            "abstract": 5
+          },
+          "result": "你想通了：胖是对抗世界的缓冲垫。"
+        }
+      ],
+      "cond": {
+        "minAge": 24,
+        "maxAge": 32
+      },
+      "weight": 16,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P08",
+      "title": "发际线警报",
+      "text": "理发的时候，Tony 老师盯着你的头顶沉默了三秒：\"哥，这边……有点稀疏了。\"",
+      "choices": [
+        {
+          "label": "立刻就医问药",
+          "effects": {
+            "health": 3,
+            "money": -10
+          },
+          "result": "米诺地尔和非那雄胺成了你浴室的常驻嘉宾。三个月后，Tony 说有救。"
+        },
+        {
+          "label": "直接剃光",
+          "effects": {
+            "charm": 3,
+            "abstract": 6
+          },
+          "result": "你剃了个光头，反而显得精神了。朋友说你像练格斗的。"
+        },
+        {
+          "label": "留长盖住",
+          "effects": {
+            "abstract": 4,
+            "charm": -1
+          },
+          "result": "你留长了头顶的头发，小心翼翼地梳向一侧。风是你此生大敌。"
+        }
+      ],
+      "cond": {
+        "minAge": 26,
+        "maxAge": 40
+      },
+      "weight": 16,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P09",
+      "title": "体检异常",
+      "text": "单位体检报告下来了。你躲在工位偷看：脂肪肝（轻度）、尿酸偏高、颈椎曲度变直。",
+      "choices": [
+        {
+          "label": "全面整改生活方式",
+          "effects": {
+            "health": 5,
+            "money": -5,
+            "abstract": -3
+          },
+          "result": "你戒了酒、办了游泳卡、买了升降桌。半年后复查，全部转阴。医生都愣了。"
+        },
+        {
+          "label": "选择性整改",
+          "effects": {
+            "health": 2
+          },
+          "result": "你少喝了点酒，多走了点路。报告上的箭头少了一个。"
+        },
+        {
+          "label": "合上报告继续加班",
+          "effects": {
+            "health": -4,
+            "money": 5,
+            "abstract": 4
+          },
+          "result": "你把报告塞进抽屉，和去年的那份叠在一起。"
+        }
+      ],
+      "cond": {
+        "minAge": 28,
+        "maxAge": 50
+      },
+      "weight": 20,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P10",
+      "title": "中年发福",
+      "text": "同学聚会上，当年最瘦的那个同学挺起了肚子，你摸了摸自己，也是。",
+      "choices": [
+        {
+          "label": "约球，互相监督",
+          "effects": {
+            "health": 4,
+            "charm": 2,
+            "money": -3
+          },
+          "result": "你们每周打一次羽毛球，场上聊的都是血压和学区房。"
+        },
+        {
+          "label": "安慰自己\"有福气\"",
+          "effects": {
+            "health": -2,
+            "abstract": 5
+          },
+          "result": "你把皮带松了一格，人生也跟着松了一格。"
+        }
+      ],
+      "cond": {
+        "minAge": 35,
+        "maxAge": 52
+      },
+      "weight": 16,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P11",
+      "title": "血压计上的数字",
+      "text": "药店门口的免费血压计，你顺手一测：145/95。再测：143/93。第三次：你换了一家药店。",
+      "choices": [
+        {
+          "label": "去医院确诊服药",
+          "effects": {
+            "health": 5,
+            "money": -8
+          },
+          "result": "降压药一天一片，你把服药提醒设成了每天早上七点，和闹钟一起响。"
+        },
+        {
+          "label": "先运动三个月",
+          "effects": {
+            "health": 3,
+            "luck": 2
+          },
+          "result": "你每天快走五公里，三个月后血压 130/85。医生说继续。"
+        },
+        {
+          "label": "当没看见",
+          "effects": {
+            "health": -5,
+            "abstract": 4
+          },
+          "result": "后来头晕的时候，你终于想起了那台血压计。"
+        }
+      ],
+      "cond": {
+        "minAge": 40,
+        "maxAge": 65
+      },
+      "weight": 18,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P12",
+      "title": "老花眼",
+      "text": "你看手机的时候，手臂不知不觉越伸越远。眼镜店老板笑眯眯地说：\"老花了，正常，45 岁以后都这样。\"",
+      "choices": [
+        {
+          "label": "配老花镜",
+          "effects": {
+            "int": 1,
+            "money": -3
+          },
+          "result": "你有了两副眼镜：一副看远，一副看近。你开始理解爸妈当年为什么老找眼镜。"
+        },
+        {
+          "label": "把字体调到最大",
+          "effects": {
+            "abstract": 5
+          },
+          "result": "你的手机字体大得像老年人专用机。年轻人借你手机看一眼，沉默了。"
+        }
+      ],
+      "cond": {
+        "minAge": 45,
+        "maxAge": 60
+      },
+      "weight": 18,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P13",
+      "title": "更年期",
+      "text": "夜里出汗，心悸，情绪像过山车。你查了一晚上资料，第二天挂了个号。",
+      "choices": [
+        {
+          "label": "规律治疗",
+          "effects": {
+            "health": 4,
+            "money": -6
+          },
+          "result": "医生说这是必经阶段，不用羞耻。你按时吃药，慢慢稳住了。"
+        },
+        {
+          "label": "硬扛",
+          "effects": {
+            "health": -3,
+            "abstract": 5
+          },
+          "result": "你把躁郁写进了朋友圈，又删了，又发了一条只给自己看的。"
+        }
+      ],
+      "cond": {
+        "minAge": 48,
+        "maxAge": 58
+      },
+      "weight": 14,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P14",
+      "title": "关节警报",
+      "text": "蹲下再站起来的时候，膝盖发出\"咔\"的一声。天气预报说今晚有雨，你的膝盖比它先知道。",
+      "choices": [
+        {
+          "label": "游泳 + 护膝",
+          "effects": {
+            "health": 4,
+            "money": -4
+          },
+          "result": "你办了社区游泳卡，膝盖在水中终于安静了。"
+        },
+        {
+          "label": "减少运动，静养",
+          "effects": {
+            "health": -2,
+            "abstract": 3
+          },
+          "result": "你不动了，膝盖倒是安静了，体重也悄悄涨了。"
+        },
+        {
+          "label": "贴膏药续命",
+          "effects": {
+            "health": 1,
+            "abstract": 5
+          },
+          "result": "你家抽屉里的膏药比邮票还多，味道是标准的老年味。"
+        }
+      ],
+      "cond": {
+        "minAge": 55,
+        "maxAge": 80
+      },
+      "weight": 20,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P15",
+      "title": "长出白发",
+      "text": "理发时你在镜子里看见一根白头发。你没有声张，回家后对着镜子拔了半小时，一共拔出 17 根。",
+      "choices": [
+        {
+          "label": "染发",
+          "effects": {
+            "charm": 3,
+            "money": -5,
+            "health": -1
+          },
+          "result": "你每个月补一次发根，坚持了十年，理发店有你专属的色号。"
+        },
+        {
+          "label": "顺其自然",
+          "effects": {
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "你留着满头白发，反而被人说有气质。你怀疑他们在客气，但你选择相信。"
+        }
+      ],
+      "cond": {
+        "minAge": 40,
+        "maxAge": 60
+      },
+      "weight": 14,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P16",
+      "title": "酒量断崖",
+      "text": "年轻时一斤白酒面不改色的你，现在两瓶啤酒就想睡觉，第二天头疼一整天。",
+      "choices": [
+        {
+          "label": "认怂，改喝茶",
+          "effects": {
+            "health": 4,
+            "money": -3
+          },
+          "result": "你的后备箱里从酒换成了茶叶。饭桌上你说\"开车了\"，其实没有。"
+        },
+        {
+          "label": "硬撑着喝",
+          "effects": {
+            "health": -5,
+            "abstract": 4
+          },
+          "result": "你在酒桌上逞了一次英雄，代价是输液三天。你终于承认：人是会老的。"
+        }
+      ],
+      "cond": {
+        "minAge": 38,
+        "maxAge": 60
+      },
+      "weight": 14,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P17",
+      "title": "睡眠变浅",
+      "text": "你开始凌晨四点醒来，然后就再也睡不着。窗外的鸟叫得比闹钟早。",
+      "choices": [
+        {
+          "label": "早睡早起，接受现实",
+          "effects": {
+            "health": 3,
+            "abstract": -2
+          },
+          "result": "你九点睡觉五点起床，成了小区里第一个晒到朝阳的人。"
+        },
+        {
+          "label": "躺床上刷手机",
+          "effects": {
+            "health": -3,
+            "abstract": 5
+          },
+          "result": "你在黑暗中刷了两个小时短视频，天亮时眼睛又干又涩。"
+        }
+      ],
+      "cond": {
+        "minAge": 50,
+        "maxAge": 85
+      },
+      "weight": 16,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P18",
+      "title": "身高缩水",
+      "text": "年度体检，护士量完身高说：\"比去年矮了 1.5 公分。\"你问为什么，她说：\"骨质疏松，正常。\"",
+      "choices": [
+        {
+          "label": "补钙 + 晒太阳",
+          "effects": {
+            "health": 4,
+            "money": -3
+          },
+          "result": "你每天上午十点下楼晒背，像一株努力生长的老植物。"
+        },
+        {
+          "label": "无所谓",
+          "effects": {
+            "health": -3,
+            "abstract": 3
+          },
+          "result": "你想：反正弯着腰打牌，也用不了多高。"
+        }
+      ],
+      "cond": {
+        "minAge": 60,
+        "maxAge": 90
+      },
+      "weight": 18,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P19",
+      "title": "耳朵背了",
+      "text": "家人跟你说话越来越大声，孙子管你叫\"大声公\"。你自己没觉得，直到电视音量被你调到了 42。",
+      "choices": [
+        {
+          "label": "配助听器",
+          "effects": {
+            "health": 3,
+            "charm": 2,
+            "money": -15
+          },
+          "result": "世界重新有了声音。你听见的第一个清晰的声音，是老伴的唠叨。"
+        },
+        {
+          "label": "不配，靠猜",
+          "effects": {
+            "charm": -2,
+            "abstract": 5
+          },
+          "result": "你练就了读唇术，八成靠猜，两成靠点头。聊天全凭缘分。"
+        }
+      ],
+      "cond": {
+        "minAge": 62,
+        "maxAge": 90
+      },
+      "weight": 16,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P20",
+      "title": "第一次拿老年卡",
+      "text": "公交司机看了看你，又看了看卡。你理直气壮地刷了，\"嘀——老年卡\"响彻全车。",
+      "choices": [
+        {
+          "label": "坦然坐下",
+          "effects": {
+            "charm": 2,
+            "abstract": 3
+          },
+          "result": "一个小伙子给你让座，你摆摆手：\"我下一站就下。\"其实还有十一站。"
+        },
+        {
+          "label": "不好意思地站到最后",
+          "effects": {
+            "health": -2
+          },
+          "result": "你抓着扶手站了四十分钟，膝盖隐隐作响。"
+        }
+      ],
+      "cond": {
+        "minAge": 65,
+        "maxAge": 90
+      },
+      "weight": 16,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P21",
+      "title": "第一次夜尿三次",
+      "text": "凌晨一点、三点、五点，你各起来了一次。你盯着天花板想：前列腺，我们谈谈。",
+      "choices": [
+        {
+          "label": "去医院看看",
+          "effects": {
+            "health": 4,
+            "money": -5
+          },
+          "result": "医生说是增生，良性的。你松了口气，从此睡前两小时不喝水。"
+        },
+        {
+          "label": "少喝水硬扛",
+          "effects": {
+            "health": -2,
+            "abstract": 4
+          },
+          "result": "你白天也不怎么喝水了，嘴唇干得起皮。这不算办法，但你是这么过来的。"
+        }
+      ],
+      "cond": {
+        "minAge": 58,
+        "maxAge": 90
+      },
+      "weight": 14,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "P22",
+      "title": "体检全绿",
+      "text": "70 岁那年体检，报告出来：各项基本正常。医生扶了扶眼镜：\"老爷子/老太太，您这身体，像 50 岁的。\"",
+      "choices": [
+        {
+          "label": "凡尔赛发朋友圈",
+          "effects": {
+            "charm": 4,
+            "abstract": 6
+          },
+          "result": "配文\"今天体检，医生说我像50岁的\"。评论区全是问秘诀的，你只回了两个字：命好。"
+        },
+        {
+          "label": "深藏功与名",
+          "effects": {
+            "health": 2,
+            "abstract": -2
+          },
+          "result": "你把报告折好放进抽屉，下楼打太极去了。"
+        }
+      ],
+      "cond": {
+        "minAge": 68,
+        "minHealth": 12
+      },
+      "weight": 20,
+      "line": "common",
+      "stage": "physio"
+    },
+    {
+      "id": "L01",
+      "title": "圣斗士托孤",
+      "text": "小巷尽头，一个金发男人靠墙坐着，圣衣残破，胸口一片暗红。他把一个箱子推到你脚边：\"小宇宙……就交给你了。记住，同样的招式，对圣斗士不能使用两次。\"",
+      "choices": [
+        {
+          "label": "接过箱子",
+          "effects": {
+            "health": 5,
+            "abstract": 12,
+            "luck": 3
+          },
+          "result": "箱子里是一套圣衣模型和一张纸条：\"燃烧吧，我的小宇宙。——爱做梦的人\"。",
+          "tags": [
+            "圣衣"
+          ]
+        },
+        {
+          "label": "报警叫救护车",
+          "effects": {
+            "charm": 3,
+            "money": -2,
+            "abstract": 5
+          },
+          "result": "救护车来的时候，巷子里空空荡荡，只剩地上一圈焦痕。你蹲下来摸了摸，还是热的。"
+        },
+        {
+          "label": "以为遇到骗子，绕道走",
+          "effects": {
+            "abstract": -3,
+            "int": 1
+          },
+          "result": "你走远后回头看了一眼，那个位置只剩一件闪着微光的衣服，随风化成了星星。"
+        }
+      ],
+      "cond": {
+        "minAge": 8,
+        "maxAge": 40
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L02",
+      "title": "洗澡狗",
+      "text": "你在河边散步，一只金毛叼着浴球从水里钻出来，甩了你一身水。它把浴球放在你脚边，用一种\"就你了\"的眼神看着你。",
+      "choices": [
+        {
+          "label": "陪它玩",
+          "effects": {
+            "health": 3,
+            "charm": 3,
+            "abstract": 8
+          },
+          "result": "它接住了你扔出去的每一个浴球，一个不漏。你恍惚间明白了什么叫\"世界第一洗澡狗\"。",
+          "tags": [
+            "峡谷"
+          ]
+        },
+        {
+          "label": "拍视频发网上",
+          "effects": {
+            "charm": 4,
+            "money": 5,
+            "abstract": 8
+          },
+          "result": "视频火了。评论区吵翻了：\"这狗走位太细了\"\"狗：我洗澡的时候你在干嘛？\"",
+          "tags": [
+            "上热搜"
+          ]
+        },
+        {
+          "label": "绕开走（怕狗）",
+          "effects": {
+            "abstract": -2
+          },
+          "result": "它目送你走远，叼起浴球，转身又扎进了水里。传说还在继续，只是没有你。"
+        }
+      ],
+      "cond": {
+        "minAge": 6,
+        "maxAge": 60
+      },
+      "weight": 4,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L03",
+      "title": "签订契约",
+      "text": "一只白色生物出现在你面前，歪着头：\"和我签订契约，成为魔法少女吧！可以实现任何一个愿望哦。\"",
+      "choices": [
+        {
+          "label": "许愿世界和平",
+          "effects": {
+            "abstract": 15,
+            "charm": 3,
+            "luck": 3
+          },
+          "result": "它愣了一下：\"这个愿望……格局太大了。\"但它还是记下了。你觉得有点不对劲。",
+          "tags": [
+            "契约"
+          ]
+        },
+        {
+          "label": "许愿暴富",
+          "effects": {
+            "money": 30,
+            "abstract": 12,
+            "health": -3
+          },
+          "result": "钱真的到账了。你后来总觉得，自己好像有什么东西被抽走了一点。",
+          "tags": [
+            "契约"
+          ]
+        },
+        {
+          "label": "拒绝",
+          "effects": {
+            "int": 3,
+            "abstract": 5
+          },
+          "result": "你说：\"免费的才是最贵的。\"它消失了，走前留下了一句：\"你很聪明，可惜。\""
+        },
+        {
+          "label": "反问它图什么",
+          "effects": {
+            "int": 4,
+            "abstract": 10
+          },
+          "result": "它笑了。那一瞬间你看见了宇宙尽头的某种东西，胃里一阵翻涌。你选择了不再深究。"
+        }
+      ],
+      "cond": {
+        "minAge": 12,
+        "maxAge": 35
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L04",
+      "title": "峡谷排位",
+      "text": "赛季末最后一晚，你离晋级赛只差一场。队友秒锁三个打野，第四个人发了一句：\"辅助不游走就挂机。\"",
+      "choices": [
+        {
+          "label": "深呼吸，认真打完",
+          "effects": {
+            "int": 3,
+            "luck": 3,
+            "health": -2
+          },
+          "result": "40 分钟鏖战，你们偷了远古龙翻盘。晋级成功，你在凌晨的房间里无声呐喊，怕吵醒家人。"
+        },
+        {
+          "label": "摆烂，享受游戏",
+          "effects": {
+            "abstract": 8,
+            "health": -1
+          },
+          "result": "你开始玩娱乐模式，全场比赛 0-8-1，但你是全场笑得最大声的。游戏嘛，快乐就好。",
+          "tags": [
+            "峡谷"
+          ]
+        },
+        {
+          "label": "连跪到天亮",
+          "effects": {
+            "health": -4,
+            "abstract": 10
+          },
+          "result": "你从翡翠掉到了黄金。凌晨五点，你盯着\"失败\"两个大字，忽然分不清是在玩游戏还是被玩。",
+          "tags": [
+            "峡谷"
+          ]
+        }
+      ],
+      "cond": {
+        "minAge": 14,
+        "maxAge": 45
+      },
+      "weight": 5,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L05",
+      "title": "网吧五连坐",
+      "text": "周五晚上，你和四个兄弟在网吧开了五连坐。烟雾、泡面味、键盘声，还有隔壁座位的怒吼。",
+      "choices": [
+        {
+          "label": "包夜开黑",
+          "effects": {
+            "abstract": 8,
+            "health": -3,
+            "charm": 3
+          },
+          "result": "你们从白银打到白银，但没人觉得这是浪费时间。多年后你想起那晚，只记得很快乐。",
+          "tags": [
+            "峡谷"
+          ]
+        },
+        {
+          "label": "打到十二点就回家",
+          "effects": {
+            "health": 1,
+            "int": 1
+          },
+          "result": "你是兄弟里唯一准时回家的。他们在凌晨三点发了张合影，配文\"想念第六个人\"。"
+        }
+      ],
+      "cond": {
+        "minAge": 15,
+        "maxAge": 35
+      },
+      "weight": 5,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L06",
+      "title": "抽卡沉船",
+      "text": "新角色卡池开放。你的手指悬在\"十连\"按钮上，上方飘过全服贺报：有人一发入魂出了金。",
+      "choices": [
+        {
+          "label": "氪一发十连",
+          "effects": {
+            "money": -8,
+            "luck": 5,
+            "abstract": 8
+          },
+          "result": "金光！……是已拥有的老角色。你安慰自己：命里的都会来，只是要等多久的问题。"
+        },
+        {
+          "label": "攒免费抽",
+          "effects": {
+            "int": 2,
+            "abstract": 5
+          },
+          "result": "你攒了三个月的原石，一百四十抽，出了。那一刻你在出租屋里跳了起来，撞到了头。"
+        },
+        {
+          "label": "卸载",
+          "effects": {
+            "health": 2,
+            "int": 1,
+            "abstract": -3
+          },
+          "result": "你卸载了。三天后你重新下载，发现活动送了十连。命运的齿轮又开始转动。"
+        }
+      ],
+      "cond": {
+        "minAge": 14,
+        "maxAge": 40
+      },
+      "weight": 4,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L07",
+      "title": "漫展奇遇",
+      "text": "你穿着自制的披风进了漫展，安检小哥看了你三秒：\"哥，你这个还原度可以啊。\"",
+      "choices": [
+        {
+          "label": "参加漫展比赛",
+          "effects": {
+            "charm": 4,
+            "abstract": 8,
+            "money": 5
+          },
+          "result": "你拿了最佳道具奖。奖品是一张下次漫展的免费门票，你裱起来了。"
+        },
+        {
+          "label": "到处集邮拍照",
+          "effects": {
+            "charm": 3,
+            "abstract": 6
+          },
+          "result": "你加了 27 个好友，回了家，一个也没再聊过。但相册里多了 200 张照片。"
+        },
+        {
+          "label": "社恐发作，躲在角落",
+          "effects": {
+            "abstract": 5,
+            "health": 1
+          },
+          "result": "你在角落里看了一天别人快乐。回家路上你想：其实看别人快乐，也挺快乐的。"
+        }
+      ],
+      "cond": {
+        "minAge": 13,
+        "maxAge": 40
+      },
+      "weight": 4,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L08",
+      "title": "决斗！",
+      "text": "一个戴着奇怪帽子的男人拦住你，举起一张卡片：\"来决斗吧！赌上各自的卡组！\"",
+      "choices": [
+        {
+          "label": "迎战",
+          "effects": {
+            "int": 3,
+            "luck": 4,
+            "abstract": 10
+          },
+          "result": "你们在路边打了四十分钟。你的最后一抽正好是需要的卡。你赢得了他的尊重，和一顿饭。"
+        },
+        {
+          "label": "我赶时间，不决斗",
+          "effects": {
+            "abstract": 4
+          },
+          "result": "他对你鞠了一躬：\"总有一天，你会明白决斗的意义。\"你至今没明白。"
+        }
+      ],
+      "cond": {
+        "minAge": 10,
+        "maxAge": 45
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L09",
+      "title": "巨型警报",
+      "text": "城市上空警报长鸣，远处一个巨人形状的影子缓缓走近。你手机弹出新闻：\"不明巨型生物逼近市区，请市民不要恐慌。\"",
+      "choices": [
+        {
+          "label": "往安全区跑",
+          "effects": {
+            "health": 2,
+            "abstract": 8
+          },
+          "result": "你跑得很狼狈，但活了下来。晚上新闻说危机解除，画面里有个紫色巨人。你总觉得哪里见过。"
+        },
+        {
+          "label": "停下来拍照",
+          "effects": {
+            "money": 5,
+            "charm": 3,
+            "abstract": 10
+          },
+          "result": "你拍到了全网最清晰的现场图，被各大媒体引用。署名是你随手起的网名。",
+          "tags": [
+            "上热搜"
+          ]
+        },
+        {
+          "label": "原地坐下，吃完了手里的关东煮",
+          "effects": {
+            "abstract": 12,
+            "health": 1
+          },
+          "result": "反正跑不过。你冷静得可怕。后来有心理学者把这种行为写进了论文。"
+        }
+      ],
+      "cond": {
+        "minAge": 12,
+        "maxAge": 60
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L10",
+      "title": "变身腰带",
+      "text": "你在二手市场淘到一条奇怪的腰带，摊主说这是\"仓库清货\"。回到家，你鬼使神差地把它围在了腰上。",
+      "choices": [
+        {
+          "label": "试着喊一声变身",
+          "effects": {
+            "abstract": 12,
+            "charm": 3
+          },
+          "result": "音效真的响了。你站在镜子前，手里握着个空气手柄，觉得自己帅了 30 秒。"
+        },
+        {
+          "label": "挂闲鱼转手",
+          "effects": {
+            "money": 8,
+            "luck": 2
+          },
+          "result": "买家留言：\"兄弟，这成色绝了，收藏了！\"你目送它走向下一个少年。"
+        },
+        {
+          "label": "拆开研究构造",
+          "effects": {
+            "int": 3,
+            "abstract": 5
+          },
+          "result": "你拆开发现里面的芯片写着某玩具厂 2011 年生产。但你总觉得，芯片下面还藏着什么。"
+        }
+      ],
+      "cond": {
+        "minAge": 10,
+        "maxAge": 50
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L11",
+      "title": "案发现场的小学生",
+      "text": "你所在的图书馆发生了密室事件。一个戴眼镜的小学生推了推镜框，镜片反着光，冷静地观察着门锁。他身边扎蝴蝶结的女孩小声叹气：\"又是这样……\"",
+      "choices": [
+        {
+          "label": "配合他破案",
+          "effects": {
+            "int": 4,
+            "abstract": 8,
+            "charm": 2
+          },
+          "result": "真相只有一个——是管理员自己锁的门，为了偷懒。小孩临走前看了你一眼：\"你观察力不错。\""
+        },
+        {
+          "label": "躲远点",
+          "effects": {
+            "luck": 3,
+            "abstract": 5
+          },
+          "result": "你换了个阅览室。据可靠消息，凡是跟那小孩待在同一屋檐下的人，都会遇到案子。你逃过一劫。"
+        }
+      ],
+      "cond": {
+        "minAge": 8,
+        "maxAge": 50
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L12",
+      "title": "血统觉醒",
+      "text": "剧烈运动后，你的眼睛突然刺痛。水池倒影里，你的瞳孔变成了红色，里面像嵌着两颗旋转的小黑风车。三秒后恢复如常。",
+      "choices": [
+        {
+          "label": "反复尝试触发",
+          "effects": {
+            "health": -2,
+            "abstract": 12,
+            "int": 2
+          },
+          "result": "你在小区里跑了二十圈，眼睛只刺痛不再泛红。也许血统这种东西，也是要天赋的。"
+        },
+        {
+          "label": "告诉家人",
+          "effects": {
+            "charm": 2,
+            "abstract": 8
+          },
+          "result": "你妈带你去看了眼科。医生说是结膜炎，开了两瓶眼药水。你半信半疑。"
+        },
+        {
+          "label": "写进日记",
+          "effects": {
+            "int": 2,
+            "abstract": 6
+          },
+          "result": "多年后你翻开日记看到这一页，字迹稚嫩但郑重。你笑了一下，把日记合上了。"
+        }
+      ],
+      "cond": {
+        "minAge": 10,
+        "maxAge": 30
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L13",
+      "title": "红白色的球",
+      "text": "野外郊游时，你在草丛里踢到一个红白配色的球。它晃了三下，\"嗒\"地一声，停了。",
+      "choices": [
+        {
+          "label": "收藏",
+          "effects": {
+            "abstract": 8,
+            "luck": 3
+          },
+          "result": "你把它摆在书桌上最显眼的位置。朋友问那是什么，你说：据说这一颗，百分百命中。"
+        },
+        {
+          "label": "试着丢向楼下的流浪猫",
+          "effects": {
+            "abstract": 10,
+            "luck": 2
+          },
+          "result": "猫被罩住又弹了出来，蹲在原地舔爪子。你明白了：猫，是天生的传说级。"
+        }
+      ],
+      "cond": {
+        "minAge": 8,
+        "maxAge": 45
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L14",
+      "title": "扭蛋机里的机器人",
+      "text": "商场门口的扭蛋机里，你看见一台 1/144 的机器人模型，白色的装甲，独角天线，只有一格之遥。一块钱一次，你的口袋里有三枚硬币。",
+      "choices": [
+        {
+          "label": "梭哈三枚",
+          "effects": {
+            "money": -3,
+            "luck": 6,
+            "abstract": 6
+          },
+          "result": "第三枚，钢珠滚进了洞。你举着模型走出商场，感觉整个世界都在为你打光。"
+        },
+        {
+          "label": "省下钱买辣条",
+          "effects": {
+            "health": 1,
+            "money": 1
+          },
+          "result": "辣条很好吃。但每次路过那台机器，你都会多看一眼。那台机器人还在里面，等一个少年。"
+        }
+      ],
+      "cond": {
+        "minAge": 6,
+        "maxAge": 25
+      },
+      "weight": 4,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L15",
+      "title": "S赛之夜",
+      "text": "总决赛之夜，整层宿舍楼都在同一秒发出欢呼或哀嚎。你和室友挤在同一块屏幕前，泡面当宵夜。",
+      "choices": [
+        {
+          "label": "全程看完，包括败者采访",
+          "effects": {
+            "abstract": 8,
+            "charm": 2
+          },
+          "result": "我们赛区的队伍，没赢。你看着败方打野的眼泪，忽然觉得，有些热爱是跨屏幕的。",
+          "tags": [
+            "峡谷"
+          ]
+        },
+        {
+          "label": "看到一半睡着",
+          "effects": {
+            "health": 2,
+            "abstract": 3
+          },
+          "result": "你醒来时比分定格。你错过了历史，但睡了个好觉。各有各的赢法。"
+        },
+        {
+          "label": "发弹幕\"稳住，我们能赢\"",
+          "effects": {
+            "charm": 3,
+            "abstract": 6
+          },
+          "result": "你的弹幕被顶到了前排。那一晚，全网几万人和你发了同一句话。"
+        }
+      ],
+      "cond": {
+        "minAge": 15,
+        "maxAge": 45
+      },
+      "weight": 4,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L16",
+      "title": "成为剑豪的第一步",
+      "text": "公园里，一位白发大爷用木剑慢悠悠地画了个圆，然后精准劈落了你头顶的一片树叶。他收剑：\"小姑娘/小伙子，骨不错。\"",
+      "choices": [
+        {
+          "label": "拜师学艺",
+          "effects": {
+            "health": 4,
+            "abstract": 8
+          },
+          "result": "你练了三年竹剑。虽然没成为剑豪，但体检时医生说你核心力量惊人。"
+        },
+        {
+          "label": "要个签名就走",
+          "effects": {
+            "charm": 2,
+            "abstract": 5
+          },
+          "result": "大爷在树叶上写了两个字\"心正\"，送给了你。你把它塑封了起来。"
+        }
+      ],
+      "cond": {
+        "minAge": 10,
+        "maxAge": 60
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L17",
+      "title": "许愿池",
+      "text": "古城旅游，导游说这个池子许愿特别灵。你摸出一枚硬币，许愿池的灯光在水面晃动。",
+      "choices": [
+        {
+          "label": "许愿脱单",
+          "effects": {
+            "charm": 4,
+            "abstract": 5,
+            "luck": 2
+          },
+          "result": "三个月后你真的脱单了。你带着对象重返许愿池，又丢了一枚：愿望的售后服务。"
+        },
+        {
+          "label": "许愿健康",
+          "effects": {
+            "health": 4,
+            "abstract": -2
+          },
+          "result": "那年你真的没生过病。你妈说是硬币的功劳，你说是你自己坚持锻炼。都行。"
+        },
+        {
+          "label": "不投，觉得是营销",
+          "effects": {
+            "int": 2,
+            "money": 1
+          },
+          "result": "导游看了你一眼：\"年轻人，总要信点什么。\"你笑笑，转身去买了根烤肠。"
+        }
+      ],
+      "cond": {
+        "minAge": 12,
+        "maxAge": 80
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L18",
+      "title": "不明飞行物",
+      "text": "深夜加班回家的路上，你看见天上有个光点在做 90 度转弯。你揉了揉眼，它还在。",
+      "choices": [
+        {
+          "label": "拍下来",
+          "effects": {
+            "charm": 3,
+            "abstract": 10,
+            "luck": 2
+          },
+          "result": "视频发出去，评论区说那是无人机、探照灯、蜘蛛、以及\"你拍到的东西在冲你眨眼\"。"
+        },
+        {
+          "label": "当作没看见",
+          "effects": {
+            "abstract": 4,
+            "int": 1
+          },
+          "result": "你继续往家走。有些东西，看见了也当没看见，是人类在宇宙里活得久的秘诀。"
+        }
+      ],
+      "cond": {
+        "minAge": 15,
+        "maxAge": 70
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L19",
+      "title": "复活吧，我的勇士",
+      "text": "深夜网吧，你旁边的哥们屏幕黑了，他趴在桌上，肩膀微微颤抖。你递过去半瓶可乐。",
+      "choices": [
+        {
+          "label": "递可乐，拍拍他",
+          "effects": {
+            "charm": 4,
+            "abstract": 6
+          },
+          "result": "他抬头看了你一眼，眼眶红着说了句\"谢了兄弟\"。你们后来成了开黑固定队友，从没问过彼此真名。"
+        },
+        {
+          "label": "专心打自己的",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "你打完了自己的比赛。抬头时，那个位置换了个人。江湖再见，无缘的兄弟。"
+        }
+      ],
+      "cond": {
+        "minAge": 16,
+        "maxAge": 45
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L20",
+      "title": "无限剑制",
+      "text": "你在旧货市场看见一把锈剑。摊主说没人买得动。你握住剑柄的瞬间，脑子里闪过一片剑冢的荒原。",
+      "choices": [
+        {
+          "label": "买下它",
+          "effects": {
+            "money": -5,
+            "int": 3,
+            "abstract": 10
+          },
+          "result": "你把它挂在墙上。每次看到它，你都会想起那句\"此剑，由无数剑铸成\"。虽然它可能就是根晾衣杆。"
+        },
+        {
+          "label": "放下，太重了",
+          "effects": {
+            "health": 1,
+            "abstract": 4
+          },
+          "result": "你放下了。有些重量，现在的你还扛不动。你记住了那个重量，继续往前走。"
+        }
+      ],
+      "cond": {
+        "minAge": 15,
+        "maxAge": 60
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L21",
+      "title": "电竞经理看上了你",
+      "text": "网吧赛决赛，你的操作被台下一个人全程盯着。赛后他递来名片：\"反应速度职业级，想不想试试青训？\"",
+      "choices": [
+        {
+          "label": "去青训",
+          "effects": {
+            "int": 3,
+            "health": -3,
+            "money": 10,
+            "abstract": 8
+          },
+          "result": "你练了半年，手速上去了，成绩也上去了——四十名开外。你收拾行李回家那天，教练说：\"能走到这的，都算英雄。\"",
+          "tags": [
+            "峡谷"
+          ]
+        },
+        {
+          "label": "拒绝，学业为重",
+          "effects": {
+            "int": 3,
+            "abstract": -2
+          },
+          "result": "你回到教室，把名片夹在了课本里。多年后你在世界赛观众席上想起这件事，有点酸，但不多。"
+        }
+      ],
+      "cond": {
+        "minAge": 15,
+        "maxAge": 22
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L22",
+      "title": "妖怪来敲门",
+      "text": "门外站着一只会说话的猫，声称自己是\"妖怪管家\"，因为祖先欠你家的债，前来服役三代。",
+      "choices": [
+        {
+          "label": "让它进来",
+          "effects": {
+            "luck": 4,
+            "abstract": 12,
+            "charm": 2
+          },
+          "result": "它住了下来，每天催你早睡，帮你找钥匙。三年后它说债还完了，鞠躬消失。你难过了整整一周。"
+        },
+        {
+          "label": "关门",
+          "effects": {
+            "int": 2,
+            "abstract": 3
+          },
+          "result": "关门的瞬间，你听见门外传来一声叹息：\"这家人，越来越不懂浪漫了。\""
+        }
+      ],
+      "cond": {
+        "minAge": 8,
+        "maxAge": 60
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L23",
+      "title": "雪见汤圆",
+      "text": "大雪夜，你加班到最后一班地铁。车厢里只有你和一位老爷爷，他手里提着一盒还冒着热气的汤圆，分了你两个。",
+      "choices": [
+        {
+          "label": "道谢，接过来",
+          "effects": {
+            "health": 3,
+            "charm": 2,
+            "abstract": 5
+          },
+          "result": "黑芝麻馅的。你问他为什么这么做，他说：\"雪夜的路，不适合空着肚子走。\""
+        },
+        {
+          "label": "婉拒",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "他笑笑没勉强。到站后你目送他走进雪里，忽然有点后悔。有些温度，错过了就是错过了。"
+        }
+      ],
+      "cond": {
+        "minAge": 18,
+        "maxAge": 70
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L24",
+      "title": "稀有卡直播",
+      "text": "你在直播里抽到了一张稀有卡，卡面在灯光下闪着彩虹膜。直播间瞬间涌进三万人，弹幕全是\"欧皇\"和\"主播让我康康\"。",
+      "choices": [
+        {
+          "label": "顺势当主播",
+          "effects": {
+            "money": 12,
+            "charm": 4,
+            "abstract": 8
+          },
+          "result": "你播了两年，从卡牌播到怀旧游戏。粉丝不多，但都是真人。",
+          "tags": [
+            "上热搜"
+          ]
+        },
+        {
+          "label": "把卡卖了，回归现实",
+          "effects": {
+            "money": 15,
+            "int": 2
+          },
+          "result": "卡卖了四位数。买家说你不懂情怀，你说情怀不能还房贷。你们都没错。"
+        }
+      ],
+      "cond": {
+        "minAge": 16,
+        "maxAge": 45
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L25",
+      "title": "宗师之路",
+      "text": "赛季最后一天，你的段位停在了钻一晋级赛。赢，就是宗师。这一局，你补刀 342，零失误。",
+      "choices": [
+        {
+          "label": "全力一战",
+          "effects": {
+            "int": 3,
+            "health": -3,
+            "luck": 5,
+            "abstract": 8
+          },
+          "result": "水晶爆炸的那一刻，屏幕上跳出\"宗师\"两个字。你截了图，设成手机壁纸，用了一整年。",
+          "tags": [
+            "宗师",
+            "峡谷"
+          ]
+        },
+        {
+          "label": "手抖了，点了投降",
+          "effects": {
+            "abstract": 10,
+            "health": -1
+          },
+          "result": "队友打了三个问号。你退出游戏，望着窗外发呆。有些门，你自己关上了。",
+          "tags": [
+            "峡谷"
+          ]
+        }
+      ],
+      "cond": {
+        "minAge": 16,
+        "maxAge": 40,
+        "minLuck": 10
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L26",
+      "title": "世界名画",
+      "text": "你在美术馆盯着《星空》看了很久。旁边的管理员大叔说：\"小伙子，你看懂了？\"你随口说了一句你的理解。",
+      "choices": [
+        {
+          "label": "继续聊",
+          "effects": {
+            "charm": 3,
+            "int": 3,
+            "abstract": 8
+          },
+          "result": "你们聊了四十分钟，从星空聊到他年轻时想当画家。他送你出门时说：\"艺术不用看懂，感受就行。\""
+        },
+        {
+          "label": "礼貌告辞",
+          "effects": {
+            "abstract": 3
+          },
+          "result": "你走出美术馆，回头又看了一眼那片蓝色漩涡。有些东西留在了心里，只是你还没发现。"
+        }
+      ],
+      "cond": {
+        "minAge": 15,
+        "maxAge": 80
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L27",
+      "title": "楼下的猫长老",
+      "text": "小区里有只橘猫，见谁都躲，唯独会蹲在你楼下等你。邻居说它在那里蹲了很多年。",
+      "choices": [
+        {
+          "label": "每天喂它",
+          "effects": {
+            "health": 2,
+            "charm": 3,
+            "abstract": 5,
+            "money": -3
+          },
+          "result": "它从不让你摸，但会陪你走完从门口到小卖部的一百米。你们的默契持续了八年。"
+        },
+        {
+          "label": "带回家",
+          "effects": {
+            "charm": 2,
+            "money": -5,
+            "abstract": 6
+          },
+          "result": "它在你的沙发上住了三天，然后从窗户离开了。它有自己的江湖，你只是其中一站。"
+        }
+      ],
+      "cond": {
+        "minAge": 10,
+        "maxAge": 80
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    },
+    {
+      "id": "L28",
+      "title": "命运的硬币",
+      "text": "天桥上一个盲人算命先生，面前摆着一枚硬币。他说：\"这枚硬币，正面是你想要的人生，反面是别人想要的人生。你选哪面？\"",
+      "choices": [
+        {
+          "label": "正面",
+          "effects": {
+            "luck": 4,
+            "abstract": 6,
+            "charm": 2
+          },
+          "result": "他笑了：\"大胆去活，别回头。\"你给了他十块钱，他没收，只说：\"这枚硬币送你了。\""
+        },
+        {
+          "label": "反面",
+          "effects": {
+            "money": 3,
+            "int": 2,
+            "abstract": -3
+          },
+          "result": "他沉默了很久：\"你是个懂事的孩子。懂事，有时候是祝福，有时候是枷锁。\""
+        },
+        {
+          "label": "不选，我自己铸",
+          "effects": {
+            "abstract": 12,
+            "luck": 3
+          },
+          "result": "他大笑三声，收摊走人。走出去十米，你听见他自言自语：\"这才是年轻人该有的样子。\""
+        }
+      ],
+      "cond": {
+        "minAge": 16,
+        "maxAge": 80
+      },
+      "weight": 3,
+      "line": "lucky",
+      "stage": "lucky"
+    }
+  ],
+  "XHSD_PROVINCES": [
+    "山东",
+    "河北",
+    "山西",
+    "河南"
+  ]
+}
