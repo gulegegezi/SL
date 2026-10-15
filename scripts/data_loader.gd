@@ -15,11 +15,12 @@ static func ensure_loaded() -> void:
 		return
 	var txt := f.get_as_text()
 	f.close()
-	var parsed := JSON.parse_string(txt)
-	if parsed == null:
+	var parsed: Variant = JSON.parse_string(txt)
+	if not (parsed is Dictionary):
 		push_error("DataLoader: JSON parse failed")
 		return
-	data = parsed
+	var parsed_dict: Dictionary = parsed
+	data = parsed_dict
 	loaded = true
 
 # ---- 便捷访问器 ----

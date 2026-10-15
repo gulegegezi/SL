@@ -408,7 +408,7 @@ func end_game() -> Dictionary:
 		ending = DataLoader.endings()[0]
 
 	# 记录
-	var first_time := not meta["endings"].has(ending.get("id", ""))
+	var first_time: bool = not (meta["endings"] as Dictionary).has(ending.get("id", ""))
 	meta["endings"][ending.get("id", "")] = {
 		"n": ending.get("name", ""),
 		"t": Time.get_unix_time_from_system()

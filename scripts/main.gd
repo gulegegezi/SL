@@ -5,6 +5,7 @@ extends Control
 const GameController := preload("res://scripts/game_controller.gd")
 const GameState := preload("res://scripts/game_state.gd")
 const DataLoader := preload("res://scripts/data_loader.gd")
+const ChoiceVFX := preload("res://scripts/vfx.gd")
 
 # ---- 颜色 ----
 const C := {
@@ -26,6 +27,8 @@ var age_tag: Label
 var gc: GameController
 var meta: Dictionary
 var current_event: Dictionary = {}
+var current_choice: Dictionary = {}  # 本次选择的选项快照（供动画分发读取特征）
+var anim_stage: Control  # 底部像素动画演出区（每次渲染重建）
 
 func _ready() -> void:
 	DataLoader.ensure_loaded()
@@ -62,8 +65,8 @@ func render_title() -> void:
 	vb.add_child(_btn("开 始 人 生", C.green, true, func(): gc.new_game()))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	var dex_n := meta.get("endings", {}).size()
-	var ach_n := meta.get("achievements", {}).size()
+	var dex_n: int = meta.get("endings", {}).size()
+	var ach_n: int = meta.get("achievements", {}).size()
 	row.add_child(_btn("结局图鉴 %d/%d" % [dex_n, DataLoader.endings().size()], C.dim, false, render_dex))
 	row.add_child(_btn("成就 %d/%d" % [ach_n, DataLoader.achievements().size()], C.dim, false, render_ach))
 	vb.add_child(row)
@@ -101,7 +104,7 @@ func render_roll(s: GameState) -> void:
 	var tier_wrap := VBoxContainer.new()
 	tier_wrap.modulate.a = 0.0
 	var tk := s.get_tier_key()
-	var tcol := {"lawanle": C.red, "npc": C.dim, "renshangren": C.cyan, "hang": C.yellow}.get(tk, C.green)
+	var tcol: Color = {"lawanle": C.red, "npc": C.dim, "renshangren": C.cyan, "hang": C.yellow}.get(tk, C.green)
 	tier_wrap.add_child(_make_label(s.tier.get("name", ""), tcol, 26, true, 3.0))
 	tier_wrap.add_child(_make_label(s.tier.get("desc", ""), C.dim, 12))
 	tier_wrap.add_child(_spacer(12))
@@ -113,7 +116,10 @@ func render_roll(s: GameState) -> void:
 	tier_wrap.add_child(_make_label("初始 智力%d 体质%d 魅力%d 运气%d 金钱%d" % [s.intl, s.health, s.charm, s.luck, s.money], C.green, 12))
 	tier_wrap.add_child(_spacer(18))
 	tier_wrap.add_child(_btn("开始这一生", C.green, true, func():
-		s.age = 1; s.step = 0; render_main())
+		s.age = 1
+		s.step = 0
+		render_main()
+	))
 	vb.add_child(tier_wrap)
 	screen.add_child(card)
 
@@ -131,7 +137,7 @@ func render_main() -> void:
 	if s.age >= s.lifespan or s.health <= 0:
 		gc.end_game()
 		return
-	age_tag.text = "%d 岁" % s.age
+	age_tag.text = ""  # 年龄改由下方顶栏展示，清空右上角占位
 	if s.age <= 6 and s.family.is_empty():
 		s.family = gc.pick(DataLoader.families())
 		gc.apply_effects(s.family.get("effects", {}))
@@ -145,10 +151,14 @@ func render_main() -> void:
 		return
 	current_event = ev
 	clear_screen()
-	screen.add_child(_render_stats(s))
-	screen.add_child(_render_abstract(s))
-	screen.add_child(_render_tags(s))
 
+	# ① 顶栏：数值(六维) + 抽象度 + 年龄框
+	screen.add_child(_render_status_bar(s))
+	var tg := _render_tags(s)
+	if tg.get_child_count() > 0:
+		screen.add_child(tg)
+
+	# ② 事件
 	var is_abs := s.line == "absurd" or s.abstract_val >= 86
 	var use_alt := s.abstract_val >= 90
 	var title: String = ev.get("altTitle", ev.get("title", "")) if (use_alt and ev.has("altTitle")) else ev.get("title", "")
@@ -170,6 +180,7 @@ func render_main() -> void:
 	vb.add_child(_make_label(banner + text, C.txt, 14))
 	screen.add_child(card)
 
+	# ③ 选项
 	var cb := VBoxContainer.new()
 	cb.add_theme_constant_override("separation", 8)
 	for c in choices:
@@ -179,24 +190,31 @@ func render_main() -> void:
 		cb.add_child(b)
 	screen.add_child(cb)
 
+	# ④ 像素动画演出区（选择后在此播放）
+	anim_stage = _make_anim_stage()
+	screen.add_child(anim_stage)
+
 func _on_choice(c: Dictionary) -> void:
 	for child in screen.get_children():
 		if child is VBoxContainer:
 			for btn in child.get_children():
 				if btn is Button:
 					btn.disabled = true
+	var s := gc.state
+	current_choice = c
+	var before := _capture_core(s)
 	gc.choose(c, current_event)
-	await get_tree().create_timer(0.95).timeout
+	var deltas := _diff_core(before, s)
+	_play_choice_animation(deltas, str(c.get("result", "")))
+	await get_tree().create_timer(1.35).timeout
 	gc.advance_after_choice(current_event)
 
 func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
 	pass
 
-func _on_choice_resolved(s: GameState, result_text: String) -> void:
-	for child in screen.get_children():
-		if child is PanelContainer:
-			_cv(child).add_child(_make_label(result_text, C.green, 13))
-			break
+func _on_choice_resolved(_s: GameState, _result_text: String) -> void:
+	# 结果文本改由底部像素动画演出区展示，此处不再往事件卡追加
+	pass
 
 func _on_phase_advanced(_s: GameState) -> void:
 	render_main()
@@ -210,7 +228,7 @@ func _on_game_ended(s: GameState, ending: Dictionary, info: Dictionary) -> void:
 func render_ending(s: GameState, ending: Dictionary, info: Dictionary) -> void:
 	clear_screen()
 	age_tag.text = "结局"
-	var rc := {
+	var rc: Color = {
 		"hang": C.yellow, "renshangren": C.cyan, "npc": C.dim, "lawanle": C.red
 	}.get(info.rating, C.green)
 	var card := _make_panel()
@@ -263,8 +281,8 @@ func render_dex() -> void:
 		var grid := GridContainer.new()
 		grid.columns = 2
 		for e in group[1]:
-			var got := meta.get("endings", {}).has(e.get("id"))
-			var n := e.get("name", "") if got else "？ ？ ？"
+			var got: bool = meta.get("endings", {}).has(e.get("id"))
+			var n: String = str(e.get("name", "")) if got else "？ ？ ？"
 			var col := C.purple if (got and e.get("hidden", false)) else (C.txt if got else C.dim)
 			grid.add_child(_make_label(n, col, 12, true))
 		vb.add_child(grid)
@@ -282,11 +300,11 @@ func render_ach() -> void:
 	age_tag.text = "成就"
 	var card := _make_card()
 	var vb := _cv(card)
-	var an := meta.get("achievements", {}).size()
+	var an: int = meta.get("achievements", {}).size()
 	vb.add_child(_make_label("成就 %d/%d" % [an, DataLoader.achievements().size()], C.green, 15, true))
 	vb.add_child(_spacer(12))
 	for a in DataLoader.achievements():
-		var on := meta.get("achievements", {}).has(a.get("name"))
+		var on: bool = meta.get("achievements", {}).has(a.get("name"))
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 10)
 		row.add_child(_make_label("🏆" if on else "🔒", C.txt if on else C.dim, 17))
@@ -366,7 +384,7 @@ func _choice_btn(c: Dictionary, s: GameState) -> Button:
 	var b := Button.new()
 	b.text = "▸ " + str(c.get("label", ""))
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b.alignment = BoxContainer.ALIGNMENT_BEGIN
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	var col := C.txt
 	if c.has("require"):
 		for k in c["require"]:
@@ -478,3 +496,208 @@ func _rank_name(r: String) -> String:
 
 func _attr_cn(k: String) -> String:
 	return {"int": "智力", "health": "体质", "charm": "魅力", "luck": "运气", "money": "金钱"}.get(k, k)
+
+# ==========================================================
+# 顶栏（数值 + 年龄框）
+# ==========================================================
+const ATTR_CN := {
+	"int": "智力", "health": "体质", "charm": "魅力",
+	"luck": "运气", "money": "金钱", "abstract": "抽象度", "lifespan": "寿命"
+}
+
+func _render_status_bar(s: GameState) -> HBoxContainer:
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 8)
+
+	var left := VBoxContainer.new()
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left.add_theme_constant_override("separation", 6)
+	left.add_child(_render_stats(s))
+	left.add_child(_render_abstract(s))
+	hb.add_child(left)
+
+	hb.add_child(_make_age_box(s.age))
+	return hb
+
+func _make_age_box(age: int) -> PanelContainer:
+	var p := PanelContainer.new()
+	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var st := _style(C.panel2, C.yellow, 4)
+	st.content_margin_left = 12; st.content_margin_top = 8
+	st.content_margin_right = 12; st.content_margin_bottom = 8
+	p.add_theme_stylebox_override("panel", st)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 2)
+	v.add_child(_make_label("年龄", C.dim, 10, false, 1.0))
+	v.add_child(_make_label("%d" % age, C.yellow, 20, true))
+	p.add_child(v)
+	return p
+
+# ==========================================================
+# 选择后的“像素动画”演出
+# ==========================================================
+func _make_anim_stage() -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(0, 130)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return c
+
+## 记录用于对比的核心数值快照
+func _capture_core(s: GameState) -> Dictionary:
+	return {
+		"int": s.intl, "health": s.health, "charm": s.charm, "luck": s.luck,
+		"money": s.money, "abstract": s.abstract_val, "lifespan": s.lifespan
+	}
+
+## 对比得到本次选择的属性增减量列表
+func _diff_core(before: Dictionary, s: GameState) -> Array:
+	var after := _capture_core(s)
+	var out: Array = []
+	for k in after.keys():
+		var kk: String = str(k)
+		var d: int = int(after[kk]) - int(before.get(kk, after[kk]))
+		if d != 0:
+			out.append({"key": kk, "name": ATTR_CN.get(kk, kk), "delta": d})
+	return out
+
+## 选择后演出：极性闪光 + 主题 VFX + 结果文本 + 浮动增减数字
+func _play_choice_animation(deltas: Array, result_text: String) -> void:
+	if anim_stage == null or not is_instance_valid(anim_stage):
+		return
+	for ch in anim_stage.get_children():
+		ch.queue_free()
+
+	var w := anim_stage.size.x
+	if w <= 0.0:
+		w = 320.0
+	var h := anim_stage.size.y
+	if h <= 0.0:
+		h = 130.0
+	var cx := w * 0.5
+
+	var net := 0
+	for d in deltas:
+		if str(d["key"]) != "abstract":
+			net += int(d["delta"])
+	var col := C.green if net > 0 else (C.red if net < 0 else C.cyan)
+
+	# 1. 全区域极性闪光（最底层）
+	var flash := ColorRect.new()
+	flash.color = Color(col.r, col.g, col.b, 0.0)
+	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	anim_stage.add_child(flash)
+	var t0 := create_tween()
+	t0.tween_property(flash, "color:a", 0.20, 0.12)
+	t0.tween_property(flash, "color:a", 0.0, 0.42)
+	t0.finished.connect(func():
+		if is_instance_valid(flash):
+			flash.queue_free())
+
+	# 2. 主题 VFX：每个选项"相应的动画"（按本次选择特征分发，最多 3 层）
+	var anims := _pick_anims(deltas, current_choice, current_event)
+	var new_tags: Array = []
+	for t in current_choice.get("tags", []):
+		if gc.state.has_tag(str(t)):
+			new_tags.append(str(t))
+	ChoiceVFX.play(anim_stage, anims, new_tags, C)
+
+	# 3. 结果文本（最上层）
+	if not result_text.is_empty():
+		var rt := _make_label(result_text, C.txt, 13, true)
+		rt.position = Vector2(12, 8)
+		rt.custom_minimum_size = Vector2(w - 24, 0)
+		rt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		rt.modulate.a = 0.0
+		anim_stage.add_child(rt)
+		var t1 := create_tween()
+		t1.tween_property(rt, "modulate:a", 1.0, 0.18)
+
+	# 4. 浮动增减数字（精确信息层，位于主题 VFX 之上）
+	var y0 := 48.0
+	for i in range(deltas.size()):
+		var d: Dictionary = deltas[i]
+		var dv := int(d["delta"])
+		var dcol := C.green if dv > 0 else C.red
+		var lbl := _make_label("%+d %s" % [dv, str(d["name"])], dcol, 15, true)
+		lbl.position = Vector2(cx - 46.0 + float(i % 3 - 1) * 70.0, y0)
+		lbl.modulate.a = 0.0
+		anim_stage.add_child(lbl)
+		var tp := create_tween()
+		tp.set_parallel(true)
+		tp.tween_property(lbl, "modulate:a", 1.0, 0.15).set_delay(0.06 * i)
+		tp.tween_property(lbl, "position:y", y0 - 24.0, 0.7).set_delay(0.06 * i)
+		var tf := create_tween()
+		tf.tween_property(lbl, "modulate:a", 0.0, 0.3).set_delay(0.06 * i + 0.55)
+
+# ==========================================================
+# 选项特征 → 动画类型分发
+# ==========================================================
+## 优先级：选项 anim 字段 > 事件级专属(字段/精选表/规则) > 净收益特殊 > 单项属性动画
+## 事件级动画存在时，只补最强 1 个属性动画（避免舞台级与局部效果视觉打架）
+## 性能预算：最多 ChoiceVFX.MAX_LAYERS 个；无匹配时回退 spark
+func _pick_anims(deltas: Array, choice: Dictionary, event: Dictionary) -> Array:
+	var out: Array = []
+	# 作者显式指定优先（数据里写 "anim": "coin" 即可强制指定）
+	if choice.has("anim"):
+		out.append(str(choice["anim"]))
+
+	# 事件级专属动画：eventAnim 字段 > EVENT_ANIM 精选表 > 规则兜底(A0→glitch / lucky→gamble)
+	var ev_anim: String = ChoiceVFX.resolve_event_anim(event)
+	var has_ev := not ev_anim.is_empty()
+	if has_ev and not out.has(ev_anim):
+		out.append(ev_anim)
+
+	var best := {}
+	for d in deltas:
+		best[str(d["key"])] = int(d["delta"])
+
+	# 净收益（不含抽象度）
+	var net := 0
+	for k in best:
+		if str(k) != "abstract":
+			net += int(best[k])
+
+	# 单项属性动画，按变化幅度从大到小排
+	var single: Array = []
+	if int(best.get("money", 0)) > 0:
+		single.append({"t": "coin", "m": absi(int(best["money"]))})
+	elif int(best.get("money", 0)) < 0:
+		single.append({"t": "bill", "m": absi(int(best["money"]))})
+	if int(best.get("int", 0)) > 0:
+		single.append({"t": "brain", "m": absi(int(best["int"]))})
+	if int(best.get("charm", 0)) > 0:
+		single.append({"t": "heart", "m": absi(int(best["charm"]))})
+	if int(best.get("health", 0)) > 0:
+		single.append({"t": "muscle", "m": absi(int(best["health"]))})
+	elif int(best.get("health", 0)) < 0:
+		single.append({"t": "decay", "m": absi(int(best["health"]))})
+	if int(best.get("luck", 0)) > 0:
+		single.append({"t": "clover", "m": absi(int(best["luck"]))})
+	if absi(int(best.get("abstract", 0))) >= 4:
+		single.append({"t": "psych", "m": absi(int(best["abstract"]))})
+	if int(best.get("lifespan", 0)) != 0:
+		single.append({"t": "hourglass", "m": 5})
+	single.sort_custom(func(a, b): return int(a["m"]) > int(b["m"]))
+
+	if has_ev:
+		# 事件级动画主导：舞台级重效果独占；其余补最强 1 个属性动画
+		if not ChoiceVFX.is_solo(ev_anim) and not single.is_empty():
+			out.append(str(single[0]["t"]))
+	else:
+		if net >= 6:
+			out.append("confetti")
+		elif net <= -6:
+			out.append("wilt")
+		for it in single:
+			out.append(str(it["t"]))
+
+	# 去重 + 限量
+	var uniq: Array = []
+	for a in out:
+		if not uniq.has(a):
+			uniq.append(a)
+	if uniq.is_empty():
+		uniq.append("spark")
+	return uniq.slice(0, ChoiceVFX.MAX_LAYERS)
