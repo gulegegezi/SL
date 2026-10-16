@@ -46,6 +46,7 @@ var anim_stage: Control  # 底部像素动画演出区（每次渲染重建）
 var _prev_core: Dictionary = {}  # 上一次数值快照，供数值滚动动画用
 var _choice_busy := false
 var _story: Control
+var _action_bar: PanelContainer
 var _continue: Button
 var _backdrop: Control
 var _leaf_layer: Control
@@ -78,6 +79,7 @@ func _ready() -> void:
 	_leaf_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_leaf_layer)
 
+	_create_story_actions()
 	gc = GameController.new()
 	gc.init()
 	meta = gc.meta
@@ -94,8 +96,59 @@ func _ready() -> void:
 		UIAnim.leaves_drift(_leaf_layer, 7)
 
 func clear_screen() -> void:
+	_choice_busy = false
+	_set_story_actions(false)
+	($MarginContainer/ScrollContainer as ScrollContainer).scroll_vertical = 0
 	for c in screen.get_children():
+		screen.remove_child(c)
 		c.queue_free()
+
+# 继续按钮独立于 ScrollContainer，长事件和小窗口也能始终点击。
+func _create_story_actions() -> void:
+	_action_bar = PanelContainer.new()
+	_action_bar.name = "StoryActions"
+	_action_bar.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	_action_bar.offset_left = 12
+	_action_bar.offset_right = -12
+	_action_bar.offset_top = -62
+	_action_bar.offset_bottom = -12
+	_action_bar.z_index = 20
+	_action_bar.add_theme_stylebox_override("panel", _style(C.panel, C.line, 3))
+	add_child(_action_bar)
+	_continue = _btn("看完剧情，继续人生 →", C.green, false, _advance_story)
+	_continue.custom_minimum_size.y = 48
+	_action_bar.add_child(_continue)
+	_set_story_actions(false)
+
+func _set_story_actions(show_actions: bool) -> void:
+	if is_instance_valid(_action_bar):
+		_action_bar.visible = show_actions
+	$MarginContainer.offset_bottom = -68 if show_actions else 0
+
+func _process(_delta: float) -> void:
+	if _choice_busy and is_instance_valid(_story) and _story.playing:
+		_continue.text = "剧情演出中 · 还剩 %d 秒" % maxi(1, ceili(StoryStage.DURATION - _story.elapsed))
+
+func _on_story_finished() -> void:
+	if not _choice_busy:
+		return
+	_continue.disabled = false
+	_continue.text = "看完剧情，继续人生 →"
+	_continue.grab_focus()
+
+func _advance_story() -> void:
+	if not _choice_busy or _continue.disabled:
+		return
+	_continue.disabled = true
+	_choice_busy = false
+	gc.advance_after_choice(current_event)
+
+func _scroll_to_story(stage: Control) -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if is_instance_valid(stage) and stage == _story and _choice_busy:
+		($MarginContainer/ScrollContainer as ScrollContainer).ensure_control_visible(stage)
+
 
 # ==========================================================
 # 标题页
@@ -208,6 +261,8 @@ func render_main() -> void:
 	var tg := _render_tags(s)
 	if tg.get_child_count() > 0:
 		screen.add_child(tg)
+	else:
+		tg.free()
 
 	# ② 事件
 	var is_abs := s.line == "absurd" or s.abstract_val >= 86
@@ -264,14 +319,7 @@ func render_main() -> void:
 	screen.add_child(_make_label("生活小镇 · 你的选择改变身边的世界", C.dim, 11))
 	screen.add_child(anim_stage)
 	_story.configure(gc.state)
-	_continue = _btn("看完剧情，继续人生 →", C.green, true, func():
-		if not _choice_busy or _continue.disabled:
-			return
-		_continue.disabled = true
-		gc.advance_after_choice(current_event)
-	)
-	_continue.visible = false
-	screen.add_child(_continue)
+	_story.finished.connect(_on_story_finished)
 
 func _on_choice(c: Dictionary, picked: Button = null) -> void:
 	if _choice_busy:
@@ -291,14 +339,10 @@ func _on_choice(c: Dictionary, picked: Button = null) -> void:
 	gc.choose(c, current_event)
 	var deltas := _diff_core(before, s)
 	_play_choice_animation(deltas, str(c.get("result", "")))
-	_continue.visible = true
+	_set_story_actions(true)
 	_continue.disabled = true
 	_continue.text = "剧情演出中…"
-	await get_tree().process_frame
-	($MarginContainer/ScrollContainer as ScrollContainer).ensure_control_visible(anim_stage)
-	await _story.finished
-	_continue.disabled = false
-	_continue.text = "看完剧情，继续人生 →"
+	_scroll_to_story(anim_stage)
 
 func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
 	pass

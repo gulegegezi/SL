@@ -29,12 +29,17 @@ Godot 4.7.2 headless / OpenGL 验证：
 ```
 godot --headless --path . --script res://test/story_smoke.gd
 godot --headless --path . --script res://test/world_smoke.gd
+godot --headless --path . --script res://test/ui_progress_smoke.gd
 ```
 
-检查全部行为、所有 432 个选项路由、不同抓周道具、买房/等待、婚礼、生娃、作物、朋友、重建后保留与新局重置、晚年钓鱼，以及重复点击保护、完整播放后解锁继续、下一事件推进。UI 测试退出时仍有少量 CanvasItem/ObjectDB 释放警告；单独小镇测试无此警告。
+检查全部行为、所有 432 个选项路由、不同抓周道具、买房/等待、婚礼、生娃、作物、朋友、重建后保留与新局重置、晚年钓鱼，以及重复点击保护、完整播放后解锁继续、下一事件推进。已修复空标签容器未释放问题，当前 UI 与小镇回归测试均无此警告。
 
 world_smoke 的非 headless 模式会导出三个实际渲染画面。测试用既有事件构造人生阶段，不能当作正常随机游玩顺序。
 
 ![童年](life-town-child.png)
 ![成年](life-town-adult.png)
 ![晚年](life-town-senior.png)
+
+## 点击选项后无法继续的修复
+
+旧布局把继续按钮放在滚动内容末尾，童年长文本等情况下自动滚动仅露出剧场，按钮落在可视区域下方。现在继续按钮独立固定于窗口底部，播放期间显示剩余秒数，完成信号直接解锁按钮。推进后滚动回新事件顶部。真实鼠标事件回归覆盖 520×900、520×640、360×640 窗口与长文本，均验证可点击继续且每次只推进一次。
