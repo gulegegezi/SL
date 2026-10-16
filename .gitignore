@@ -1,0 +1,12 @@
+# Godot 4 编辑器/导入缓存（不进版本库，由编辑器自动重建）
+.godot/
+
+# 导出产物
+export/
+build/
+*.translation
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.tmp
