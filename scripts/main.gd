@@ -47,6 +47,7 @@ var _prev_core: Dictionary = {}  # 上一次数值快照，供数值滚动动画
 var _choice_busy := false
 var _story: Control
 var _action_bar: PanelContainer
+var _next_dialogue: Button
 var _continue: Button
 var _backdrop: Control
 var _leaf_layer: Control
@@ -117,24 +118,45 @@ func _create_story_actions() -> void:
 	add_child(_action_bar)
 	_continue = _btn("看完剧情，继续人生 →", C.green, false, _advance_story)
 	_continue.custom_minimum_size.y = 48
-	_action_bar.add_child(_continue)
+	var buttons := HBoxContainer.new()
+	buttons.add_theme_constant_override("separation", 8)
+	_action_bar.add_child(buttons)
+	_next_dialogue = _btn("下一段 / 补全文字", C.txt, false, _next_story_beat)
+	_next_dialogue.custom_minimum_size.x = 126
+	buttons.add_child(_next_dialogue)
+	buttons.add_child(_continue)
+	for button in [_next_dialogue, _continue]:
+		button.add_theme_stylebox_override("normal", _style(Color("10121d"), Color("bfbec7"), 0))
+		button.add_theme_stylebox_override("hover", _style(Color("28283b"), Color("eee8c9"), 0))
+		button.add_theme_stylebox_override("pressed", _style(Color("38364b"), Color("eee8c9"), 0))
+		button.add_theme_stylebox_override("disabled", _style(Color("12131c"), Color("555664"), 0))
+		for role in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
+			button.add_theme_color_override(role, Color("efeee5"))
+		button.add_theme_color_override("font_disabled_color", Color("777987"))
 	_set_story_actions(false)
 
 func _set_story_actions(show_actions: bool) -> void:
 	if is_instance_valid(_action_bar):
 		_action_bar.visible = show_actions
 	$MarginContainer.offset_bottom = -68 if show_actions else 0
+	if is_instance_valid(_leaf_layer):
+		_leaf_layer.visible = not show_actions
 
 func _process(_delta: float) -> void:
 	if _choice_busy and is_instance_valid(_story) and _story.playing:
-		_continue.text = "剧情演出中 · 还剩 %d 秒" % maxi(1, ceili(StoryStage.DURATION - _story.elapsed))
+		_continue.text = "演出中 · %d 秒" % maxi(1, ceili(_story.duration - _story.elapsed))
 
 func _on_story_finished() -> void:
 	if not _choice_busy:
 		return
 	_continue.disabled = false
-	_continue.text = "看完剧情，继续人生 →"
+	_continue.text = "继续人生 →"
+	_next_dialogue.disabled = true
 	_continue.grab_focus()
+
+func _next_story_beat() -> void:
+	if _choice_busy and is_instance_valid(_story):
+		_story.advance_dialogue()
 
 func _advance_story() -> void:
 	if not _choice_busy or _continue.disabled:
@@ -271,6 +293,11 @@ func render_main() -> void:
 	var text: String = ev.get("altText", ev.get("text", "")) if (use_alt and ev.has("altText")) else ev.get("text", "")
 	var choices: Array = ev.get("altChoices", ev.get("choices", [])) if (use_alt and ev.has("altChoices")) else ev.get("choices", [])
 
+	# 分镜必须使用屏幕上实际显示的事件文本（含抽象线替代文本）。
+	current_event = ev.duplicate()
+	current_event["title"] = title
+	current_event["text"] = text
+
 	var banner := ""
 	if not s.family.is_empty() and s.age <= 7 and s.step == 0:
 		banner += "【%s】%s\n" % [s.family.get("name", ""), s.family.get("desc", "")]
@@ -316,7 +343,7 @@ func render_main() -> void:
 
 	# ④ 像素动画演出区（深色土槽 + 木框，选择后在此播放）
 	anim_stage = _make_anim_stage()
-	screen.add_child(_make_label("生活小镇 · 你的选择改变身边的世界", C.dim, 11))
+	screen.add_child(_make_label("像素剧场 · 每个选择都是一段故事", C.dim, 11))
 	screen.add_child(anim_stage)
 	_story.configure(gc.state)
 	_story.finished.connect(_on_story_finished)
@@ -340,6 +367,8 @@ func _on_choice(c: Dictionary, picked: Button = null) -> void:
 	var deltas := _diff_core(before, s)
 	_play_choice_animation(deltas, str(c.get("result", "")))
 	_set_story_actions(true)
+	_next_dialogue.disabled = false
+	_next_dialogue.grab_focus()
 	_continue.disabled = true
 	_continue.text = "剧情演出中…"
 	_scroll_to_story(anim_stage)

@@ -13,7 +13,7 @@ func play_event(id: String, index: int) -> void:
 	var event := Data.find_event(id)
 	stage.configure(state)
 	stage.play(event, event.choices[index], [])
-	stage._process(6.0)
+	stage._process(stage.duration + 0.1)
 	assert(not stage.playing)
 
 func capture(name: String) -> void:
@@ -36,7 +36,7 @@ func run() -> void:
 	play_event("C01", 0)
 	assert(stage.mode == "grasp" and stage.shot.prop == "pen")
 	assert(state.story_world.memories.size() == 1)
-	await capture("life-town-child")
+	await capture("story-room-child")
 	play_event("C01", 2)
 	assert(stage.mode == "grasp" and stage.shot.prop == "phone")
 	assert(Director.plan(Data.find_event("N14"), Data.find_event("N14").choices[1], "walk").action == "refuse")
@@ -49,13 +49,13 @@ func run() -> void:
 	play_event("N16", 0)
 	assert(state.story_world.child)
 	stage.play({"title": "第一次播种"}, {"label": "种菜", "result": "新叶从泥土里长了出来。"}, [])
-	stage._process(6.0)
+	stage._process(stage.duration + 0.1)
 	assert(state.story_world.crops == 1)
 	play_event("N09", 0)
 	stage.play({"title": "老朋友"}, {"label": "与朋友交流", "result": "你们成了常来常往的朋友。"}, [])
-	stage._process(6.0)
+	stage._process(stage.duration + 0.1)
 	assert(state.story_world.friends == 1)
-	await capture("life-town-adult")
+	await capture("story-room-adult")
 	var memory_count: int = state.story_world.memories.size()
 	stage.queue_free()
 	await process_frame
@@ -69,7 +69,7 @@ func run() -> void:
 	state.age = 68
 	play_event("N43", 2)
 	assert(stage.mode == "fish" and stage.shot.place == "pond")
-	await capture("life-town-senior")
+	await capture("story-room-senior")
 	var fresh := State.new()
 	stage.configure(fresh)
 	assert(stage.world.memories.is_empty() and not stage.world.partner)

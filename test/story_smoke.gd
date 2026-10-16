@@ -26,7 +26,7 @@ func run() -> void:
 	main._on_choice(choice)
 	assert(main.gc.state.money == before + 5)
 	assert(main._continue.disabled)
-	await create_timer(6.1).timeout
+	await create_timer(main._story.duration + 0.3).timeout
 	assert(not main._continue.disabled)
 	assert(main.gc.state.age == 10)
 	# 在真实渲染模式下保存当前 UI。

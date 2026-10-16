@@ -52,9 +52,13 @@ func run() -> void:
 		assert(main._continue.disabled)
 		# 第一轮实际等待完整播放，之后覆盖小窗口下完成信号和点击。
 		if dims.y == 900:
-			await create_timer(6.2).timeout
+			await create_timer(main._story.duration + 0.3).timeout
 		else:
-			main._story._process(6.0)
+			assert(root.get_visible_rect().encloses(main._next_dialogue.get_global_rect()))
+			for i in range(8):
+				if not main._story.playing: break
+				await click(main._next_dialogue)
+			assert(not main._story.playing)
 		await process_frame
 		assert(not main._continue.disabled)
 		var rect: Rect2 = main._continue.get_global_rect()

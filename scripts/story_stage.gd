@@ -1,12 +1,18 @@
 extends Control
 ## 一个贯穿整局人生的俯视像素小镇。选择分为行走、行动、结果三个镜头。
 signal finished
+const Room := preload("res://scripts/story_room.gd")
 const Director := preload("res://scripts/story_director.gd")
 const DURATION := 5.8
 const ART_RESOLUTION := Vector2i(640, 384)
 const DETAIL_GRID := 2.0  # 同一地图单位分成两格，允许半格像素细节。
 const TITLES := {"study": "读书与求学", "work": "工作与谋生", "sport": "锻炼身体", "social": "结识朋友", "sad": "独自消化心事", "rest": "回家休息", "celebrate": "庆祝收获", "walk": "继续前行", "farm": "照料菜园", "medical": "看病与治疗", "move": "安顿新家", "romance": "相遇与相爱", "music": "练习与表演", "game": "屏幕前的时光", "family": "陪伴家人", "explore": "出门走走", "refuse": "留在自己的生活里", "fish": "河边垂钓", "grasp": "抓周的选择"}
 var mode := "walk"
+var duration := DURATION
+var beat_index := 0
+var beat_time := 0.0
+var beat_progress := 0.0
+var beat_durations: Array[float] = []
 var elapsed := 0.0
 var playing := false
 var heading: Label
@@ -68,6 +74,9 @@ func _layout() -> void:
 	changes.position = Vector2(14, size.y - 25)
 	changes.size = Vector2(size.x - 28, 20)
 	changes.clip_text = true
+	if not shot.is_empty():
+		caption.position.x = 57
+		caption.size.x = size.x - 73
 
 func season_name() -> String:
 	return ["春日", "盛夏", "金秋", "初雪"][int(age / 8.0) % 4]
@@ -112,8 +121,18 @@ func play(ev: Dictionary, choice: Dictionary, deltas: Array) -> void:
 	elapsed = 0.0
 	playing = true
 	committed = false
-	caption.text = "你的选择：" + str(shot.label)
+	beat_durations.clear()
+	duration = 0.0
+	for beat in shot.beats:
+		var seconds := maxf(1.8, str(beat.text).length() / 28.0 + 0.9)
+		beat_durations.append(seconds)
+		duration += seconds
+	beat_index = -1
+	caption.add_theme_color_override("font_color", Color("efeee5"))
+	heading.add_theme_color_override("font_color", Color("dddce6"))
+	_layout()
 	changes.text = ""
+	_update_sequence()
 	var items: PackedStringArray = []
 	for d in deltas:
 		items.append("%s %+d" % [str(d.get("name", "")), int(d.get("delta", 0))])
@@ -123,31 +142,43 @@ func play(ev: Dictionary, choice: Dictionary, deltas: Array) -> void:
 func _process(delta: float) -> void:
 	clock += delta
 	if playing:
-		elapsed += delta
-		if elapsed < 1.8:
-			heading.text = "%d 岁 / 前往%s" % [age, Director.NAMES[shot.place]]
-			var progress := clampf(elapsed / 1.8, 0, 1)
-			var p1 := Vector2(start.x, 105)
-			var p2 := Vector2(target.x, 105)
-			if progress < 0.25: actor = start.lerp(p1, progress * 4)
-			elif progress < 0.75: actor = p1.lerp(p2, (progress - 0.25) * 2)
-			else: actor = p2.lerp(target, (progress - 0.75) * 4)
-		elif elapsed < 4.1:
-			actor = target
-			heading.text = "%d 岁 / %s" % [age, TITLES.get(mode, "生活片段")]
-			caption.text = str(shot.event) + "\n正在做：" + str(shot.label)
-		else:
-			actor = target
-			if not committed:
-				Director.remember(world, shot, age, money)
-				committed = true
-			heading.text = "%d 岁 / %s · %s" % [age, season_name(), Director.NAMES[shot.place]]
-			caption.text = str(shot.result)
-			changes.text = result_changes
-		if elapsed >= DURATION:
+		elapsed = minf(elapsed + delta, duration)
+		_update_sequence()
+		if elapsed >= duration:
 			playing = false
+			caption.visible_characters = -1
 			finished.emit()
 	queue_redraw()
+
+func _update_sequence() -> void:
+	var remaining := elapsed
+	var index := 0
+	while index < beat_durations.size() - 1 and remaining >= beat_durations[index]:
+		remaining -= beat_durations[index]
+		index += 1
+	beat_time = remaining
+	beat_progress = clampf(beat_time / beat_durations[index], 0, 1)
+	if beat_index != index:
+		beat_index = index
+		var beat: Dictionary = shot.beats[index]
+		caption.text = str(beat.speaker) + "\n* " + str(beat.text)
+		heading.text = "%d 岁 / %s · %d/3" % [age, Room.NAMES[shot.room], index + 1]
+	caption.visible_characters = mini(caption.text.length(), 5 + int(beat_time * 28))
+	if index == 2 and not committed:
+		actor = target
+		Director.remember(world, shot, age, money)
+		committed = true
+		changes.text = result_changes
+
+func advance_dialogue() -> void:
+	if not playing: return
+	if caption.visible_characters >= 0 and caption.visible_characters < caption.text.length():
+		# 第一次确认补全文字，第二次确认才进入下一镜头。
+		var reveal_time := maxf(0, (caption.text.length() - 5) / 28.0)
+		_process(maxf(0, reveal_time - beat_time) + 0.01)
+		caption.visible_characters = -1
+	else:
+		_process(maxf(0, beat_durations[beat_index] - beat_time) + 0.01)
 
 func box(x: float, y: float, w: float, h: float, color: String) -> void:
 	var pos := Vector2(roundf(x * DETAIL_GRID), roundf(y * DETAIL_GRID)) / DETAIL_GRID
@@ -264,7 +295,7 @@ func building(x: float, y: float, kind: String, level: int) -> void:
 func person(pos: Vector2, shirt: String, npc: bool = false) -> void:
 	var x := roundf(pos.x * 2) / 2
 	var y := roundf(pos.y * 2) / 2
-	var is_moving := playing and elapsed < 1.8
+	var is_moving := playing and beat_index == 0
 	var phase := clock * 10
 	var swing := roundf(sin(phase) * 2) if is_moving else 0.0
 	var small := age < 13 and not npc
@@ -300,7 +331,7 @@ func person(pos: Vector2, shirt: String, npc: bool = false) -> void:
 	box(x - 1, y - height + 3, 1, 1, "3d3d4c")
 	box(x + 1, y - height + 5, 1.5, 0.5, "b98070")
 	box(x - 2, y - height + 4.5, 1.5, 1, "e8af8d")
-	if playing and elapsed >= 1.8 and elapsed < 4.1 and not npc:
+	if playing and beat_index == 1 and not npc:
 		var hand := roundf(sin(phase) * 2)
 		box(x + 5, y - height + 9 + hand, 5, 3, "deb188")
 		box(x + 7, y - height + 9 + hand, 2, 1, "f6d2a1")
@@ -379,6 +410,9 @@ func _draw() -> void:
 	box(0, 0, size.x, size.y, "293f42")
 	box(1, 1, size.x - 2, size.y - 2, "314c4c")
 	if world.is_empty(): return
+	if not shot.is_empty():
+		Room.draw(self)
+		return
 	draw_set_transform(map_origin, 0, Vector2.ONE * map_scale)
 	var season := int(age / 8.0) % 4
 	var snow := season == 3

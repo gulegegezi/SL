@@ -76,10 +76,37 @@ static func plan(event: Dictionary, choice: Dictionary, fallback: String) -> Dic
 		"rest", "family", "game", "move", "refuse", "grasp": place = "home"
 		"farm": place = "garden"
 		"sport", "sad", "explore", "fish": place = "pond"
+	var sequence := sequence_for(event, choice, action)
 	return {"action": action, "place": place, "target": PLACES[place],
+		"room": sequence.room, "beats": sequence.beats,
+		"scene_id": str(event.get("id", "custom")) + ":" + label,
 		"prop": prop,
 		"label": label, "result": str(choice.get("result", "这个选择成为了人生的一部分。")),
 		"event": str(event.get("title", "人生片段"))}
+
+static func sequence_for(event: Dictionary, choice: Dictionary, action: String) -> Dictionary:
+	var room: String = {"study": "classroom", "work": "office", "medical": "hospital",
+		"move": "agency", "romance": "park", "music": "stage", "game": "bedroom",
+		"family": "living", "rest": "bedroom", "grasp": "nursery", "fish": "river",
+		"farm": "garden", "sport": "playground", "sad": "river", "explore": "station",
+		"social": "park", "celebrate": "stage", "refuse": "living", "walk": "station"}.get(action, "living")
+	match str(event.get("id", "")):
+		"C01": room = "nursery"
+		"N14": room = "agency"
+		"N15": room = "chapel"
+		"N16", "N19", "N42": room = "hospital"
+	var label := str(choice.get("label", choice.get("text", "")))
+	var intro := str(event.get("text", ""))
+	if intro.is_empty(): intro = str(event.get("title", "人生的一个片段"))
+	var action_text := "你决定：" + label + "。"
+	if action == "grasp": action_text = "你伸出手，选择了" + label.trim_prefix("抓") + "。"
+	elif action == "refuse": action_text = "你停下脚步。\n这一次，你选择：" + label + "。"
+	var result := str(choice.get("result", "这一天，成为了你人生的一部分。"))
+	return {"room": room, "beats": [
+		{"speaker": "旁白", "text": intro, "motion": "enter"},
+		{"speaker": "你", "text": action_text, "motion": "act"},
+		{"speaker": "旁白", "text": result, "motion": "resolve"}
+	]}
 
 static func remember(world: Dictionary, shot: Dictionary, age: int, money: int) -> void:
 	var place: String = shot.place
