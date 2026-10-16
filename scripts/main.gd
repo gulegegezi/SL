@@ -6,20 +6,33 @@ const GameController := preload("res://scripts/game_controller.gd")
 const GameState := preload("res://scripts/game_state.gd")
 const DataLoader := preload("res://scripts/data_loader.gd")
 const ChoiceVFX := preload("res://scripts/vfx.gd")
+const UIAnim := preload("res://scripts/ui_anim.gd")
 
-# ---- 颜色 ----
+# ---- 颜色（星露谷风：羊皮纸面板 + 木框 + 深墨文字）----
 const C := {
-	"panel": Color(0.071, 0.086, 0.110, 1),
-	"panel2": Color(0.090, 0.110, 0.141, 1),
-	"line": Color(0.141, 0.173, 0.220, 1),
-	"txt": Color(0.788, 0.831, 0.886, 1),
-	"dim": Color(0.400, 0.451, 0.541, 1),
-	"green": Color(0.224, 1.0, 0.533, 1),
-	"cyan": Color(0.310, 0.890, 1.0, 1),
-	"pink": Color(1.0, 0.373, 0.824, 1),
-	"yellow": Color(1.0, 0.827, 0.310, 1),
-	"red": Color(1.0, 0.302, 0.369, 1),
-	"purple": Color(0.627, 0.420, 1.0, 1),
+	"panel": Color(0.961, 0.910, 0.769, 1),   # 羊皮纸
+	"panel2": Color(0.898, 0.835, 0.655, 1),  # 羊皮纸（深，用于 hover）
+	"line": Color(0.435, 0.278, 0.149, 1),    # 木线
+	"txt": Color(0.271, 0.192, 0.110, 1),     # 墨
+	"dim": Color(0.482, 0.380, 0.271, 1),     # 淡墨
+	"green": Color(0.361, 0.588, 0.220, 1),
+	"cyan": Color(0.216, 0.510, 0.588, 1),
+	"pink": Color(0.769, 0.325, 0.478, 1),
+	"yellow": Color(0.706, 0.486, 0.125, 1),
+	"red": Color(0.741, 0.239, 0.196, 1),
+	"purple": Color(0.502, 0.337, 0.639, 1),
+}
+
+# ---- 演出区（深色土槽）专用配色：浅色才看得清 ----
+const STAGE_PAL := {
+	"yellow": Color(0.96, 0.80, 0.36),
+	"green": Color(0.55, 0.88, 0.36),
+	"cyan": Color(0.45, 0.85, 0.90),
+	"pink": Color(0.97, 0.60, 0.72),
+	"red": Color(0.95, 0.42, 0.36),
+	"purple": Color(0.72, 0.55, 0.96),
+	"txt": Color(0.93, 0.89, 0.78),
+	"dim": Color(0.62, 0.56, 0.45),
 }
 
 var screen: VBoxContainer
@@ -29,12 +42,38 @@ var meta: Dictionary
 var current_event: Dictionary = {}
 var current_choice: Dictionary = {}  # 本次选择的选项快照（供动画分发读取特征）
 var anim_stage: Control  # 底部像素动画演出区（每次渲染重建）
+var _prev_core: Dictionary = {}  # 上一次数值快照，供数值滚动动画用
+var _backdrop: Control
+var _leaf_layer: Control
 
 func _ready() -> void:
 	DataLoader.ensure_loaded()
 	screen = $MarginContainer/ScrollContainer/VBox/Screen
 	age_tag = $MarginContainer/ScrollContainer/VBox/TopBar/AgeTag
-	$MarginContainer/ScrollContainer/VBox/Footer.modulate = C.dim
+	# 顶栏 Logo / 页脚：直接坐在背景画面上，改用墨色才看得清
+	var ink: Color = UIAnim.INK
+	var ink_dim: Color = UIAnim.INK_DIM
+	var logo := $MarginContainer/ScrollContainer/VBox/TopBar/Logo as Label
+	logo.add_theme_color_override("font_color", ink)
+	logo.add_theme_font_size_override("font_size", 20)
+	age_tag.add_theme_color_override("font_color", ink)
+	var foot := $MarginContainer/ScrollContainer/VBox/Footer as Label
+	foot.add_theme_color_override("font_color", ink_dim)
+	foot.text = "点击选项继续 · 一局约 5-10 分钟 · 一辈子就是一天"
+
+	# 星露谷农场背景（垫在 UI 最底层）＋常驻云/山风/萤火
+	($ColorRect as ColorRect).color = Color(0.09, 0.10, 0.20)
+	_backdrop = UIAnim.make_backdrop()
+	add_child(_backdrop)
+	move_child(_backdrop, 1)
+	UIAnim.ambient(_backdrop)
+
+	# 全屏飘叶层（在 UI 之上，鼠标穿透）
+	_leaf_layer = Control.new()
+	_leaf_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_leaf_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_leaf_layer)
+
 	gc = GameController.new()
 	gc.init()
 	meta = gc.meta
@@ -44,6 +83,11 @@ func _ready() -> void:
 	gc.phase_advanced.connect(_on_phase_advanced)
 	gc.game_ended.connect(_on_game_ended)
 	render_title()
+
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if is_instance_valid(_leaf_layer):
+		UIAnim.leaves_drift(_leaf_layer, 7)
 
 func clear_screen() -> void:
 	for c in screen.get_children():
@@ -138,6 +182,8 @@ func render_main() -> void:
 		gc.end_game()
 		return
 	age_tag.text = ""  # 年龄改由下方顶栏展示，清空右上角占位
+	# 背景随时辰变化：一辈子被压缩成一天（清晨 → 正午 → 黄昏 → 深夜）
+	UIAnim.set_time(_backdrop, UIAnim.time_for_age(s.age))
 	if s.age <= 6 and s.family.is_empty():
 		s.family = gc.pick(DataLoader.families())
 		gc.apply_effects(s.family.get("effects", {}))
@@ -175,26 +221,41 @@ func render_main() -> void:
 
 	var card := _make_card(is_abs)
 	var vb := _cv(card)
-	vb.add_child(_make_label(_stage_name(s.age), C.dim, 10))
-	vb.add_child(_make_label(title, C.pink if is_abs else C.yellow, 16, true, 0.5))
-	vb.add_child(_make_label(banner + text, C.txt, 14))
+	var stage_lbl := _make_label(_stage_name(s.age), C.dim, 10)
+	var title_lbl := _make_label(title, C.pink if is_abs else C.yellow, 16, true, 0.5)
+	var text_lbl := _make_label(banner + text, C.txt, 14)
+	text_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(stage_lbl)
+	vb.add_child(title_lbl)
+	vb.add_child(text_lbl)
 	screen.add_child(card)
+	# ② 事件区动画：木牌「哐」地落下 → 正文逐字打字
+	UIAnim.signboard_drop(card, 0.0)
+	UIAnim.stagger_in([stage_lbl], 0.0, 0.16)
+	UIAnim.stagger_in([title_lbl], 0.0, 0.22)
+	UIAnim.typewriter(text_lbl, banner + text, 56.0, 0.44)
 
-	# ③ 选项
+	# ③ 选项区动画：按钮依次弹入 + 悬浮/按下反馈
 	var cb := VBoxContainer.new()
 	cb.add_theme_constant_override("separation", 8)
+	var btns: Array = []
 	for c in choices:
 		var b := _choice_btn(c, s)
+		UIAnim.hook_button(b, false)
 		if not b.disabled:
-			b.pressed.connect(_on_choice.bind(c))
+			b.pressed.connect(_on_choice.bind(c, b))
 		cb.add_child(b)
+		btns.append(b)
 	screen.add_child(cb)
+	UIAnim.choices_in(btns)
 
-	# ④ 像素动画演出区（选择后在此播放）
+	# ④ 像素动画演出区（深色土槽 + 木框，选择后在此播放）
 	anim_stage = _make_anim_stage()
 	screen.add_child(anim_stage)
 
-func _on_choice(c: Dictionary) -> void:
+func _on_choice(c: Dictionary, picked: Button = null) -> void:
+	if picked != null and is_instance_valid(picked):
+		UIAnim.stamp(picked, C.green)
 	for child in screen.get_children():
 		if child is VBoxContainer:
 			for btn in child.get_children():
@@ -203,10 +264,11 @@ func _on_choice(c: Dictionary) -> void:
 	var s := gc.state
 	current_choice = c
 	var before := _capture_core(s)
+	_prev_core = before  # 下一次渲染时，顶栏数值从这里滚到新值
 	gc.choose(c, current_event)
 	var deltas := _diff_core(before, s)
 	_play_choice_animation(deltas, str(c.get("result", "")))
-	await get_tree().create_timer(1.35).timeout
+	await get_tree().create_timer(1.6).timeout
 	gc.advance_after_choice(current_event)
 
 func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
@@ -378,6 +440,7 @@ func _btn(text: String, col: Color, primary: bool, cb: Callable) -> Button:
 	b.add_theme_color_override("font_color", col)
 	b.add_theme_font_size_override("font_size", 14)
 	b.pressed.connect(cb)
+	UIAnim.hook_button(b, primary)
 	return b
 
 func _choice_btn(c: Dictionary, s: GameState) -> Button:
@@ -419,31 +482,66 @@ func _roll_item(key: String, val: String) -> PanelContainer:
 	return p
 
 func _render_stats(s: GameState) -> GridContainer:
+	var c_up: Color = UIAnim.UP
+	var c_down: Color = UIAnim.DOWN
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
-	for row in [["🧠 智力", s.intl], ["💪 体质", s.health], ["✨ 魅力", s.charm],
-		["🍀 运气", s.luck], ["💰 金钱", s.money], ["⏳ 寿命", s.lifespan]]:
+	var rows := [
+		["🧠 智力", s.intl, "int"], ["💪 体质", s.health, "health"], ["✨ 魅力", s.charm, "charm"],
+		["🍀 运气", s.luck, "luck"], ["💰 金钱", s.money, "money"], ["⏳ 寿命", s.lifespan, "lifespan"]
+	]
+	for i in range(rows.size()):
+		var row: Array = rows[i]
+		var key: String = str(row[0])
+		var val: int = int(row[1])
+		var ak: String = str(row[2])
+		var from_v: int = int(_prev_core.get(ak, 0))
+		var d: int = val - from_v
 		var p := PanelContainer.new()
 		p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var st := _style(C.panel, C.line, 3)
-		st.content_margin_left = 8; st.content_margin_top = 5
-		st.content_margin_right = 8; st.content_margin_bottom = 5
+		st.content_margin_left = 7; st.content_margin_top = 5
+		st.content_margin_right = 7; st.content_margin_bottom = 5
 		p.add_theme_stylebox_override("panel", st)
 		var h := HBoxContainer.new()
 		h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var lk := _make_label(row[0], C.dim, 12)
+		h.add_theme_constant_override("separation", 2)
+		var lk := _make_label(key, C.dim, 11)
 		lk.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lk.clip_text = true
 		h.add_child(lk)
-		h.add_child(_make_label(str(row[1]), C.txt, 12, true))
+		# 增减标记（选择后闪一下 +3 / -2）
+		var dl := _make_label("", c_up, 10, true)
+		dl.custom_minimum_size = Vector2(26, 0)
+		dl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		dl.clip_text = true
+		h.add_child(dl)
+		var vl := _make_label(str(val), C.txt, 12, true)
+		vl.custom_minimum_size = Vector2(30, 0)
+		vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		h.add_child(vl)
 		p.add_child(h)
 		grid.add_child(p)
+
+		# ① 数值区动画：卡片错峰弹入 + 数字从旧值滚到新值 + 增减标记闪烁
+		UIAnim.stat_card_in(p, i)
+		var ncol: Color = C.txt
+		if d > 0:
+			ncol = C.green
+		elif d < 0:
+			ncol = C.red
+		UIAnim.count_up(vl, from_v, val, ncol, 0.07 * float(i))
+		if d != 0:
+			UIAnim.delta_flash(dl, ("+%d" % d) if d > 0 else str(d),
+				c_up if d > 0 else c_down, 0.07 * float(i))
 	return grid
 
 func _render_abstract(s: GameState) -> VBoxContainer:
 	var vb := VBoxContainer.new()
 	var a := s.abstract_val
+	var prev_a: int = int(_prev_core.get("abstract", 0))
 	var label := "正常人类" if a < 31 else ("有点东西" if a < 61 else ("精神状态受关注" if a < 86 else "已经成佛了"))
 	var col := C.pink if a >= 61 else C.cyan
 	var head := HBoxContainer.new()
@@ -451,18 +549,38 @@ func _render_abstract(s: GameState) -> VBoxContainer:
 	var hl := _make_label("抽象度 %s" % label, col, 11, true)
 	hl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(hl)
-	head.add_child(_make_label("%d/100" % a, C.dim, 11))
+	var nl := _make_label("%d/100" % prev_a, C.dim, 11)
+	head.add_child(nl)
 	vb.add_child(head)
-	var bar_bg := PanelContainer.new()
-	bar_bg.custom_minimum_size = Vector2(0, 9)
-	bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	bar_bg.add_theme_stylebox_override("panel", _style(Color(0.039, 0.051, 0.067), Color(0, 0, 0, 0), 2))
+	# 木框凹槽 > 行容器 > 填充条：填充条靠 custom_minimum_size 控宽，
+	# 不会被 PanelContainer 拉满（原实现直接把条塞进 PanelContainer，视觉上永远 100%）
+	var track := PanelContainer.new()
+	track.custom_minimum_size = Vector2(0, 13)
+	track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var tsb := _style(Color(0.239, 0.180, 0.125), C.line, 2)
+	tsb.set_border_width_all(2)
+	tsb.content_margin_left = 2; tsb.content_margin_right = 2
+	tsb.content_margin_top = 2; tsb.content_margin_bottom = 2
+	track.add_theme_stylebox_override("panel", tsb)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 0)
+	track.add_child(row)
 	var fill := PanelContainer.new()
-	fill.custom_minimum_size = Vector2(maxi(1, a) * 5, 9)
 	fill.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	fill.add_theme_stylebox_override("panel", _style(col, Color(0, 0, 0, 0), 2))
-	bar_bg.add_child(fill)
-	vb.add_child(bar_bg)
+	fill.custom_minimum_size = Vector2(float(maxi(1, prev_a)) * 4.0, 0)
+	fill.add_theme_stylebox_override("panel", _style(col, Color(0, 0, 0, 0), 1))
+	row.add_child(fill)
+	var sp := Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(sp)
+	vb.add_child(track)
+
+	# ① 数值区动画：抽象度条生长 + 数值滚动
+	UIAnim.bar_grow(fill, float(maxi(1, prev_a) * 4), float(maxi(1, a) * 4), 0.22)
+	if prev_a != a:
+		var tw := nl.create_tween()
+		tw.tween_method(func(v: float): nl.text = "%d/100" % int(round(v)),
+			float(prev_a), float(a), 0.56).set_delay(0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	return vb
 
 func _render_tags(s: GameState) -> HBoxContainer:
@@ -538,9 +656,13 @@ func _make_age_box(age: int) -> PanelContainer:
 # ==========================================================
 func _make_anim_stage() -> Control:
 	var c := Control.new()
-	c.custom_minimum_size = Vector2(0, 130)
+	c.custom_minimum_size = Vector2(0, 152)
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.clip_contents = true
+	# ④ 演出区舞台：深色土槽 + 木框（尺寸一变就重绘底景，只清 _bg 标记节点）
+	UIAnim.stage_backdrop(c)
+	c.resized.connect(func(): UIAnim.stage_backdrop(c))
 	return c
 
 ## 记录用于对比的核心数值快照
@@ -566,23 +688,33 @@ func _play_choice_animation(deltas: Array, result_text: String) -> void:
 	if anim_stage == null or not is_instance_valid(anim_stage):
 		return
 	for ch in anim_stage.get_children():
-		ch.queue_free()
+		if not ch.has_meta("_bg"):   # 保留舞台底景（土槽 + 木框）
+			ch.queue_free()
 
 	var w := anim_stage.size.x
 	if w <= 0.0:
 		w = 320.0
 	var h := anim_stage.size.y
 	if h <= 0.0:
-		h = 130.0
-	var cx := w * 0.5
+		h = 152.0
 
 	var net := 0
 	for d in deltas:
 		if str(d["key"]) != "abstract":
 			net += int(d["delta"])
-	var col := C.green if net > 0 else (C.red if net < 0 else C.cyan)
+	var c_up: Color = UIAnim.UP
+	var c_down: Color = UIAnim.DOWN
+	var c_gold: Color = UIAnim.GOLD
+	var c_parch: Color = UIAnim.PARCH
+	var col: Color = c_up if net > 0 else (c_down if net < 0 else c_gold)
 
-	# 1. 全区域极性闪光（最底层）
+	# 0. 暖色微光粒（星露谷风的空气感，垫在最底层）
+	UIAnim.embers(anim_stage, w, h, 7)
+
+	# 1. 暖色光点四散
+	UIAnim.soft_burst(anim_stage, w, h, Color(col.r, col.g, col.b, 0.9))
+
+	# 2. 全区域极性闪光
 	var flash := ColorRect.new()
 	flash.color = Color(col.r, col.g, col.b, 0.0)
 	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -595,33 +727,33 @@ func _play_choice_animation(deltas: Array, result_text: String) -> void:
 		if is_instance_valid(flash):
 			flash.queue_free())
 
-	# 2. 主题 VFX：每个选项"相应的动画"（按本次选择特征分发，最多 3 层）
+	# 3. 主题 VFX：每个选项"相应的动画"（按本次选择特征分发，最多 3 层）
 	var anims := _pick_anims(deltas, current_choice, current_event)
 	var new_tags: Array = []
 	for t in current_choice.get("tags", []):
 		if gc.state.has_tag(str(t)):
 			new_tags.append(str(t))
-	ChoiceVFX.play(anim_stage, anims, new_tags, C)
+	ChoiceVFX.play(anim_stage, anims, new_tags, STAGE_PAL)
 
-	# 3. 结果文本（最上层）
+	# 4. 结果文本（浅色，深色土槽上才读得清）
 	if not result_text.is_empty():
-		var rt := _make_label(result_text, C.txt, 13, true)
-		rt.position = Vector2(12, 8)
-		rt.custom_minimum_size = Vector2(w - 24, 0)
+		var rt := _make_label(result_text, c_parch, 13, true)
+		rt.position = Vector2(14, 10)
+		rt.custom_minimum_size = Vector2(w - 28, 0)
 		rt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		rt.modulate.a = 0.0
 		anim_stage.add_child(rt)
 		var t1 := create_tween()
 		t1.tween_property(rt, "modulate:a", 1.0, 0.18)
 
-	# 4. 浮动增减数字（精确信息层，位于主题 VFX 之上）
-	var y0 := 48.0
+	# 5. 浮动增减数字（精确信息层，位于主题 VFX 之上）
+	var y0 := 62.0
 	for i in range(deltas.size()):
 		var d: Dictionary = deltas[i]
 		var dv := int(d["delta"])
-		var dcol := C.green if dv > 0 else C.red
+		var dcol: Color = c_up if dv > 0 else c_down
 		var lbl := _make_label("%+d %s" % [dv, str(d["name"])], dcol, 15, true)
-		lbl.position = Vector2(cx - 46.0 + float(i % 3 - 1) * 70.0, y0)
+		lbl.position = Vector2(w * 0.5 - 46.0 + float(i % 3 - 1) * 70.0, y0)
 		lbl.modulate.a = 0.0
 		anim_stage.add_child(lbl)
 		var tp := create_tween()
