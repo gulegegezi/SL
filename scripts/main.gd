@@ -261,8 +261,9 @@ func render_main() -> void:
 
 	# ④ 像素动画演出区（深色土槽 + 木框，选择后在此播放）
 	anim_stage = _make_anim_stage()
-	screen.add_child(_make_label("人生剧场 · 选择后播放剧情", C.dim, 11))
+	screen.add_child(_make_label("生活小镇 · 你的选择改变身边的世界", C.dim, 11))
 	screen.add_child(anim_stage)
+	_story.configure(gc.state)
 	_continue = _btn("看完剧情，继续人生 →", C.green, true, func():
 		if not _choice_busy or _continue.disabled:
 			return
@@ -684,7 +685,7 @@ func _make_age_box(age: int) -> PanelContainer:
 # ==========================================================
 func _make_anim_stage() -> Control:
 	var c := StoryStage.new()
-	c.custom_minimum_size = Vector2(0, 300)
+	c.custom_minimum_size = Vector2(0, 420)
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_story = c
 	return c
@@ -710,6 +711,7 @@ func _diff_core(before: Dictionary, s: GameState) -> Array:
 ## 选择后演出：极性闪光 + 主题 VFX + 结果文本 + 浮动增减数字
 func _play_choice_animation(deltas: Array, result_text: String) -> void:
 	if is_instance_valid(_story):
+		_story.configure(gc.state)
 		_story.play(current_event, current_choice, deltas)
 
 # ==========================================================

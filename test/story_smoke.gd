@@ -26,7 +26,7 @@ func run() -> void:
 	main._on_choice(choice)
 	assert(main.gc.state.money == before + 5)
 	assert(main._continue.disabled)
-	await create_timer(3.5).timeout
+	await create_timer(6.1).timeout
 	assert(not main._continue.disabled)
 	assert(main.gc.state.age == 10)
 	# 在真实渲染模式下保存当前 UI。
@@ -37,7 +37,7 @@ func run() -> void:
 	main._continue.pressed.emit()
 	assert(main.gc.state.age > 10)
 	assert(not main._choice_busy)
-	print("PASS: eight story modes, semantic routing, duplicate-choice guard, completion gate, next event")
+	print("PASS: all story modes, semantic routing, duplicate-choice guard, completion gate, next event")
 	main.queue_free()
 	await process_frame
 	await create_timer(0.3).timeout

@@ -4,6 +4,8 @@ class_name GameState
 extends RefCounted
 
 # ---- 属性 ----
+var story_world: Dictionary = {}  # 单局持续存在的像素小镇与人生足迹
+
 var province: String = ""
 var region: String = ""
 var gender: String = ""
