@@ -6,6 +6,7 @@ const GameController := preload("res://scripts/game_controller.gd")
 const GameState := preload("res://scripts/game_state.gd")
 const DataLoader := preload("res://scripts/data_loader.gd")
 const ChoiceVFX := preload("res://scripts/vfx.gd")
+const StoryStage := preload("res://scripts/story_stage.gd")
 const UIAnim := preload("res://scripts/ui_anim.gd")
 
 # ---- 颜色（星露谷风：羊皮纸面板 + 木框 + 深墨文字）----
@@ -43,6 +44,9 @@ var current_event: Dictionary = {}
 var current_choice: Dictionary = {}  # 本次选择的选项快照（供动画分发读取特征）
 var anim_stage: Control  # 底部像素动画演出区（每次渲染重建）
 var _prev_core: Dictionary = {}  # 上一次数值快照，供数值滚动动画用
+var _choice_busy := false
+var _story: Control
+var _continue: Button
 var _backdrop: Control
 var _leaf_layer: Control
 
@@ -59,7 +63,7 @@ func _ready() -> void:
 	age_tag.add_theme_color_override("font_color", ink)
 	var foot := $MarginContainer/ScrollContainer/VBox/Footer as Label
 	foot.add_theme_color_override("font_color", ink_dim)
-	foot.text = "点击选项继续 · 一局约 5-10 分钟 · 一辈子就是一天"
+	foot.text = "选择 → 观看剧情 → 继续人生"
 
 	# 星露谷农场背景（垫在 UI 最底层）＋常驻云/山风/萤火
 	($ColorRect as ColorRect).color = Color(0.09, 0.10, 0.20)
@@ -177,6 +181,7 @@ func render_roll(s: GameState) -> void:
 # 主游戏页
 # ==========================================================
 func render_main() -> void:
+	_choice_busy = false
 	var s := gc.state
 	if s.age >= s.lifespan or s.health <= 0:
 		gc.end_game()
@@ -225,7 +230,11 @@ func render_main() -> void:
 	var title_lbl := _make_label(title, C.pink if is_abs else C.yellow, 16, true, 0.5)
 	var text_lbl := _make_label(banner + text, C.txt, 14)
 	text_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vb.add_child(stage_lbl)
+	var event_head := HBoxContainer.new()
+	stage_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	event_head.add_child(stage_lbl)
+	event_head.add_child(_make_age_box(s.age))
+	vb.add_child(event_head)
 	vb.add_child(title_lbl)
 	vb.add_child(text_lbl)
 	screen.add_child(card)
@@ -246,14 +255,27 @@ func render_main() -> void:
 			b.pressed.connect(_on_choice.bind(c, b))
 		cb.add_child(b)
 		btns.append(b)
+	screen.add_child(_make_label("选择 · 每一步都算数", C.dim, 11))
 	screen.add_child(cb)
 	UIAnim.choices_in(btns)
 
 	# ④ 像素动画演出区（深色土槽 + 木框，选择后在此播放）
 	anim_stage = _make_anim_stage()
+	screen.add_child(_make_label("人生剧场 · 选择后播放剧情", C.dim, 11))
 	screen.add_child(anim_stage)
+	_continue = _btn("看完剧情，继续人生 →", C.green, true, func():
+		if not _choice_busy or _continue.disabled:
+			return
+		_continue.disabled = true
+		gc.advance_after_choice(current_event)
+	)
+	_continue.visible = false
+	screen.add_child(_continue)
 
 func _on_choice(c: Dictionary, picked: Button = null) -> void:
+	if _choice_busy:
+		return
+	_choice_busy = true
 	if picked != null and is_instance_valid(picked):
 		UIAnim.stamp(picked, C.green)
 	for child in screen.get_children():
@@ -268,8 +290,14 @@ func _on_choice(c: Dictionary, picked: Button = null) -> void:
 	gc.choose(c, current_event)
 	var deltas := _diff_core(before, s)
 	_play_choice_animation(deltas, str(c.get("result", "")))
-	await get_tree().create_timer(1.6).timeout
-	gc.advance_after_choice(current_event)
+	_continue.visible = true
+	_continue.disabled = true
+	_continue.text = "剧情演出中…"
+	await get_tree().process_frame
+	($MarginContainer/ScrollContainer as ScrollContainer).ensure_control_visible(anim_stage)
+	await _story.finished
+	_continue.disabled = false
+	_continue.text = "看完剧情，继续人生 →"
 
 func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
 	pass
@@ -634,7 +662,7 @@ func _render_status_bar(s: GameState) -> HBoxContainer:
 	left.add_child(_render_abstract(s))
 	hb.add_child(left)
 
-	hb.add_child(_make_age_box(s.age))
+
 	return hb
 
 func _make_age_box(age: int) -> PanelContainer:
@@ -655,14 +683,10 @@ func _make_age_box(age: int) -> PanelContainer:
 # 选择后的“像素动画”演出
 # ==========================================================
 func _make_anim_stage() -> Control:
-	var c := Control.new()
-	c.custom_minimum_size = Vector2(0, 152)
+	var c := StoryStage.new()
+	c.custom_minimum_size = Vector2(0, 300)
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	c.clip_contents = true
-	# ④ 演出区舞台：深色土槽 + 木框（尺寸一变就重绘底景，只清 _bg 标记节点）
-	UIAnim.stage_backdrop(c)
-	c.resized.connect(func(): UIAnim.stage_backdrop(c))
+	_story = c
 	return c
 
 ## 记录用于对比的核心数值快照
@@ -685,83 +709,8 @@ func _diff_core(before: Dictionary, s: GameState) -> Array:
 
 ## 选择后演出：极性闪光 + 主题 VFX + 结果文本 + 浮动增减数字
 func _play_choice_animation(deltas: Array, result_text: String) -> void:
-	if anim_stage == null or not is_instance_valid(anim_stage):
-		return
-	for ch in anim_stage.get_children():
-		if not ch.has_meta("_bg"):   # 保留舞台底景（土槽 + 木框）
-			ch.queue_free()
-
-	var w := anim_stage.size.x
-	if w <= 0.0:
-		w = 320.0
-	var h := anim_stage.size.y
-	if h <= 0.0:
-		h = 152.0
-
-	var net := 0
-	for d in deltas:
-		if str(d["key"]) != "abstract":
-			net += int(d["delta"])
-	var c_up: Color = UIAnim.UP
-	var c_down: Color = UIAnim.DOWN
-	var c_gold: Color = UIAnim.GOLD
-	var c_parch: Color = UIAnim.PARCH
-	var col: Color = c_up if net > 0 else (c_down if net < 0 else c_gold)
-
-	# 0. 暖色微光粒（星露谷风的空气感，垫在最底层）
-	UIAnim.embers(anim_stage, w, h, 7)
-
-	# 1. 暖色光点四散
-	UIAnim.soft_burst(anim_stage, w, h, Color(col.r, col.g, col.b, 0.9))
-
-	# 2. 全区域极性闪光
-	var flash := ColorRect.new()
-	flash.color = Color(col.r, col.g, col.b, 0.0)
-	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
-	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	anim_stage.add_child(flash)
-	var t0 := create_tween()
-	t0.tween_property(flash, "color:a", 0.20, 0.12)
-	t0.tween_property(flash, "color:a", 0.0, 0.42)
-	t0.finished.connect(func():
-		if is_instance_valid(flash):
-			flash.queue_free())
-
-	# 3. 主题 VFX：每个选项"相应的动画"（按本次选择特征分发，最多 3 层）
-	var anims := _pick_anims(deltas, current_choice, current_event)
-	var new_tags: Array = []
-	for t in current_choice.get("tags", []):
-		if gc.state.has_tag(str(t)):
-			new_tags.append(str(t))
-	ChoiceVFX.play(anim_stage, anims, new_tags, STAGE_PAL)
-
-	# 4. 结果文本（浅色，深色土槽上才读得清）
-	if not result_text.is_empty():
-		var rt := _make_label(result_text, c_parch, 13, true)
-		rt.position = Vector2(14, 10)
-		rt.custom_minimum_size = Vector2(w - 28, 0)
-		rt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		rt.modulate.a = 0.0
-		anim_stage.add_child(rt)
-		var t1 := create_tween()
-		t1.tween_property(rt, "modulate:a", 1.0, 0.18)
-
-	# 5. 浮动增减数字（精确信息层，位于主题 VFX 之上）
-	var y0 := 62.0
-	for i in range(deltas.size()):
-		var d: Dictionary = deltas[i]
-		var dv := int(d["delta"])
-		var dcol: Color = c_up if dv > 0 else c_down
-		var lbl := _make_label("%+d %s" % [dv, str(d["name"])], dcol, 15, true)
-		lbl.position = Vector2(w * 0.5 - 46.0 + float(i % 3 - 1) * 70.0, y0)
-		lbl.modulate.a = 0.0
-		anim_stage.add_child(lbl)
-		var tp := create_tween()
-		tp.set_parallel(true)
-		tp.tween_property(lbl, "modulate:a", 1.0, 0.15).set_delay(0.06 * i)
-		tp.tween_property(lbl, "position:y", y0 - 24.0, 0.7).set_delay(0.06 * i)
-		var tf := create_tween()
-		tf.tween_property(lbl, "modulate:a", 0.0, 0.3).set_delay(0.06 * i + 0.55)
+	if is_instance_valid(_story):
+		_story.play(current_event, current_choice, deltas)
 
 # ==========================================================
 # 选项特征 → 动画类型分发
