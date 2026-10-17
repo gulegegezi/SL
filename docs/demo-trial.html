@@ -44,7 +44,14 @@ aside .k{color:#5ee0f0}
 @keyframes shk{0%{transform:translate(0,0)}20%{transform:translate(-6px,3px)}
   40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,-3px)}
   80%{transform:translate(4px,3px)}100%{transform:translate(0,0)}}
+.camera{position:absolute;inset:0;transform-origin:50% 84%;
+  transition:transform .3s cubic-bezier(.3,.9,.3,1)}
 .scene{position:absolute;left:20px;top:11px;width:480px;height:270px}
+.bar{position:absolute;left:0;right:0;height:0;background:#000;z-index:12;
+  transition:height .22s cubic-bezier(.3,.9,.3,1)}
+.bar.top{top:0}.bar.bot{bottom:0}
+.bar.on{height:16px}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:14}
 .dark{position:absolute;inset:0;background:rgba(6,8,14,.34);pointer-events:none}
 .props{position:absolute;inset:0;pointer-events:none}
 .props img{position:absolute;image-rendering:pixelated;transform-origin:bottom center}
@@ -126,12 +133,17 @@ p.text{font-size:13px;line-height:1.85;color:#d8e2ec;white-space:pre-line;margin
   </div>
 
   <div class="stage" id="stage">
-    <img class="scene px" id="scene" alt="">
-    <div class="dark"></div>
-    <div class="props" id="props"></div>
-    <div class="rig" id="rigNpc"><img data-p="head" alt=""><img data-p="torso" alt=""><img data-p="armL" alt=""><img data-p="armR" alt=""><img data-p="legL" alt=""><img data-p="legR" alt=""></div>
-    <div class="rig" id="rigPlayer"><img data-p="head" alt=""><img data-p="torso" alt=""><img data-p="armL" alt=""><img data-p="armR" alt=""><img data-p="legL" alt=""><img data-p="legR" alt=""></div>
-    <div class="bubble" id="bubble"></div>
+    <div class="camera" id="camera">
+      <img class="scene px" id="scene" alt="">
+      <div class="dark"></div>
+      <div class="props" id="props"></div>
+      <div class="rig" id="rigNpc"><img data-p="head" alt=""><img data-p="torso" alt=""><img data-p="armL" alt=""><img data-p="armR" alt=""><img data-p="legL" alt=""><img data-p="legR" alt=""></div>
+      <div class="rig" id="rigPlayer"><img data-p="head" alt=""><img data-p="torso" alt=""><img data-p="armL" alt=""><img data-p="armR" alt=""><img data-p="legL" alt=""><img data-p="legR" alt=""></div>
+      <div class="bubble" id="bubble"></div>
+    </div>
+    <div class="bar top" id="barTop"></div>
+    <div class="bar bot" id="barBot"></div>
+    <div class="flash" id="flash"></div>
     <div class="vfx" id="vfx"></div>
     <div class="banner" id="banner"></div>
     <div class="res" id="res"><div class="lab">结果</div><div id="resText"></div></div>
@@ -405,75 +417,124 @@ function runBeats(steps,done){
   })();
 }
 
-const WALK_MS=760, NPC_MS=460, ACT_MS=620;
-
-function perform(choice, after){
-  const stage=$('stage'), rig=$('rigPlayer'), nrig=$('rigNpc');
-  const act=poseFor(choice.b);
-  const dl=applyEffects(choice.e||{});
-  addTags(choice.g);
-  const {set,net}=vfxFor(dl);
-  const face=faceFor(dl);
-  const w=520,h=292;
-
-  const startX=SCENE_X+14*SCALE;
-  const targetX=SCENE_X+(NPC_X[sceneFor(S.age,S.node)]-24)*SCALE;
-
-  rig.style.left=startX+'px';
-  rig.style.top=FLOOR-36*parseFloat(rig.dataset.scale||3)+'px';
-
-  const walkN=7, steps=[];
-  /* ① 走位：分段摆腿 + left 过渡 */
-  ownTranslate(rig, targetX, WALK_MS);
-  for(let i=0;i<walkN;i++){
-    steps.push({dur:WALK_MS/walkN, run:(function(k){return function(){ poseRig(rig,'walk',k/walkN); };})(i)});
+/* ================= 导演工具 ================= */
+function doFlash(color,peak,ms){
+  const f=$('flash');
+  f.style.background=color;
+  f.animate([{opacity:0},{opacity:peak,offset:.25},{opacity:0}],{duration:ms,fill:'both'});
+}
+function bars(on){ $('barTop').classList.toggle('on',on); $('barBot').classList.toggle('on',on); }
+function camPush(k,ox,oy,ms){
+  const c=$('camera');
+  c.style.transition='transform '+ms+'ms cubic-bezier(.3,.9,.3,1)';
+  c.style.transformOrigin=ox+'% '+oy+'%';
+  c.style.transform='scale('+k+')';
+}
+function camReset(ms){
+  const c=$('camera');
+  c.style.transition='transform '+ms+'ms cubic-bezier(.3,.9,.3,1)';
+  c.style.transform='none';
+}
+function typeText(el,text,cps){
+  el.textContent='';
+  let i=0;
+  function tick(){
+    if(i>=text.length) return;
+    i++;
+    el.textContent=text.slice(0,i);
+    const ch=text.charAt(i-1);
+    setTimeout(tick,(ch==='\uFF0C'||ch==='\u3002'||ch==='\uFF01'||ch==='\uFF1F'||ch==='\u2026')?cps*4:cps);
   }
-  /* ② NPC 转身 + 冒话 */
-  steps.push({dur:sp(120), run:function(){
-    poseRig(rig,'idle',0);
-    const b=$('bubble');
-    const tag=(choice.g&&choice.g.length)?choice.g[0]:act.tag;
-    b.textContent=tag;
-    b.style.left=(parseFloat(nrig.style.left)-8)+'px';
-    b.style.top=(parseFloat(nrig.style.top)-42)+'px';
-    b.classList.add('show');
-    nrig.style.transform='scaleX(-1)';
-    poseRig(nrig,'wave',0.25);
-  }});
-  steps.push({dur:sp(NPC_MS), run:function(){ nrig.style.transform='scaleX(-1)'; }});
-  /* ③ 动作 */
-  steps.push({dur:sp(40), run:function(){ poseRig(rig, act.pose, 0.3); }});
-  steps.push({dur:sp(ACT_MS), run:function(){}});
-  /* ④ 结果 */
-  steps.push({dur:sp(60), run:function(){
-    poseRig(rig,'idle',0);
-    $('bubble').classList.remove('show');
-    nrig.style.transform='none';
-    poseRig(nrig,'idle',0);
-    const ps=rigParts(rig);
-    if(ps.head){
-      const key=rig.dataset.key;
-      const nm=(face!=='normal'&&ART.chars[key+'_head_'+face])?key+'_head_'+face:key+'_head';
-      ps.head.src=ART.chars[nm];
-    }
-    clearVfx();
-    set.forEach(function(fn){ try{ fn(w,h); }catch(e){} });
-    if(Math.abs(net)>=6){ stage.classList.add('shake'); setTimeout(function(){stage.classList.remove('shake');},360); }
-    renderStats(); renderTags();
-    $('resText').textContent=choice.r||'';
-    $('res').classList.add('show');
-    if(act.tag){
-      const b=$('banner'); b.textContent=act.tag; b.classList.remove('show');
-      void b.offsetWidth; b.classList.add('show');
-    }
-  }});
-  steps.push({dur:sp(760), run:function(){ if(after) after(); }});
-
-  runBeats(steps);
+  tick();
 }
 function ownTranslate(el,toX,ms){
   el.style.transition='left '+ms+'ms cubic-bezier(.4,0,.2,1)';
   el.style.left=toX+'px';
+}
+
+/* 分镜时长（ms，快进会再乘系数） */
+const T={fade:120,barsIn:160,pushIn:260,walk:620,npcTurn:150,hold1:200,hold2:180,
+         bubble:200,act:480,freeze:300,reveal:170,read:1150,barsOut:240,out:300};
+
+function showBubble(choice,act){
+  const nrig=$('rigNpc'), b=$('bubble');
+  const tag=(choice.g&&choice.g.length)?choice.g[0]:act.tag;
+  b.textContent=tag;
+  b.style.left=(parseFloat(nrig.style.left)-6)+'px';
+  b.style.top=(parseFloat(nrig.style.top)-40)+'px';
+  b.classList.add('show');
+  b.animate([{opacity:0,transform:'translateY(6px) scale(.9)'},{opacity:1,transform:'none'}],
+            {duration:200,easing:'cubic-bezier(.34,1.56,.64,1)',fill:'both'});
+}
+
+function reveal(choice,act,dl,face,set,net,rig,nrig){
+  poseRig(rig,'idle',0);
+  $('bubble').classList.remove('show');
+  nrig.style.transform='none';
+  poseRig(nrig,'idle',0);
+  const ps=rigParts(rig);
+  if(ps.head){
+    const key=rig.dataset.key;
+    const nm=(face!=='normal'&&ART.chars[key+'_head_'+face])?key+'_head_'+face:key+'_head';
+    ps.head.src=ART.chars[nm];
+  }
+  doFlash('#ffffff',Math.abs(net)>=6?0.55:0.20,200);
+  clearVfx();
+  set.forEach(function(fn){ try{ fn(520,292); }catch(e){} });
+  if(Math.abs(net)>=6){
+    $('stage').classList.add('shake');
+    setTimeout(function(){ $('stage').classList.remove('shake'); },360);
+  }
+  renderStats(); renderTags();
+  $('res').classList.add('show');
+  typeText($('resText'), choice.r||'', sp(18));
+  if(act.tag){
+    const bn=$('banner'); bn.textContent=act.tag; bn.classList.remove('show');
+    void bn.offsetWidth; bn.classList.add('show');
+  }
+}
+
+/* ================= 分镜：入场 → 走位 → 停一拍 → 转身 → 动作 → 定格 → 揭晓 ================= */
+function perform(choice, after){
+  const rig=$('rigPlayer'), nrig=$('rigNpc');
+  const act=poseFor(choice.b);
+  const dl=applyEffects(choice.e||{});
+  addTags(choice.g);
+  const vf=vfxFor(dl), set=vf.set, net=vf.net;
+  const face=faceFor(dl);
+  const sc=sceneFor(S.age,S.node);
+  const targetX=SCENE_X+(NPC_X[sc]-24)*SCALE;
+  rig.style.left=(SCENE_X+14*SCALE)+'px';
+  const shots=[];
+
+  shots.push({dur:sp(T.fade),   run:function(){ doFlash('#000000',0.9,T.fade); }});
+  shots.push({dur:sp(T.barsIn), run:function(){ bars(true); }});
+  shots.push({dur:sp(T.pushIn), run:function(){ camPush(1.10,50,84,T.pushIn); }});
+
+  ownTranslate(rig,targetX,sp(T.walk));
+  const N=7;
+  for(let i=0;i<N;i++){
+    shots.push({dur:sp(T.walk/N), run:(function(k){return function(){ poseRig(rig,'walk',k/N); };})(i)});
+  }
+  shots.push({dur:sp(45), run:function(){ poseRig(rig,'idle',0); }});
+  shots.push({dur:sp(T.hold1)});
+
+  shots.push({dur:sp(T.npcTurn), run:function(){
+    nrig.style.transform='scaleX(-1)'; poseRig(nrig,'idle',0); }});
+  shots.push({dur:sp(T.hold2)});
+  shots.push({dur:sp(T.bubble), run:function(){ showBubble(choice,act); }});
+
+  shots.push({dur:sp(40), run:function(){ poseRig(rig,act.pose,0.35); }});
+  shots.push({dur:sp(T.act)});
+  shots.push({dur:sp(50), run:function(){ poseRig(rig,act.pose,0.6); }});
+  shots.push({dur:sp(T.freeze), run:function(){ camPush(1.22,50,82,T.freeze); }});
+
+  shots.push({dur:sp(T.reveal), run:function(){ reveal(choice,act,dl,face,set,net,rig,nrig); }});
+  shots.push({dur:sp(T.read)});
+  shots.push({dur:sp(T.barsOut), run:function(){ bars(false); camReset(T.barsOut); }});
+  shots.push({dur:sp(T.out), run:function(){ if(after) after(); }});
+
+  runBeats(shots);
 }
 
 /* ================= 数值 ================= */
