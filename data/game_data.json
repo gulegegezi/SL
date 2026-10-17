@@ -7065,7 +7065,11 @@
           "tags": [
             "守口如瓶"
           ],
-          "next": "C22A"
+          "next": "C22A",
+          "relations": {
+            "同桌": 2
+          },
+          "memory": "你替同桌守住了秘密"
         },
         {
           "label": "告诉他：我爸妈也吵过架",
@@ -7077,7 +7081,11 @@
           "tags": [
             "共情"
           ],
-          "next": "C22B"
+          "next": "C22B",
+          "relations": {
+            "同桌": 1
+          },
+          "memory": "你告诉同桌，你爸妈也吵过架"
         },
         {
           "label": "偷偷告诉老师",
@@ -7089,7 +7097,11 @@
           "tags": [
             "告老师"
           ],
-          "next": "C22C"
+          "next": "C22C",
+          "relations": {
+            "同桌": -1
+          },
+          "memory": "你把同桌的秘密告诉了老师"
         }
       ],
       "cond": {
@@ -7112,7 +7124,11 @@
             "int": 1,
             "charm": 1
           },
-          "next": "C23A"
+          "next": "C23A",
+          "relations": {
+            "妈妈": 2
+          },
+          "memory": "你主动跟妈妈交代了考试"
         },
         {
           "label": "把成绩单藏进书包夹层",
@@ -7124,7 +7140,11 @@
           "tags": [
             "报喜不报忧"
           ],
-          "next": "C23B"
+          "next": "C23B",
+          "relations": {
+            "妈妈": -1
+          },
+          "memory": "你把成绩单藏了起来"
         },
         {
           "label": "让同桌冒充家长",
@@ -7133,7 +7153,11 @@
             "abstract": 5,
             "luck": 2
           },
-          "next": "C23C"
+          "next": "C23C",
+          "relations": {
+            "妈妈": 0
+          },
+          "memory": "你让同桌冒充了家长"
         }
       ],
       "cond": {
@@ -7159,7 +7183,11 @@
           "tags": [
             "小聪明"
           ],
-          "next": "C24A"
+          "next": "C24A",
+          "relations": {
+            "妈妈": -1
+          },
+          "memory": "你把58分改成了88分"
         },
         {
           "label": "回家坦白",
@@ -7168,7 +7196,11 @@
             "charm": 2,
             "health": -1
           },
-          "next": "C24B"
+          "next": "C24B",
+          "relations": {
+            "妈妈": 2
+          },
+          "memory": "你回家坦白了58分"
         },
         {
           "label": "把卷子折成纸飞机",
@@ -7177,7 +7209,11 @@
             "abstract": 4,
             "luck": 1
           },
-          "next": "C24C"
+          "next": "C24C",
+          "relations": {
+            "妈妈": 0
+          },
+          "memory": "你把卷子折成了纸飞机"
         }
       ],
       "cond": {
@@ -7329,7 +7365,11 @@
           "tags": [
             "仗义"
           ],
-          "next": "C28A"
+          "next": "C28A",
+          "relations": {
+            "同桌": 2
+          },
+          "memory": "你把伞给了同桌"
         },
         {
           "label": "自己撑伞回家",
@@ -7338,7 +7378,11 @@
             "health": 1,
             "abstract": 1
           },
-          "next": "C28B"
+          "next": "C28B",
+          "relations": {
+            "同桌": -1
+          },
+          "memory": "你自己撑伞回了家"
         },
         {
           "label": "拉他一起撑",
@@ -7347,7 +7391,11 @@
             "charm": 2,
             "health": 1
           },
-          "next": "C28C"
+          "next": "C28C",
+          "relations": {
+            "同桌": 1
+          },
+          "memory": "你和同桌挤在一把伞下"
         }
       ],
       "cond": {
@@ -7495,7 +7543,11 @@
             "charm": 3,
             "int": 1
           },
-          "next": "C32A"
+          "next": "C32A",
+          "relations": {
+            "同学": 2
+          },
+          "memory": "你认真给每个同学写了留言"
         },
         {
           "label": "只写一句：后会有期",
@@ -7504,7 +7556,11 @@
             "abstract": 2,
             "luck": 1
           },
-          "next": "C32B"
+          "next": "C32B",
+          "relations": {
+            "同学": 0
+          },
+          "memory": "你只写了后会有期"
         },
         {
           "label": "在最后一页画了一幅画",
@@ -7513,7 +7569,11 @@
             "abstract": 3,
             "charm": 2
           },
-          "next": "C32C"
+          "next": "C32C",
+          "relations": {
+            "同学": 1
+          },
+          "memory": "你在留言册最后一页画了一幅画"
         }
       ],
       "cond": {

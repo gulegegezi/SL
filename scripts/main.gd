@@ -286,6 +286,11 @@ func render_main() -> void:
 		screen.add_child(tg)
 	else:
 		tg.free()
+	var rel := _render_relations(s)
+	if rel.get_child_count() > 0:
+		screen.add_child(rel)
+	else:
+		rel.free()
 
 	# ② 事件
 	var is_abs := s.line == "absurd" or s.abstract_val >= 86
@@ -571,6 +576,21 @@ func _choice_btn(c: Dictionary, s: GameState) -> Button:
 				b.text += "  (%s需 %d)" % [_attr_cn(k), int(c["require"][k])]
 				b.disabled = true
 				break
+	# 联动门槛：关系值或前置标签不够时，不隐藏选项，而是灰掉并说明差什么。
+	if not b.disabled and c.has("requireRelations"):
+		for who in c["requireRelations"]:
+			if s.get_relation(str(who)) < int(c["requireRelations"][who]):
+				col = C.red
+				b.text += "  （%s）" % str(c.get("requireHint", "需要和%s更亲近" % str(who)))
+				b.disabled = true
+				break
+	if not b.disabled and c.has("requireTags"):
+		for t in c["requireTags"]:
+			if not s.has_tag(str(t)):
+				col = C.red
+				b.text += "  （%s）" % str(c.get("requireHint", "需要先经历一些事"))
+				b.disabled = true
+				break
 	b.add_theme_stylebox_override("normal", _style(C.panel, C.line, 4))
 	b.add_theme_stylebox_override("hover", _style(C.panel2, C.green, 4))
 	b.add_theme_stylebox_override("pressed", _style(C.panel2, C.green, 4))
@@ -713,6 +733,33 @@ func _render_tags(s: GameState) -> HBoxContainer:
 		tp.add_theme_stylebox_override("panel", st)
 		tp.add_child(_make_label(ts, C.red if bad.has(ts) else C.cyan, 11))
 		hb.add_child(tp)
+	return hb
+
+## 联动关系条：只显示非零值，最多 5 个，避免顶栏被长线剧情撑爆。
+func _render_relations(s: GameState) -> HBoxContainer:
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 5)
+	var shown := 0
+	for who in s.relations:
+		var v := int(s.relations[who])
+		if v == 0:
+			continue
+		if shown >= 5:
+			break
+		var tp := PanelContainer.new()
+		var st := _style(C.panel2, C.line, 2)
+		st.content_margin_left = 7; st.content_margin_top = 2
+		st.content_margin_right = 7; st.content_margin_bottom = 2
+		tp.add_theme_stylebox_override("panel", st)
+		var sign_txt := "+" if v > 0 else ""
+		tp.add_child(_make_label("%s %s%d" % [str(who), sign_txt, v], C.green if v > 0 else C.red, 11))
+		hb.add_child(tp)
+		shown += 1
+	if shown > 0:
+		var lead := _make_label("羁绊", C.dim, 10)
+		lead.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		hb.add_child(lead)
+		hb.move_child(lead, 0)
 	return hb
 
 func _stage_name(age: int) -> String:

@@ -3,6 +3,7 @@
 > 本文件的剧情数据来自 [`data/story_opening.json`](../data/story_opening.json)，
 > 新增的随机事件写入 [`data/game_data.json`](../data/game_data.json) 的 `EVENTS`。
 > 两者都存放在 GitHub 仓库 **SL**（`gulegegezi/SL`）中。
+> 序章之后的跨年龄段联动剧本见 [story-links.md](story-links.md)。
 
 ![序章首屏：出生 · 第一声](story-opening-preview.png)
 

@@ -56,6 +56,8 @@ func run() -> void:
 	var ids: Dictionary = {}
 	for id in nodes:
 		ids[str(id)] = true
+	for id in Data.all_story_nodes():
+		ids[str(id)] = true
 	for e in Data.events():
 		ids[str(e.get("id", ""))] = true
 
@@ -78,11 +80,12 @@ func run() -> void:
 			assert(ids.has(t), "%s -> missing event next %s" % [id, t])
 	assert(prologue >= 20, "opening should have at least 20 prologue nodes")
 
-	# 随机事件的 next 必须落在 story_opening.json 的分支节点里
+	# 随机事件 / 联动剧本的 next 必须能解析到续篇节点
 	for e in Data.events():
 		for c in e.get("choices", []):
 			for t in targets(c.get("next", null)):
-				assert(nodes.has(t), "%s branch target missing %s" % [e.get("id", ""), t])
+				assert(not Data.find_story_node(t).is_empty(),
+					"%s branch target missing %s" % [e.get("id", ""), t])
 
 	# 普通线：一路选第一个
 	var gc := Controller.new()

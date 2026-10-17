@@ -39,6 +39,9 @@ var used_ids: Array = []
 # 分支剧情：choice.next / event.next 推入的待播节点，按顺序优先于随机事件池。
 var story_queue: Array = []
 var opening_done: bool = false
+# 跨事件联动：人物关系值（-5..10）与「当时选了什么」的短记忆。
+var relations: Dictionary = {}
+var choice_log: Dictionary = {}
 var abstract_peaked: int = 0
 var abstract_dropped: int = 0
 var near_death: int = 0
@@ -79,6 +82,16 @@ func has_tag(tag: String) -> bool:
 
 func tag_value(tag: String) -> Variant:
 	return tags.get(tag, false)
+
+func get_relation(who: String) -> int:
+	return int(relations.get(who, 0))
+
+func add_relation(who: String, delta: int) -> void:
+	relations[who] = clampi(get_relation(who) + delta, -5, 10)
+
+## 某次事件当时选了什么；后续文本用 {choice:事件ID} 取回这句话。
+func choice_memory(eid: String) -> String:
+	return str(choice_log.get(eid, ""))
 
 func clamp_all() -> void:
 	intl = clampi(intl, 0, 20)

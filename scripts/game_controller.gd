@@ -154,7 +154,7 @@ func pick_event() -> Dictionary:
 		var nid: String = str(s.story_queue.pop_front())
 		var branch := DataLoader.find_story_node(nid)
 		if not branch.is_empty():
-			var node: Dictionary = branch.duplicate(true)
+			var node: Dictionary = _fill_node(branch)
 			event_picked.emit(state, node)
 			return node
 
@@ -197,36 +197,13 @@ func pick_event() -> Dictionary:
 			continue
 		if e.get("id") == "A015" and s.has_tag("退休"):
 			continue
+		# 标签 / 关系 / 选择记忆 / 年龄 / 属性条件统一走 _cond_matches。
 		var c: Dictionary = e.get("cond", {})
-		# 标签条件：序章已经抓过周，就不再抽到普通的抓周事件。
-		var blocked := false
-		for t in c.get("tags", []):
-			if not s.has_tag(str(t)):
-				blocked = true
-				break
-		if not blocked:
-			for t in c.get("notTags", []):
-				if s.has_tag(str(t)):
-					blocked = true
-					break
-		if blocked:
+		if not _cond_matches(c):
 			continue
-		if c.has("minAge") and s.age < int(c["minAge"]):
+		# once：长线剧情一局只出现一次。
+		if e.get("once", false) and s.used_ids.has(e.get("id", "")):
 			continue
-		if c.has("maxAge") and s.age > int(c["maxAge"]):
-			continue
-		if c.has("minMoney") and s.money < int(c["minMoney"]):
-			continue
-		if c.has("maxHealth") and s.health > int(c["maxHealth"]):
-			continue
-		if c.has("minInt") and s.intl < int(c["minInt"]):
-			continue
-		if c.has("minCharm") and s.charm < int(c["minCharm"]):
-			continue
-		if c.has("onlyProvince"):
-			var op: Array = c["onlyProvince"]
-			if not op.has(s.province):
-				continue
 		if e.get("id") == "S_LOTTERY" and rng.randf() > 0.5:
 			continue
 		cands.append(e)
@@ -279,7 +256,7 @@ func pick_event() -> Dictionary:
 	if ev == null:
 		return {}
 
-	var eDict: Dictionary = ev
+	var eDict: Dictionary = _fill_node(ev)
 	event_picked.emit(state, eDict)
 	return eDict
 
@@ -314,9 +291,16 @@ func choose(c: Dictionary, ev: Dictionary) -> void:
 		s.near_death += 1
 
 	apply_effects(eff)
+	if c.has("relations"):
+		for who in c["relations"]:
+			s.add_relation(str(who), int(c["relations"][who]))
+	# 记住这次选择，后续事件文本可用 {choice:事件ID} 回忆它。
+	var eid := str(ev.get("id", ""))
+	if not eid.is_empty():
+		s.choice_log[eid] = str(c.get("memory", c.get("label", "")))
 	_queue_story_next(c, ev)
 
-	var result_text: String = c.get("result", "")
+	var result_text: String = _fill_text(str(c.get("result", "")))
 	choice_resolved.emit(s, result_text)
 
 	# 延迟推进（UI 动画时间由调用方处理）
@@ -366,8 +350,41 @@ func _queue_story_next(c: Dictionary, ev: Dictionary) -> void:
 		return
 	state.story_queue.push_back(nxt)
 
-## 条件：tags / notTags / line / minInt / minCharm / minLuck / minMoney /
-## minHealth / minAge / maxAge / onlyProvince。所有列出的条件需同时满足。
+## 把 {choice:事件ID} 换成当时的 memory；没记录就退成“那一次”。
+func _fill_text(text: String) -> String:
+	if text.is_empty() or not text.contains("{choice:"):
+		return text
+	var out := text
+	for eid in state.choice_log:
+		out = out.replace("{choice:%s}" % str(eid), str(state.choice_log[eid]))
+	var re := RegEx.new()
+	re.compile("\\{choice:[^}]+\\}")
+	for m in re.search_all(out):
+		out = out.replace(m.get_string(0), "那一次")
+	return out
+
+## 返回填好回忆文本的副本，避免污染 DataLoader 里的原始 JSON。
+func _fill_node(node: Dictionary) -> Dictionary:
+	var out: Dictionary = node.duplicate(true)
+	out["title"] = _fill_text(str(out.get("title", "")))
+	out["text"] = _fill_text(str(out.get("text", "")))
+	if out.has("altTitle"):
+		out["altTitle"] = _fill_text(str(out["altTitle"]))
+	if out.has("altText"):
+		out["altText"] = _fill_text(str(out["altText"]))
+	for key in ["choices", "altChoices"]:
+		if not out.has(key):
+			continue
+		var arr: Array = out[key]
+		for c in arr:
+			if typeof(c) != TYPE_DICTIONARY:
+				continue
+			c["label"] = _fill_text(str(c.get("label", "")))
+			c["result"] = _fill_text(str(c.get("result", "")))
+	return out
+
+## 条件：tags / notTags / anyTags / line / min* / max* / relations /
+## maxRelations / chose / onlyProvince。所有列出的条件需同时满足。
 func _cond_matches(cond: Dictionary) -> bool:
 	var s := state
 	if cond.has("tags"):
@@ -378,15 +395,40 @@ func _cond_matches(cond: Dictionary) -> bool:
 		for t in cond["notTags"]:
 			if s.has_tag(str(t)):
 				return false
+	if cond.has("anyTags"):
+		var hit := false
+		for t in cond["anyTags"]:
+			if s.has_tag(str(t)):
+				hit = true
+				break
+		if not hit:
+			return false
 	if cond.has("line") and s.line != str(cond["line"]):
 		return false
 	if cond.has("minInt") and s.intl < int(cond["minInt"]): return false
+	if cond.has("maxInt") and s.intl > int(cond["maxInt"]): return false
 	if cond.has("minCharm") and s.charm < int(cond["minCharm"]): return false
+	if cond.has("maxCharm") and s.charm > int(cond["maxCharm"]): return false
 	if cond.has("minLuck") and s.luck < int(cond["minLuck"]): return false
+	if cond.has("maxLuck") and s.luck > int(cond["maxLuck"]): return false
 	if cond.has("minMoney") and s.money < int(cond["minMoney"]): return false
+	if cond.has("maxMoney") and s.money > int(cond["maxMoney"]): return false
 	if cond.has("minHealth") and s.health < int(cond["minHealth"]): return false
+	if cond.has("maxHealth") and s.health > int(cond["maxHealth"]): return false
 	if cond.has("minAge") and s.age < int(cond["minAge"]): return false
 	if cond.has("maxAge") and s.age > int(cond["maxAge"]): return false
+	if cond.has("relations"):
+		for who in cond["relations"]:
+			if s.get_relation(str(who)) < int(cond["relations"][who]):
+				return false
+	if cond.has("maxRelations"):
+		for who in cond["maxRelations"]:
+			if s.get_relation(str(who)) > int(cond["maxRelations"][who]):
+				return false
+	if cond.has("chose"):
+		for eid in cond["chose"]:
+			if s.choice_memory(str(eid)) != str(cond["chose"][eid]):
+				return false
 	if cond.has("onlyProvince"):
 		var op: Array = cond["onlyProvince"]
 		if not op.has(s.province):
