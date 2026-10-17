@@ -65,8 +65,17 @@ func run() -> void:
 		assert(root.get_visible_rect().encloses(rect), "continue must be completely visible")
 		var age_before: int = main.gc.state.age
 		var step_before: int = main.gc.state.step
+		# 本次选项是否把剧情接到下一幕；接的话年龄先不涨，等后续节点播完再涨。
+		var chained := false
+		if main.current_choice.has("next"):
+			chained = not main.gc._resolve_next(main.current_choice["next"]).is_empty()
+		if not chained and main.current_event.has("next"):
+			chained = not main.gc._resolve_next(main.current_event["next"]).is_empty()
 		await click(main._continue)
-		assert(main.gc.state.age > age_before)
+		if chained:
+			assert(main.gc.state.age == age_before, "chained story should keep age")
+		else:
+			assert(main.gc.state.age > age_before)
 		assert(main.gc.state.step == step_before + 1)
 		assert(not main._choice_busy)
 		assert(not main._action_bar.visible)

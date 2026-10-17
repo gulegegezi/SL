@@ -36,6 +36,9 @@ var family: Dictionary = {}
 var talent: Dictionary = {}
 var recent: Array = []
 var used_ids: Array = []
+# 分支剧情：choice.next / event.next 推入的待播节点，按顺序优先于随机事件池。
+var story_queue: Array = []
+var opening_done: bool = false
 var abstract_peaked: int = 0
 var abstract_dropped: int = 0
 var near_death: int = 0

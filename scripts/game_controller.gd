@@ -132,11 +132,31 @@ func new_game() -> GameState:
 	game_started.emit(state)
 	return state
 
+## 开局剧情入口：普通线 / 抽象线各自从 story_opening.json 的 start 节点开始。
+## 序章节点通过 choice.next / event.next 串成分支树，播放期间不推进年龄。
+func begin_opening() -> bool:
+	if state == null or state.opening_done or not state.story_queue.is_empty():
+		return false
+	var start := DataLoader.opening_start(state.line)
+	if start.is_empty():
+		return false
+	state.story_queue = [start]
+	return true
+
 # ==========================================================
 # 事件抽取
 # ==========================================================
 func pick_event() -> Dictionary:
 	var s := state
+
+	# 分支剧情优先：上一选项 next 指定的节点不参与随机池，也不会被 recent 过滤。
+	while not s.story_queue.is_empty():
+		var nid: String = str(s.story_queue.pop_front())
+		var branch := DataLoader.find_story_node(nid)
+		if not branch.is_empty():
+			var node: Dictionary = branch.duplicate(true)
+			event_picked.emit(state, node)
+			return node
 
 	# 特殊事件优先
 	var xhsd := DataLoader.xhsd_provinces()
@@ -178,6 +198,19 @@ func pick_event() -> Dictionary:
 		if e.get("id") == "A015" and s.has_tag("退休"):
 			continue
 		var c: Dictionary = e.get("cond", {})
+		# 标签条件：序章已经抓过周，就不再抽到普通的抓周事件。
+		var blocked := false
+		for t in c.get("tags", []):
+			if not s.has_tag(str(t)):
+				blocked = true
+				break
+		if not blocked:
+			for t in c.get("notTags", []):
+				if s.has_tag(str(t)):
+					blocked = true
+					break
+		if blocked:
+			continue
 		if c.has("minAge") and s.age < int(c["minAge"]):
 			continue
 		if c.has("maxAge") and s.age > int(c["maxAge"]):
@@ -234,11 +267,14 @@ func pick_event() -> Dictionary:
 	)
 
 	if ev == null:
-		# 兜底：取任意不在 recent 中的事件
+		# 兜底：取任意不在 recent 中的事件；已抓过周就不再把 C01 兜回来。
 		for e in DataLoader.events():
-			if not s.recent.has(e.get("id", "")):
-				ev = e
-				break
+			if s.recent.has(e.get("id", "")):
+				continue
+			if e.get("id") == "C01" and s.has_tag("_已抓周"):
+				continue
+			ev = e
+			break
 
 	if ev == null:
 		return {}
@@ -278,6 +314,7 @@ func choose(c: Dictionary, ev: Dictionary) -> void:
 		s.near_death += 1
 
 	apply_effects(eff)
+	_queue_story_next(c, ev)
 
 	var result_text: String = c.get("result", "")
 	choice_resolved.emit(s, result_text)
@@ -292,16 +329,94 @@ func advance_after_choice(ev: Dictionary) -> void:
 	var eid: String = ev.get("id", "")
 	if not s.used_ids.has(eid):
 		s.used_ids.append(eid)
-	_next_phase()
+	# 分支树里还有下一幕：不涨年龄，先把这段剧情播完。
+	if not s.story_queue.is_empty():
+		phase_advanced.emit(s)
+		return
+	_next_phase(int(ev.get("ageGain", -1)))
+
+# ==========================================================
+# 分支剧情：next 解析 / 选项显隐 / 条件判断
+# ==========================================================
+## choice.next 优先，其次 event.next。支持字符串或
+## {"default": "OP14", "when": [{"tags": ["社牛"], "next": "OP13A"}]}。
+func _resolve_next(spec: Variant) -> String:
+	if spec == null:
+		return ""
+	if typeof(spec) == TYPE_STRING or typeof(spec) == TYPE_STRING_NAME:
+		return str(spec)
+	if typeof(spec) != TYPE_DICTIONARY:
+		return ""
+	var d: Dictionary = spec
+	for rule in d.get("when", []):
+		if typeof(rule) == TYPE_DICTIONARY and _cond_matches(rule):
+			return str(rule.get("next", ""))
+	return str(d.get("default", ""))
+
+func _queue_story_next(c: Dictionary, ev: Dictionary) -> void:
+	var nxt := _resolve_next(c.get("next", null))
+	if nxt.is_empty():
+		nxt = _resolve_next(ev.get("next", null))
+	if nxt.is_empty():
+		if bool(ev.get("endOpening", false)):
+			state.opening_done = true
+		return
+	if DataLoader.find_story_node(nxt).is_empty():
+		push_warning("story next target missing: " + nxt)
+		return
+	state.story_queue.push_back(nxt)
+
+## 条件：tags / notTags / line / minInt / minCharm / minLuck / minMoney /
+## minHealth / minAge / maxAge / onlyProvince。所有列出的条件需同时满足。
+func _cond_matches(cond: Dictionary) -> bool:
+	var s := state
+	if cond.has("tags"):
+		for t in cond["tags"]:
+			if not s.has_tag(str(t)):
+				return false
+	if cond.has("notTags"):
+		for t in cond["notTags"]:
+			if s.has_tag(str(t)):
+				return false
+	if cond.has("line") and s.line != str(cond["line"]):
+		return false
+	if cond.has("minInt") and s.intl < int(cond["minInt"]): return false
+	if cond.has("minCharm") and s.charm < int(cond["minCharm"]): return false
+	if cond.has("minLuck") and s.luck < int(cond["minLuck"]): return false
+	if cond.has("minMoney") and s.money < int(cond["minMoney"]): return false
+	if cond.has("minHealth") and s.health < int(cond["minHealth"]): return false
+	if cond.has("minAge") and s.age < int(cond["minAge"]): return false
+	if cond.has("maxAge") and s.age > int(cond["maxAge"]): return false
+	if cond.has("onlyProvince"):
+		var op: Array = cond["onlyProvince"]
+		if not op.has(s.province):
+			return false
+	return true
+
+## UI 用：showIf / hideIf 控制选项是否出现。全部隐藏时主界面会退回原选项列表。
+func choice_available(c: Dictionary) -> bool:
+	if c.has("showIf"):
+		var show: Variant = c["showIf"]
+		if typeof(show) == TYPE_DICTIONARY and not _cond_matches(show):
+			return false
+	if c.has("hideIf"):
+		var hide: Variant = c["hideIf"]
+		if typeof(hide) == TYPE_DICTIONARY and _cond_matches(hide):
+			return false
+	return true
 
 # ==========================================================
 # 阶段推进
 # ==========================================================
-func _next_phase() -> void:
+## age_gain >= 0 时使用事件指定的年数（序章 OP14 用它把 0 岁推到 1 岁）；
+## -1 表示沿用原来的 2~4 年节奏。
+func _next_phase(age_gain: int = -1) -> void:
 	var s := state
-	var years := 3 if s.abstract_val >= 86 else 2
-	if float(s.step) > float(s.max_step) * 0.66:
-		years += 1
+	var years := age_gain
+	if years < 0:
+		years = 3 if s.abstract_val >= 86 else 2
+		if float(s.step) > float(s.max_step) * 0.66:
+			years += 1
 	s.age += years
 
 	# 抽象度回归

@@ -3,6 +3,7 @@
 extends RefCounted
 
 static var data: Dictionary = {}
+static var opening: Dictionary = {}
 static var loaded: bool = false
 
 static func ensure_loaded() -> void:
@@ -21,7 +22,25 @@ static func ensure_loaded() -> void:
 		return
 	var parsed_dict: Dictionary = parsed
 	data = parsed_dict
+	_load_opening()
 	loaded = true
+
+## 序章/分支节点与主数据分文件存放，便于单独编辑剧情树。
+static func _load_opening() -> void:
+	var path := "res://data/story_opening.json"
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		opening = {}
+		push_warning("DataLoader: no opening story at " + path)
+		return
+	var txt := f.get_as_text()
+	f.close()
+	var parsed: Variant = JSON.parse_string(txt)
+	if not (parsed is Dictionary):
+		opening = {}
+		push_error("DataLoader: opening story JSON parse failed")
+		return
+	opening = parsed
 
 # ---- 便捷访问器 ----
 static func regions() -> Dictionary: return data.get("REGIONS", {})
@@ -52,3 +71,22 @@ static func find_event(eid: String) -> Dictionary:
 		if e.get("id", "") == eid:
 			return e
 	return {}
+
+# ---- 序章 / 分支剧情 ----
+static func opening_data() -> Dictionary: return opening
+static func opening_nodes() -> Dictionary: return opening.get("nodes", {})
+static func opening_title() -> String: return str(opening.get("title", ""))
+
+## 普通线与抽象线各有独立开头；缺省回到 normal。
+static func opening_start(line: String) -> String:
+	var starts: Dictionary = opening.get("start", {})
+	if starts.has(line):
+		return str(starts[line])
+	return str(starts.get("normal", ""))
+
+## 分支节点优先查序章文件，再查普通事件，这样随机事件也能 next 到后续节点。
+static func find_story_node(eid: String) -> Dictionary:
+	var nodes: Dictionary = opening_nodes()
+	if nodes.has(eid):
+		return nodes[eid]
+	return find_event(eid)

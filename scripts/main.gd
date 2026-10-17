@@ -239,8 +239,9 @@ func render_roll(s: GameState) -> void:
 	tier_wrap.add_child(_make_label("初始 智力%d 体质%d 魅力%d 运气%d 金钱%d" % [s.intl, s.health, s.charm, s.luck, s.money], C.green, 12))
 	tier_wrap.add_child(_spacer(18))
 	tier_wrap.add_child(_btn("开始这一生", C.green, true, func():
-		s.age = 1
+		s.age = 0
 		s.step = 0
+		gc.begin_opening()
 		render_main()
 	))
 	vb.add_child(tier_wrap)
@@ -291,7 +292,14 @@ func render_main() -> void:
 	var use_alt := s.abstract_val >= 90
 	var title: String = ev.get("altTitle", ev.get("title", "")) if (use_alt and ev.has("altTitle")) else ev.get("title", "")
 	var text: String = ev.get("altText", ev.get("text", "")) if (use_alt and ev.has("altText")) else ev.get("text", "")
-	var choices: Array = ev.get("altChoices", ev.get("choices", [])) if (use_alt and ev.has("altChoices")) else ev.get("choices", [])
+	var raw_choices: Array = ev.get("altChoices", ev.get("choices", [])) if (use_alt and ev.has("altChoices")) else ev.get("choices", [])
+	# 标签条件选项（如“吃货”才出现的桂花糕）；全部被过滤时退回原列表，避免空选项。
+	var choices: Array = []
+	for c in raw_choices:
+		if gc.choice_available(c):
+			choices.append(c)
+	if choices.is_empty():
+		choices = raw_choices
 
 	# 分镜必须使用屏幕上实际显示的事件文本（含抽象线替代文本）。
 	current_event = ev.duplicate()
@@ -308,7 +316,12 @@ func render_main() -> void:
 
 	var card := _make_card(is_abs)
 	var vb := _cv(card)
-	var stage_lbl := _make_label(_stage_name(s.age), C.dim, 10)
+	var stage_text := _stage_name(s.age)
+	if str(ev.get("stage", "")) == "prologue":
+		stage_text = str(ev.get("chapter", "序章"))
+	elif str(ev.get("stage", "")) == "branch":
+		stage_text = "那之后"
+	var stage_lbl := _make_label(stage_text, C.dim, 10)
 	var title_lbl := _make_label(title, C.pink if is_abs else C.yellow, 16, true, 0.5)
 	var text_lbl := _make_label(banner + text, C.txt, 14)
 	text_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
