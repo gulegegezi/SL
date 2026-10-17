@@ -1,5 +1,5 @@
 extends SceneTree
-## 序章与主界面的接线回归：开始人生后先播 OP01，选项进入 OP02，且序章内年龄不变。
+## 序章与主界面的接线回归：开始人生后先播 OP01 过场，选择进入 OP02，且序章内年龄不变。
 func _initialize() -> void:
 	call_deferred("run")
 
@@ -16,26 +16,26 @@ func run() -> void:
 	await process_frame
 
 	assert(str(main.current_event.get("id", "")) == "OP01", "first screen must be the prologue")
-	assert(str(main.current_event.get("title", "")) == "第一声")
-	assert(main.current_event.get("choices", []).size() >= 3)
 	assert(str(main.current_event.get("stage", "")) == "prologue")
+	assert(main._cutscene != null, "OP01 should render as an Undertale-style cutscene")
 
-	var picked: Dictionary = main.current_event["choices"][0]
-	main._on_choice(picked)
-	assert(main._choice_busy)
-	assert(main._continue.disabled)
-	await create_timer(main._story.duration + 0.4).timeout
-	assert(not main._continue.disabled, "story must finish before continue")
+	var cs = main._cutscene
+	var guard := 0
+	while not cs.in_choices and guard < 20:
+		cs.advance()
+		guard += 1
+	assert(cs.in_choices, "cutscene should reach the in-box choice menu")
+	assert(guard < 20)
 
 	var step_before: int = main.gc.state.step
-	main._continue.pressed.emit()
+	cs.confirm()
 	await process_frame
 	assert(str(main.current_event.get("id", "")) == "OP02", "first choice should lead to OP02")
 	assert(main.gc.state.step == step_before + 1)
 	assert(main.gc.state.age == 0, "prologue must not advance age")
 	assert(not main._choice_busy)
 
-	print("PASS: opening UI wiring, choice -> OP02, age held during prologue")
+	print("PASS: opening cutscene wiring, choice -> OP02, age held during prologue")
 	main.queue_free()
 	await process_frame
 	quit()

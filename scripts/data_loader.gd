@@ -5,6 +5,7 @@ extends RefCounted
 static var data: Dictionary = {}
 static var opening: Dictionary = {}
 static var arcs: Dictionary = {}
+static var cutscenes: Dictionary = {}
 static var loaded: bool = false
 
 static func ensure_loaded() -> void:
@@ -25,6 +26,7 @@ static func ensure_loaded() -> void:
 	data = parsed_dict
 	_load_opening()
 	_load_arcs()
+	_load_cutscenes()
 	loaded = true
 
 ## 序章/分支节点与主数据分文件存放，便于单独编辑剧情树。
@@ -61,6 +63,22 @@ static func _load_arcs() -> void:
 		return
 	arcs = parsed
 
+## Undertale 式过场：按事件 id 匹配。
+static func _load_cutscenes() -> void:
+	var path := "res://data/story_cutscenes.json"
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		cutscenes = {}
+		return
+	var txt := f.get_as_text()
+	f.close()
+	var parsed: Variant = JSON.parse_string(txt)
+	if not (parsed is Dictionary):
+		cutscenes = {}
+		push_error("DataLoader: cutscenes JSON parse failed")
+		return
+	cutscenes = parsed
+
 # ---- 便捷访问器 ----
 static func regions() -> Dictionary: return data.get("REGIONS", {})
 static func region_keys() -> Array: return regions().keys()
@@ -89,6 +107,13 @@ static func events() -> Array:
 static func arc_events() -> Array: return arcs.get("events", [])
 static func arc_nodes() -> Dictionary: return arcs.get("nodes", {})
 static func arcs_data() -> Dictionary: return arcs
+
+static func cutscenes_data() -> Dictionary: return cutscenes
+static func cutscene_map() -> Dictionary: return cutscenes.get("cutscenes", {})
+
+## 返回某事件的过场定义（没有则空字典）。
+static func cutscene_for(eid: String) -> Dictionary:
+	return cutscene_map().get(eid, {})
 
 ## 按条件获取事件（供 pickEvent 使用）
 static func events_by_filter(filter_fn: Callable) -> Array:

@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "title": "剧情过场时间轴",
+  "description": "按事件 id 匹配的 Undertale 式过场：bg 用 assets/scenes，cast 用 assets/chars 分件立绘；beats 是逐字对白，选项取自事件本身。",
+  "cutscenes": {
+    "OP01": {
+      "bg": "hospital",
+      "cast": [
+        {"role": "parent", "x": 118, "y": 74},
+        {"role": "lead", "x": 52, "y": 76}
+      ],
+      "beats": [
+        {"speaker": "旁白", "face": "lead", "expr": "neutral", "text": "凌晨四点，雨刚停。产房的灯管嗡嗡响，你被一双戴橡胶手套的手倒提着，拍了两下脚心。"},
+        {"speaker": "你", "face": "lead", "expr": "shock", "text": "……"},
+        {"speaker": "妈妈", "face": "parent", "expr": "neutral", "text": "看，是个健康的宝宝。"}
+      ]
+    },
+    "V03": {
+      "bg": "park",
+      "cast": [
+        {"role": "lead", "x": 60, "y": 74},
+        {"role": "friend", "x": 118, "y": 74}
+      ],
+      "beats": [
+        {"speaker": "旁白", "face": "lead", "expr": "neutral", "text": "手机响了三次，一个陌生号码。"},
+        {"speaker": "你", "face": "lead", "expr": "shock", "text": "喂？"},
+        {"speaker": "老同学", "face": "friend", "expr": "neutral", "text": "是我。……我回来了，想见一面。"},
+        {"speaker": "你", "face": "lead", "expr": "happy", "text": "你这些年，到底去哪儿了？"}
+      ]
+    },
+    "V13": {
+      "bg": "hospital",
+      "cast": [
+        {"role": "lead", "x": 60, "y": 76},
+        {"role": "parent", "x": 118, "y": 74}
+      ],
+      "beats": [
+        {"speaker": "旁白", "face": "lead", "expr": "neutral", "text": "凌晨两点，医院的走廊很亮，亮得人睡不着。"},
+        {"speaker": "爸爸", "face": "parent", "expr": "neutral", "text": "没事，你回去睡吧。"},
+        {"speaker": "你", "face": "lead", "expr": "sad", "text": "爸，你先回去吧，今晚我守着。"}
+      ]
+    }
+  }
+}

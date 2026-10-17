@@ -7,6 +7,7 @@ const GameState := preload("res://scripts/game_state.gd")
 const DataLoader := preload("res://scripts/data_loader.gd")
 const ChoiceVFX := preload("res://scripts/vfx.gd")
 const StoryStage := preload("res://scripts/story_stage.gd")
+const CutsceneStage := preload("res://scripts/cutscene_stage.gd")
 const UIAnim := preload("res://scripts/ui_anim.gd")
 
 # ---- 颜色（星露谷风：羊皮纸面板 + 木框 + 深墨文字）----
@@ -46,6 +47,7 @@ var anim_stage: Control  # 底部像素动画演出区（每次渲染重建）
 var _prev_core: Dictionary = {}  # 上一次数值快照，供数值滚动动画用
 var _choice_busy := false
 var _story: Control
+var _cutscene: Control
 var _action_bar: PanelContainer
 var _next_dialogue: Button
 var _continue: Button
@@ -279,6 +281,12 @@ func render_main() -> void:
 	current_event = ev
 	clear_screen()
 
+	# 事件有专属过场定义时，走 Undertale 式时间轴（对白+立绘+心形光标），
+	# 不再渲染文字卡和按钮；选择仍回到 gc.choose 结算。
+	if not DataLoader.cutscene_for(str(ev.get("id", ""))).is_empty():
+		render_cutscene(ev)
+		return
+
 	# ① 顶栏：数值(六维) + 抽象度 + 年龄框
 	screen.add_child(_render_status_bar(s))
 	var tg := _render_tags(s)
@@ -365,6 +373,57 @@ func render_main() -> void:
 	screen.add_child(anim_stage)
 	_story.configure(gc.state)
 	_story.finished.connect(_on_story_finished)
+
+# ==========================================================
+# Undertale 式过场（事件有 story_cutscenes.json 定义时使用）
+# ==========================================================
+func render_cutscene(ev: Dictionary) -> void:
+	var cut := DataLoader.cutscene_for(str(ev.get("id", ""))).duplicate(true)
+	for b in cut.get("beats", []):
+		b["text"] = gc._fill_text(str(b.get("text", "")))
+	var cs := CutsceneStage.new()
+	cs.custom_minimum_size = Vector2(0, 500)
+	cs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	screen.add_child(cs)
+	cs.configure(ev, cut, gc.state, _enrich_choices(ev))
+	cs.finished.connect(func(choice: Dictionary): _on_cutscene_choice(ev, choice))
+	_cutscene = cs
+	cs.play()
+	cs.grab_focus()
+
+## 把事件的选项转成过场菜单项：hide 掉 showIf 不满足的；require* 不满足的标灰锁定。
+func _enrich_choices(ev: Dictionary) -> Array:
+	var out: Array = []
+	for c in ev.get("choices", []):
+		if not gc.choice_available(c):
+			continue
+		var locked := false
+		var hint := ""
+		if c.has("requireRelations"):
+			for who in c["requireRelations"]:
+				if gc.state.get_relation(str(who)) < int(c["requireRelations"][who]):
+					locked = true
+					hint = str(c.get("requireHint", "需要和%s更亲近" % str(who)))
+					break
+		if not locked and c.has("requireTags"):
+			for t in c["requireTags"]:
+				if not gc.state.has_tag(str(t)):
+					locked = true
+					hint = str(c.get("requireHint", "需要先经历一些事"))
+					break
+		out.append({"choice": c, "locked": locked, "hint": hint})
+	return out
+
+func _on_cutscene_choice(ev: Dictionary, choice: Dictionary) -> void:
+	if _choice_busy:
+		return
+	_choice_busy = true
+	current_event = ev
+	current_choice = choice
+	_prev_core = _capture_core(gc.state)
+	gc.choose(choice, ev)
+	gc.advance_after_choice(ev)
 
 func _on_choice(c: Dictionary, picked: Button = null) -> void:
 	if _choice_busy:
