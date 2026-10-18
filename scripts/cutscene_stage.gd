@@ -6,8 +6,9 @@ signal finished(choice: Dictionary)
 
 const SpriteKit := preload("res://scripts/sprite_kit.gd")
 const AudioFX := preload("res://scripts/audio_fx.gd")
+const PixelCast := preload("res://scripts/pixel_cast.gd")
 
-const BG := Vector2(160, 90)
+const BG := Vector2(160, 120)
 const CHAR := Vector2(24, 36)
 const BOX_H := 92.0
 
@@ -73,6 +74,7 @@ func configure(ev: Dictionary, cutscene: Dictionary, s, choice_list: Array = [])
 	queue_redraw()
 
 func play() -> void:
+	clock = 0.0
 	beat_index = -1
 	in_choices = false
 	choice_index = 0
@@ -146,9 +148,13 @@ func _apply_beat(beat: Dictionary) -> void:
 	var expr := str(beat.get("expr", "neutral"))
 	if face == "lead":
 		lead_expr = expr
-		cur_face = SpriteKit.face(SpriteKit.stage_for_age(age), expr, false)
+		cur_face = SpriteKit.face(PixelCast.stage_for_age(age), expr, false)
 	else:
-		cur_face = SpriteKit.face(face, "neutral", true)
+		cur_face = SpriteKit.face(_visual_role(face), "neutral", true)
+
+func _visual_role(role: String) -> String:
+	# The existing V13 cast uses generic 'parent' for the father.
+	return "mate" if role == "parent" and str(event.get("id", "")) == "V13" else role
 
 func _enter_choices() -> void:
 	in_choices = true
@@ -182,7 +188,7 @@ func _layout() -> void:
 		return
 	var sx := avail_w / BG.x
 	var sy := avail_h / BG.y
-	view_scale = maxf(2.0, floorf(minf(sx, sy)))
+	view_scale = maxf(1.0, floorf(minf(sx, sy)))
 	var cw := BG.x * view_scale
 	var ch := BG.y * view_scale
 	origin = Vector2((size.x - cw) / 2.0, (avail_h - ch) / 2.0 + 6.0)
@@ -202,18 +208,15 @@ func _draw() -> void:
 func _draw_cast(c: Dictionary) -> void:
 	var role := str(c.get("role", "lead"))
 	var is_npc := role != "lead"
-	var key := role if is_npc else SpriteKit.stage_for_age(age)
-	var expr := "neutral" if is_npc else lead_expr
-	var parts := SpriteKit.compose(key, is_npc, expr)
-	var px := origin.x + float(c.get("x", 80)) * view_scale
-	var py := origin.y + float(c.get("y", 64)) * view_scale - CHAR.y * view_scale
-	var bob := 0.0
-	if beat_index >= 0 and not in_choices:
-		bob = roundf(sin(clock * 2.0) * 0.5) / 2.0
-	var rect := Rect2(px, py + bob, CHAR.x * view_scale, CHAR.y * view_scale)
-	for t in parts:
-		if t != null:
-			draw_texture_rect(t, rect, false)
+	var key := _visual_role(role) if is_npc else PixelCast.stage_for_age(age)
+	var foot := Vector2(float(c.get("x", 80)), float(c.get("y", 76)))
+	var entering := not is_npc and beat_index == 0 and clock < 0.9 and not in_choices
+	if entering: foot.x -= 18.0 * (1.0 - smoothstep(0.0, 0.9, clock))
+	var speaking := false
+	if beat_index >= 0 and beat_index < beats.size() and not in_choices:
+		speaking = str(beats[beat_index].get("face", "lead")) == role and visible_chars < _current_text().length()
+	var height := 24.0 if key == "infant" else 36.0
+	PixelCast.draw_actor(self, key, is_npc, origin + foot * view_scale, height * view_scale, clock, entering, speaking)
 
 func _draw_box() -> void:
 	var box := Rect2(8.0, size.y - BOX_H - 8.0, size.x - 16.0, BOX_H)

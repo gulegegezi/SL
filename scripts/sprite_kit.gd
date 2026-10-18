@@ -6,6 +6,7 @@ extends RefCounted
 const LEAD_STAGES := ["child", "teen", "youth", "adult", "middle", "elder"]
 const NPC_ROLES := ["boss", "friend", "mate", "parent", "partner", "teacher"]
 const EXPR_PARTS := {"neutral": "head", "happy": "head_happy", "sad": "head_sad", "shock": "head_shock"}
+const PixelCast := preload("res://scripts/pixel_cast.gd")
 
 static var _cache: Dictionary = {}
 
@@ -24,11 +25,15 @@ static func npc_part(role: String, part: String) -> Texture2D:
 
 ## 对话框立绘：主角按年龄取阶段；NPC 无表情变体，恒用 base head。
 static func face(role: String, expr: String, is_npc: bool) -> Texture2D:
+	var portrait := PixelCast.portrait(role, is_npc, expr == "happy")
+	if portrait != null: return portrait
 	if is_npc:
 		return npc_part(role, "head")
 	return lead_part(role, EXPR_PARTS.get(expr, "head"))
 
 static func scene(name: String) -> Texture2D:
+	var detailed := PixelCast.room(name)
+	if detailed != null: return detailed
 	return tex("res://assets/scenes/scene_%s.png" % name)
 
 static func stage_for_age(age: int) -> String:
@@ -45,5 +50,6 @@ static func compose(stage_or_role: String, is_npc: bool, expr: String) -> Array:
 	var out: Array = []
 	for p in parts:
 		out.append(npc_part(stage_or_role, p) if is_npc else lead_part(stage_or_role, p))
-	out.append(face(stage_or_role, expr, is_npc))
+	# Legacy composition needs its original full-canvas head layer.
+	out.append(npc_part(stage_or_role, "head") if is_npc else lead_part(stage_or_role, EXPR_PARTS.get(expr, "head")))
 	return out
