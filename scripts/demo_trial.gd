@@ -111,6 +111,16 @@ func _restart() -> void:
 	state = GameState.new()
 	state.line = "normal"
 	state.age = 0
+	# 对齐 HTML demo 的初始值：6/7/5/6，金钱 20，抽象 10，寿命 78。
+	state.intl = 6
+	state.health = 7
+	state.charm = 5
+	state.luck = 6
+	state.money = 20
+	state.abstract_val = 10
+	state.abstract_peaked = 10
+	state.abstract_dropped = 10
+	state.lifespan = 78
 	gc = GameController.new()
 	gc.init()
 	gc.state = state
