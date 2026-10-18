@@ -3,6 +3,7 @@
 > 场景：[`scenes/DemoTrial.tscn`](../scenes/DemoTrial.tscn)
 > 控制：[`scripts/demo_trial.gd`](../scripts/demo_trial.gd)
 > 原始单文件 demo：[`docs/demo-trial.html`](demo-trial.html)
+> 独立 Godot 项目：[`godot_demo/`](../godot_demo)（用 Godot 打开 `godot_demo/project.godot`，F5 直接运行）
 
 ![经典 Demo 首屏](demo-trial-godot-preview.png)
 
