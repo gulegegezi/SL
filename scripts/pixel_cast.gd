@@ -4,6 +4,7 @@ const BASE := "res://assets/portraits_v2/"
 const STAGES := ["infant", "child", "teen", "youth", "adult", "middle", "elder"]
 const ROLES := ["parent", "friend", "teacher", "boss", "partner", "mate"]
 const ROOMS := ["home", "classroom", "office", "park", "hospital", "grave"]
+const BEDROOM_TILE := 1      # bedroom.png 图集里带床+书桌的那一格
 static var _regions: Dictionary = {}
 static var _cache: Dictionary = {}
 
@@ -50,13 +51,16 @@ static func portrait(key: String, npc: bool, speaking: bool = false) -> Texture2
 static func room(name: String) -> Texture2D:
 	var key := "room:" + name
 	if _cache.has(key): return _cache[key]
-	if name == "bedroom":
-		_cache[key] = load(BASE + "bedroom.png")
-		return _cache[key]
+	# bedroom.png 也是一张 1536x1024 的图集（3 列 2 行），必须按格子切，
+	# 直接 load 整张会把 6 个房间一次性铺出去。
+	var file := "environment-atlas.png"
 	var index := ROOMS.find(name)
+	if name == "bedroom":
+		file = "bedroom.png"
+		index = BEDROOM_TILE
 	if index < 0: return null
 	var atlas := AtlasTexture.new()
-	atlas.atlas = load(BASE + "environment-atlas.png")
+	atlas.atlas = load(BASE + file)
 	atlas.region = Rect2((index % 3) * 512, floori(index / 3.0) * 512, 512, 512)
 	atlas.filter_clip = true
 	_cache[key] = atlas
