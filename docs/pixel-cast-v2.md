@@ -1,5 +1,7 @@
 # 人生像素素材 · 第一版
 
+制作原理、生成规范、Godot 动画流程与排错方法见 [动画制作技术总结](animation-production-guide.md)。
+
 已接入 Godot 的素材基础版，制作方式是内置 image_gen，完整提示词在 [prompts.json](../assets/portraits_v2/prompts.json)。用户照片仅用于外形与宿舍特征参考，原始照片没有复制到仓库。
 
 ## 查看与试玩
