@@ -32,6 +32,8 @@ var finished_once := false
 var clock := 0.0
 
 var lead_expr := "neutral"
+var lead_action := "idle"
+var anim_clock := 0.0
 var cur_face: Texture2D
 var view_scale := 3.0
 var origin := Vector2.ZERO
@@ -70,11 +72,14 @@ func configure(ev: Dictionary, cutscene: Dictionary, s, choice_list: Array = [])
 	cast = cutscene.get("cast", [])
 	bg_tex = SpriteKit.scene(str(cutscene.get("bg", "home")))
 	lead_expr = "neutral"
+	lead_action = "idle"
+	anim_clock = 0.0
 	_layout()
 	queue_redraw()
 
 func play() -> void:
 	clock = 0.0
+	anim_clock = 0.0
 	beat_index = -1
 	in_choices = false
 	choice_index = 0
@@ -144,13 +149,35 @@ func _next_beat() -> void:
 	queue_redraw()
 
 func _apply_beat(beat: Dictionary) -> void:
-	var face := str(beat.get("face", "lead"))
-	var expr := str(beat.get("expr", "neutral"))
-	if face == "lead":
+	var face_role := str(beat.get("face", "lead"))
+	var expr := SpriteKit.norm_face(str(beat.get("expr", "neutral")))
+	var action := str(beat.get("action", ""))
+	var target := str(beat.get("target", face_role))
+	if action != "":
+		_set_action(target, action)
+	if face_role == "lead":
 		lead_expr = expr
-		cur_face = SpriteKit.face(PixelCast.stage_for_age(age), expr, false)
-	else:
-		cur_face = SpriteKit.face(_visual_role(face), "neutral", true)
+	cur_face = _portrait(face_role, expr)
+
+## 把动作写给 lead 或某个 cast 角色；动作会保持到下一次显式切换。
+func _set_action(role: String, action: String) -> void:
+	if role == "lead":
+		lead_action = action
+		return
+	for c in cast:
+		if str(c.get("role", "")) == role:
+			c["action"] = action
+			return
+
+## 对话框立绘：优先用 frames.json 的 10 表情头部，失败再退回 PixelCast/分件头。
+func _portrait(role: String, expr: String) -> Texture2D:
+	var is_npc := role != "lead"
+	var visual := _visual_role(role) if is_npc else PixelCast.stage_for_age(age)
+	if visual != "infant":
+		var frame_face := SpriteKit.frame_portrait(SpriteKit.key_for(visual, is_npc), expr)
+		if frame_face != null:
+			return frame_face
+	return SpriteKit.face(visual, expr, is_npc)
 
 func _visual_role(role: String) -> String:
 	# The existing V13 cast uses generic 'parent' for the father.
@@ -166,6 +193,7 @@ func _enter_choices() -> void:
 
 func _process(delta: float) -> void:
 	clock += delta
+	anim_clock += delta
 	if in_choices or beat_index < 0:
 		queue_redraw()
 		return
@@ -210,13 +238,31 @@ func _draw_cast(c: Dictionary) -> void:
 	var is_npc := role != "lead"
 	var key := _visual_role(role) if is_npc else PixelCast.stage_for_age(age)
 	var foot := Vector2(float(c.get("x", 80)), float(c.get("y", 76)))
-	var entering := not is_npc and beat_index == 0 and clock < 0.9 and not in_choices
-	if entering: foot.x -= 18.0 * (1.0 - smoothstep(0.0, 0.9, clock))
-	var speaking := false
-	if beat_index >= 0 and beat_index < beats.size() and not in_choices:
-		speaking = str(beats[beat_index].get("face", "lead")) == role and visible_chars < _current_text().length()
+	var entering := false
+	if c.has("from"):
+		var from := Vector2(float(c["from"][0]), float(c["from"][1]))
+		var dur := maxf(0.2, float(c.get("walk_time", 1.0)))
+		var t := clampf(anim_clock / dur, 0.0, 1.0)
+		foot = from.lerp(foot, smoothstep(0.0, 1.0, t))
+		entering = t < 1.0
+	elif not is_npc and beat_index == 0 and clock < 0.9 and not in_choices:
+		foot.x -= 18.0 * (1.0 - smoothstep(0.0, 0.9, clock))
+		entering = true
+	var action := str(c.get("action", "idle"))
+	var face := SpriteKit.norm_face(str(c.get("face", "normal")))
+	if role == "lead":
+		action = lead_action
+		face = SpriteKit.norm_face(lead_expr)
+	if entering:
+		action = "walk"
+		face = "normal"
 	var height := 24.0 if key == "infant" else 36.0
-	PixelCast.draw_actor(self, key, is_npc, origin + foot * view_scale, height * view_scale, clock, entering, speaking)
+	var foot_px := origin + foot * view_scale
+	var drawn := false
+	if key != "infant":
+		drawn = SpriteKit.draw_action(self, key, is_npc, foot_px, height * view_scale, action, face, anim_clock)
+	if not drawn:
+		PixelCast.draw_actor(self, key, is_npc, foot_px, height * view_scale, clock, entering, false)
 
 func _draw_box() -> void:
 	var box := Rect2(8.0, size.y - BOX_H - 8.0, size.x - 16.0, BOX_H)
@@ -226,7 +272,11 @@ func _draw_box() -> void:
 	var face_rect := Rect2(box.position + Vector2(12, 14), Vector2(face_sz, face_sz))
 	draw_rect(face_rect, Color("202028"))
 	if cur_face != null:
-		draw_texture_rect(cur_face, face_rect, false)
+		var tex_size := cur_face.get_size()
+		var fit := minf(face_sz / maxf(1.0, tex_size.x), face_sz / maxf(1.0, tex_size.y))
+		var dest_size := tex_size * fit
+		var dest := Rect2(face_rect.position + (Vector2(face_sz, face_sz) - dest_size) * 0.5, dest_size)
+		draw_texture_rect(cur_face, dest, false)
 	draw_rect(face_rect, Color("ffffff"), false, 1.0)
 	var tx := face_rect.end.x + 12.0
 	var tw := box.end.x - tx - 12.0

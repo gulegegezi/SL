@@ -80,6 +80,8 @@ scale = 显示高度 / 帧图高度
 
 两条路径共用新的角色与背景资源，但没有合并成单一播放器。前者已经接入主角入场步态与说话姿态，逻辑背景空间为 160×120；后者以 320×192 组织房间坐标，再缩放到 UI 动画区。
 
+选项前对白过场现在已接入 [`data/frames.json`](../data/frames.json) 的逐帧动作：主角与 NPC 按 `idle / walk / wave / raise / sit` 播放，`idle` 支持 10 种表情；剧情的 beat 字段 `action` / `target` / `face` 直接驱动换帧，`cast[].from` / `walk_time` 驱动入场走位。婴儿阶段仍走 `PixelCast` 图集，房间背景也继续用 `PixelCast.room()`；选项后的房间演出仍使用旧的时钟换帧。两套数据并不互斥，而是按角色阶段与播放路径分工。
+
 当前角色动画由时钟计算帧号，使用 CanvasItem 绘制，不依赖 `AnimatedSprite2D` 或 `AnimationPlayer` 才能播放：
 
 ```text
@@ -87,6 +89,14 @@ scale = 显示高度 / 帧图高度
       frame = sequence[int(clock × 7) % 4]
 说话：frame = 3 或 0，按 int(clock × 4) 的奇偶切换
 静止：frame = 0
+```
+
+`frames.json` 路径（对白过场的主角 / NPC）：
+
+```text
+动作：idle(3 帧, 10 表情) / walk(4) / wave(4) / raise(3) / sit(3)
+fps： idle 2 / walk 9 / wave 8 / raise 9 / sit 8
+frame = int(anim_clock × fps) % n
 ```
 
 四帧复用能快速覆盖基础动作，但不足以表达全部剧情。当前休息使用角色图旋转后放到床上，没有专门的躺下过渡；也尚无完整四方向行走、拥抱或坐下帧。不要把这些基础演出描述为全部剧情的定制动画。
@@ -122,6 +132,7 @@ max(1.8, 正文字符数 / 28 + 0.9) 秒
 ```text
 godot --headless --editor --path . --import
 godot --headless --path . --script res://test/pixel_assets_smoke.gd
+godot --headless --path . --script res://test/animation_link_smoke.gd
 godot --headless --path . --script res://test/cutscene_smoke.gd
 godot --headless --path . --script res://test/room_sequence_smoke.gd
 godot --headless --path . --script res://test/story_smoke.gd
