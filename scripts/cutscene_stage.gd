@@ -8,7 +8,8 @@ const SpriteKit := preload("res://scripts/sprite_kit.gd")
 const AudioFX := preload("res://scripts/audio_fx.gd")
 const PixelCast := preload("res://scripts/pixel_cast.gd")
 
-const BG := Vector2(160, 120)
+const BG := Vector2(160, 90)
+const SCENE_FLOOR_Y := 62.0
 const CHAR := Vector2(24, 36)
 const BOX_H := 92.0
 
@@ -70,7 +71,7 @@ func configure(ev: Dictionary, cutscene: Dictionary, s, choice_list: Array = [])
 	if choices.is_empty():
 		choices = [{"choice": {"label": "继续", "result": "", "effects": {}}, "locked": false, "hint": ""}]
 	cast = cutscene.get("cast", [])
-	bg_tex = SpriteKit.scene(str(cutscene.get("bg", "home")))
+	bg_tex = SpriteKit.scene_view(str(cutscene.get("bg", "home")))
 	lead_expr = "neutral"
 	lead_action = "idle"
 	anim_clock = 0.0
@@ -223,7 +224,9 @@ func _layout() -> void:
 	view_scale = maxf(1.0, floorf(minf(sx, sy)))
 	var cw := BG.x * view_scale
 	var ch := BG.y * view_scale
-	origin = Vector2((size.x - cw) / 2.0, (avail_h - ch) / 2.0 + 6.0)
+	# 场景与对话框作为一个整体在控件里居中，避免高窗口下出现一大段黑缝。
+	var content_h := ch + box_reserve
+	origin = Vector2((size.x - cw) / 2.0, maxf(4.0, (size.y - content_h) / 2.0 + 4.0))
 
 # ==========================================================
 # 绘制
@@ -231,9 +234,18 @@ func _layout() -> void:
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("000000"))
 	if bg_tex != null:
-		draw_texture_rect(bg_tex, Rect2(origin, BG * view_scale), false)
+		# 场景缩放：背景与人物放在同一个 camera 变换里，只缩放一次，比例不会互相漂移。
+		var cam: Dictionary = cut.get("camera", {})
+		var zoom := maxf(0.5, float(cam.get("zoom", 1.0)))
+		var focus := Vector2(float(cam.get("x", BG.x * 0.5)), float(cam.get("y", 45)))
+		var s := view_scale * zoom
+		var screen_focus := origin + focus * view_scale
+		var offset := screen_focus - focus * s
+		draw_set_transform(offset, 0.0, Vector2(s, s))
+		draw_texture_rect(bg_tex, Rect2(Vector2.ZERO, BG), false)
 		for c in cast:
 			_draw_cast(c)
+		draw_set_transform(Vector2.ZERO)
 	if beat_index >= 0 or in_choices:
 		_draw_box()
 
@@ -241,7 +253,7 @@ func _draw_cast(c: Dictionary) -> void:
 	var role := str(c.get("role", "lead"))
 	var is_npc := role != "lead"
 	var key := _visual_role(role) if is_npc else PixelCast.stage_for_age(age)
-	var foot := Vector2(float(c.get("x", 80)), float(c.get("y", 76)))
+	var foot := Vector2(float(c.get("x", 80)), float(c.get("y", SCENE_FLOOR_Y)))
 	var entering := false
 	if c.has("from"):
 		var from := Vector2(float(c["from"][0]), float(c["from"][1]))
@@ -264,10 +276,20 @@ func _draw_cast(c: Dictionary) -> void:
 		if str(beat.get("face", "lead")) == role and visible_chars < _current_text().length():
 			speaking = true
 	var height := 24.0 if key == "infant" else 36.0
-	PixelCast.draw_actor(self, key, is_npc, origin + foot * view_scale, height * view_scale, clock, walking, speaking)
+	# 脚底软阴影：和人物一起受 camera 缩放，角色才像踩在房间地面上。
+	var shadow_w := 14.0 if key == "infant" else 18.0
+	for i in range(3):
+		var sw := shadow_w * (1.0 - i * 0.16)
+		draw_rect(Rect2(foot.x - sw * 0.5, foot.y - 1.0 + i * 1.2, sw, 1.2),
+			Color(0, 0, 0, 0.20 - i * 0.05))
+	# 在 camera 变换内绘制：foot/height 都是 160x90 场景坐标，和背景同倍缩放。
+	PixelCast.draw_actor(self, key, is_npc, foot, height, clock, walking, speaking)
+
+func _box_rect() -> Rect2:
+	return Rect2(8.0, origin.y + BG.y * view_scale + 8.0, size.x - 16.0, BOX_H)
 
 func _draw_box() -> void:
-	var box := Rect2(8.0, size.y - BOX_H - 8.0, size.x - 16.0, BOX_H)
+	var box := _box_rect()
 	draw_rect(box, Color("000000"))
 	draw_rect(box, Color("ffffff"), false, 2.0)
 	var face_sz := 62.0
@@ -340,7 +362,7 @@ func _gui_input(ev: InputEvent) -> void:
 		accept_event()
 
 func _pick_choice_at(pos: Vector2) -> void:
-	var box := Rect2(8.0, size.y - BOX_H - 8.0, size.x - 16.0, BOX_H)
+	var box := _box_rect()
 	var line_h := 20.0
 	var start_y := box.end.y - 14.0 - choices.size() * line_h
 	for i in range(choices.size()):

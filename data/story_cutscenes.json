@@ -6,107 +6,399 @@
     "OP01": {
       "bg": "hospital",
       "cast": [
-        {"role": "parent", "x": 118, "y": 74, "action": "idle", "face": "normal"},
-        {"role": "lead", "x": 52, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "lead",
+          "x": 52,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "凌晨四点，雨刚停。产房的灯管嗡嗡响，你被一双戴橡胶手套的手倒提着，拍了两下脚心。"},
-        {"speaker": "你", "face": "lead", "expr": "surprise", "text": "……"},
-        {"speaker": "妈妈", "face": "parent", "expr": "normal", "action": "wave", "target": "parent", "text": "看，是个健康的宝宝。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "凌晨四点，雨刚停。产房的灯管嗡嗡响，你被一双戴橡胶手套的手倒提着，拍了两下脚心。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "surprise",
+          "text": "……"
+        },
+        {
+          "speaker": "妈妈",
+          "face": "parent",
+          "expr": "normal",
+          "action": "wave",
+          "target": "parent",
+          "text": "看，是个健康的宝宝。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.25,
+        "x": 85,
+        "y": 48
+      }
     },
     "V03": {
       "bg": "park",
       "cast": [
-        {"role": "lead", "x": 60, "y": 74, "action": "idle", "face": "normal"},
-        {"role": "friend", "x": 118, "y": 74, "from": [152, 74], "walk_time": 1.1, "action": "idle", "face": "normal"}
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "friend",
+          "x": 118,
+          "y": 62,
+          "from": [
+            152,
+            62
+          ],
+          "walk_time": 1.1,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "手机响了三次，一个陌生号码。"},
-        {"speaker": "你", "face": "lead", "expr": "surprise", "text": "喂？"},
-        {"speaker": "老同学", "face": "friend", "expr": "normal", "action": "wave", "target": "friend", "text": "是我。……我回来了，想见一面。"},
-        {"speaker": "你", "face": "lead", "expr": "happy", "action": "idle", "target": "friend", "text": "你这些年，到底去哪儿了？"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "手机响了三次，一个陌生号码。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "surprise",
+          "text": "喂？"
+        },
+        {
+          "speaker": "老同学",
+          "face": "friend",
+          "expr": "normal",
+          "action": "wave",
+          "target": "friend",
+          "text": "是我。……我回来了，想见一面。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "happy",
+          "action": "idle",
+          "target": "friend",
+          "text": "你这些年，到底去哪儿了？"
+        }
+      ],
+      "camera": {
+        "zoom": 1.15,
+        "x": 89,
+        "y": 46
+      }
     },
     "V13": {
       "bg": "hospital",
       "cast": [
-        {"role": "lead", "x": 60, "y": 76, "action": "idle", "face": "normal"},
-        {"role": "parent", "x": 118, "y": 74, "action": "idle", "face": "normal"}
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "blink", "text": "凌晨两点，医院的走廊很亮，亮得人睡不着。"},
-        {"speaker": "爸爸", "face": "parent", "expr": "normal", "action": "raise", "target": "parent", "text": "没事，你回去睡吧。"},
-        {"speaker": "你", "face": "lead", "expr": "sad", "action": "idle", "target": "parent", "text": "爸，你先回去吧，今晚我守着。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "blink",
+          "text": "凌晨两点，医院的走廊很亮，亮得人睡不着。"
+        },
+        {
+          "speaker": "爸爸",
+          "face": "parent",
+          "expr": "normal",
+          "action": "raise",
+          "target": "parent",
+          "text": "没事，你回去睡吧。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "sad",
+          "action": "idle",
+          "target": "parent",
+          "text": "爸，你先回去吧，今晚我守着。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.18,
+        "x": 89,
+        "y": 46
+      }
     },
     "OP05": {
       "bg": "home",
       "cast": [
-        {"role": "parent", "x": 118, "y": 74, "action": "idle", "face": "normal"},
-        {"role": "lead", "x": 52, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "lead",
+          "x": 52,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "满月酒摆了八桌。你被轮流抱着，像一件刚到的快递。"},
-        {"speaker": "妈妈", "face": "parent", "expr": "happy", "text": "来，让二姨看看。别揪他头发。"},
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "有人往你手里塞红包，有人往你嘴里塞筷子。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "满月酒摆了八桌。你被轮流抱着，像一件刚到的快递。"
+        },
+        {
+          "speaker": "妈妈",
+          "face": "parent",
+          "expr": "happy",
+          "text": "来，让二姨看看。别揪他头发。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "有人往你手里塞红包，有人往你嘴里塞筷子。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.22,
+        "x": 85,
+        "y": 48
+      }
     },
     "OP09": {
       "bg": "home",
       "cast": [
-        {"role": "parent", "x": 118, "y": 74, "action": "idle", "face": "normal"},
-        {"role": "lead", "x": 52, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "lead",
+          "x": 52,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "十个月大，全家人围成一圈，屏住呼吸，等你说出人生第一个词。"},
-        {"speaker": "妈妈", "face": "parent", "expr": "happy", "text": "叫妈妈。"},
-        {"speaker": "爸爸", "face": "parent", "expr": "normal", "action": "raise", "target": "parent", "text": "叫爸爸。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "十个月大，全家人围成一圈，屏住呼吸，等你说出人生第一个词。"
+        },
+        {
+          "speaker": "妈妈",
+          "face": "parent",
+          "expr": "happy",
+          "text": "叫妈妈。"
+        },
+        {
+          "speaker": "爸爸",
+          "face": "parent",
+          "expr": "normal",
+          "action": "raise",
+          "target": "parent",
+          "text": "叫爸爸。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.22,
+        "x": 85,
+        "y": 48
+      }
     },
     "OP10": {
       "bg": "home",
       "cast": [
-        {"role": "parent", "x": 118, "y": 74, "action": "idle", "face": "normal"},
-        {"role": "lead", "x": 52, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "lead",
+          "x": 52,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "一岁生日前，你扶着沙发站起来。所有人都停下筷子。"},
-        {"speaker": "爸爸", "face": "parent", "expr": "happy", "action": "raise", "target": "parent", "text": "来，到爸爸这儿来。"},
-        {"speaker": "妈妈", "face": "parent", "expr": "happy", "action": "wave", "target": "parent", "text": "看，玩具在这儿。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "一岁生日前，你扶着沙发站起来。所有人都停下筷子。"
+        },
+        {
+          "speaker": "爸爸",
+          "face": "parent",
+          "expr": "happy",
+          "action": "raise",
+          "target": "parent",
+          "text": "来，到爸爸这儿来。"
+        },
+        {
+          "speaker": "妈妈",
+          "face": "parent",
+          "expr": "happy",
+          "action": "wave",
+          "target": "parent",
+          "text": "看，玩具在这儿。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.22,
+        "x": 85,
+        "y": 48
+      }
     },
     "OP11": {
       "bg": "home",
       "cast": [
-        {"role": "parent", "x": 118, "y": 74, "action": "idle", "face": "normal"},
-        {"role": "lead", "x": 52, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        },
+        {
+          "role": "lead",
+          "x": 52,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "一岁生日，桌上摆了一圈东西：算盘、毛笔、钞票、听诊器、拨浪鼓，还有一部亮着屏的旧手机。"},
-        {"speaker": "妈妈", "face": "parent", "expr": "happy", "text": "抓一个。"},
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "亲戚们围成一圈，比你还紧张。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "一岁生日，桌上摆了一圈东西：算盘、毛笔、钞票、听诊器、拨浪鼓，还有一部亮着屏的旧手机。"
+        },
+        {
+          "speaker": "妈妈",
+          "face": "parent",
+          "expr": "happy",
+          "text": "抓一个。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "亲戚们围成一圈，比你还紧张。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.22,
+        "x": 85,
+        "y": 48
+      }
     },
     "C33": {
       "bg": "home",
       "cast": [
-        {"role": "lead", "x": 80, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "lead",
+          "x": 80,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "一岁半的午后，你在地板上爬来爬去。"},
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "沙发底下有一个落满灰的乒乓球，离你只有半臂远。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "一岁半的午后，你在地板上爬来爬去。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "沙发底下有一个落满灰的乒乓球，离你只有半臂远。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.35,
+        "x": 80,
+        "y": 50
+      }
     },
     "C34": {
       "bg": "home",
       "cast": [
-        {"role": "lead", "x": 80, "y": 76, "action": "idle", "face": "normal"}
+        {
+          "role": "lead",
+          "x": 80,
+          "y": 62,
+          "action": "idle",
+          "face": "normal"
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "两岁的雨，你趴在窗台上看水珠赛跑。"},
-        {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "有一颗水珠跑得特别快，把别的都甩在后面。你伸手去按它。"}
-      ]
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "两岁的雨，你趴在窗台上看水珠赛跑。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "text": "有一颗水珠跑得特别快，把别的都甩在后面。你伸手去按它。"
+        }
+      ],
+      "camera": {
+        "zoom": 1.35,
+        "x": 80,
+        "y": 50
+      }
     }
   }
 }

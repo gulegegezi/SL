@@ -5,6 +5,8 @@ const STAGES := ["infant", "child", "teen", "youth", "adult", "middle", "elder"]
 const ROLES := ["parent", "friend", "teacher", "boss", "partner", "mate"]
 const ROOMS := ["home", "classroom", "office", "park", "hospital", "grave"]
 const BEDROOM_TILE := 1      # bedroom.png 图集里带床+书桌的那一格
+const ROOM_CROP_OFF := 170   # 512x512 房间格的上方留白，裁成 16:9 视野
+const ROOM_CROP_H := 288
 static var _regions: Dictionary = {}
 static var _cache: Dictionary = {}
 
@@ -65,6 +67,19 @@ static func room(name: String) -> Texture2D:
 	atlas.filter_clip = true
 	_cache[key] = atlas
 	return atlas
+
+## 过场用 16:9 视野：从 512x512 房间格里裁掉上方留白，人物和背景共用同一个场景缩放。
+static func room_view(name: String) -> Texture2D:
+	var key := "room_view:" + name
+	if _cache.has(key): return _cache[key]
+	var full := room(name) as AtlasTexture
+	if full == null: return null
+	var view := AtlasTexture.new()
+	view.atlas = full.atlas
+	view.region = Rect2(full.region.position.x, full.region.position.y + ROOM_CROP_OFF, 512, ROOM_CROP_H)
+	view.filter_clip = true
+	_cache[key] = view
+	return view
 
 static func draw_actor(canvas: CanvasItem, key: String, npc: bool, foot: Vector2, height: float, clock: float, walking: bool = false, speaking: bool = false) -> void:
 	var texture := frame(key, npc, frame_index(clock, walking, speaking))

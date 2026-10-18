@@ -82,6 +82,8 @@ scale = 显示高度 / 帧图高度
 
 选项前对白过场使用 GitHub 最新提交的 [`pixel_cast.gd`](../scripts/pixel_cast.gd) 图集（7 个阶段 + 6 个 NPC，每人 4 帧）：剧情的 beat 字段 `action` / `target` / `face` 直接驱动走路、说话抬手与静止；`wave` / `raise` 复用抬手帧，`sit` 退回静止；`cast[].from` / `walk_time` 驱动入场走位。旧的 [`data/frames.json`](../data/frames.json) 10 表情素材保留为后续专用动作的储备，当前过场不再走这条路径。
 
+过场的背景和人物现在共用一个 camera 变换：逻辑场景 `160×90`，房间从 512×512 裁成 512×288 的 16:9 视野，人物脚底落在 `floor_y = 62`，背景、人物和脚底软阴影一起缩放/推拉。过场数据可写 `camera: {"zoom", "x", "y"}` 做逐场取景；换房间图时只需调 `camera.y` 或人物 `y` 对齐墙脚线。
+
 当前角色动画由时钟计算帧号，使用 CanvasItem 绘制，不依赖 `AnimatedSprite2D` 或 `AnimationPlayer` 才能播放：
 
 ```text

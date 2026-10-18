@@ -36,6 +36,12 @@ static func scene(name: String) -> Texture2D:
 	if detailed != null: return detailed
 	return tex("res://assets/scenes/scene_%s.png" % name)
 
+## 过场用的 16:9 房间视野，人物与背景共用一套场景缩放。
+static func scene_view(name: String) -> Texture2D:
+	var view := PixelCast.room_view(name)
+	if view != null: return view
+	return scene(name)
+
 static func stage_for_age(age: int) -> String:
 	if age <= 6: return "child"
 	if age <= 12: return "teen"
