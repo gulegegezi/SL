@@ -36,6 +36,14 @@ godot --headless --path . --script res://test/demo_trial_smoke.gd
 
 该测试会从 `OP01` 开始，走完序章与人生池，直到结算。
 
+截图（会打开窗口跑一遍，产物写到传入的目录）：
+
+```bash
+godot --path . --script res://tools/capture_demo.gd -- <输出目录>
+```
+
+它会依次截下：开场对白、选项、选择结果、人生池、结果页、结算页。
+
 ## 说明
 
 这是生成时的快照，不是主仓库的替代。要修改剧情/动画，仍建议在 SL 主仓库里改，然后重新生成本目录。

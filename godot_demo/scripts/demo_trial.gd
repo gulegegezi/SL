@@ -14,6 +14,7 @@ var header: Label
 var stats: Label
 var tags: Label
 var summary: Label
+var end_title: Label
 var restart_btn: Button
 var bar_top: ColorRect
 var bar_bottom: ColorRect
@@ -63,7 +64,7 @@ func _build_ui() -> void:
 	top.add_child(restart_btn)
 
 	stage = CutsceneStage.new()
-	stage.custom_minimum_size = Vector2(0, 430)
+	stage.custom_minimum_size = Vector2(0, 490)
 	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# 不抢满整列高度：场景+对话框之后立刻接数值/标签，避免中间一大段黑缝。
 	stage.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
@@ -99,6 +100,11 @@ func _build_ui() -> void:
 	tags.add_theme_color_override("font_color", Color("8fd4ff"))
 	tags.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(tags)
+	end_title = Label.new()
+	end_title.visible = false
+	end_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	end_title.add_theme_font_size_override("font_size", 26)
+	root.add_child(end_title)
 	summary = Label.new()
 	summary.visible = false
 	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -130,6 +136,7 @@ func _restart() -> void:
 	phase = "prologue"
 	memories.clear()
 	summary.visible = false
+	end_title.visible = false
 	stats.visible = true
 	tags.visible = true
 	stage.visible = true
@@ -209,7 +216,7 @@ func _result_event() -> Dictionary:
 	}
 
 func _continue_choices(ev: Dictionary) -> Array:
-	return [{"choice": ev["choices"][0], "locked": false, "hint": ""}]
+	return [{"choice": ev["choices"][0], "locked": false, "hint": "", "continue": true}]
 
 func _result_cut(choice: Dictionary) -> Dictionary:
 	var cast: Array = []
@@ -407,7 +414,7 @@ func _end_demo() -> void:
 		elif score >= 80: rank = "人上人"
 		elif score >= 50: rank = "NPC"
 	var why := "身体先撑不住了" if state.health <= 0 else ("活到了寿命上限" if state.age >= state.lifespan else "这一局先到这里")
-	var lines: Array = ["%s · %d 岁 · 综合分 %d" % [rank, state.age, score], why, ""]
+	var lines: Array = ["%d 岁 · 综合分 %d" % [state.age, score], why, ""]
 	lines.append("智力 %d ｜ 体质 %d ｜ 魅力 %d ｜ 运气 %d" % [state.intl, state.health, state.charm, state.luck])
 	lines.append("金钱 %d ｜ 抽象度 %d ｜ 寿命 %d" % [state.money, state.abstract_val, state.lifespan])
 	var names: Array = []
@@ -423,3 +430,14 @@ func _end_demo() -> void:
 		for m in memories.slice(maxi(0, memories.size() - 8), memories.size()):
 			lines.append("· " + str(m))
 	summary.text = "\n".join(lines)
+	end_title.text = rank
+	end_title.add_theme_color_override("font_color", _rank_color(rank))
+	end_title.visible = true
+
+
+func _rank_color(rank: String) -> Color:
+	match rank:
+		"夯": return Color("ffd166")
+		"人上人": return Color("8fd4ff")
+		"NPC": return Color("c9c9d4")
+		_: return Color("ff8a8a")

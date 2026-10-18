@@ -15,9 +15,12 @@ func run() -> void:
 	while not demo.ended and guard < 1200:
 		var stage = demo.stage
 		var steps := 0
-		while not stage.in_choices and steps < 40:
+		# 结果镜头是「读完点一下继续」，不会进选择态；结局也会在推进中触发。
+		while not stage.in_choices and not demo.ended and steps < 40:
 			stage.advance()
 			steps += 1
+		if demo.ended:
+			break
 		assert(stage.in_choices, "every scene should reach choices")
 		stage.confirm()
 		await process_frame
