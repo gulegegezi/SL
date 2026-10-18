@@ -189,4 +189,4 @@
 - 序章全文与分支：[story-opening.md](story-opening.md)
 - 四条关系线：[story-links.md](story-links.md)
 - 过场剧本与镜头：[story-cutscenes.md](story-cutscenes.md)
-- 剧情路线工作流：[route-story.md](route-story.md)
+- 剧情路线工作流：`story` 分支的 `docs/route-story.md`
