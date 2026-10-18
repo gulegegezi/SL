@@ -15,29 +15,32 @@
 给事件加一层 **Undertale 式过场**：不再是「文字卡 + 按钮 + 三镜头小剧场」，而是
 
 - 房间图集背景（`PixelCast.room`，160×120 逻辑画布）；
-- `assets/chars` 的 24×36 逐帧立绘：`idle / walk / wave / raise / sit`，`idle` 支持 **10 种表情**（normal / happy / sad / angry / surprise / scared / determined / shy / hurt / blink）；
+- **SL 库最新 `pixel_cast` 角色图集**：7 个阶段（婴儿/幼年/学龄/少年/成年/中年/老年）+ 6 个 NPC，每个角色 4 帧（静止 / 两帧走 / 说话抬手）；
 - 角色可以按 `from` / `walk_time` 从场外走进来，走到 `x/y` 后自动切回 `idle`；
-- 底部黑框对话框：说话人名字、立绘表情槽、逐字打字 + 合成「滴滴」音；
+- `action` 语义映射到最新 4 帧素材：`walk` → 走路循环，`wave` / `raise` → 说话抬手帧，`idle` / `sit` → 静止；
+- 底部黑框对话框：说话人名字、立绘槽、逐字打字 + 合成「滴滴」音；
 - 对白结束后的**对话框内选项**，红色心形光标上下移动、回车/点击确认；
 - 关系不够的选项会灰色显示并带「需要和…更亲近」提示，无法选中。
 
+> 角色已从旧的 `assets/chars` 分件/逐帧路径切到 GitHub 最新提交的 `pixel_cast` 图集（`assets/portraits_v2` + `data/cast.json`）。旧 `frames.json` 的 10 表情帧保留在仓库里作为素材储备，但当前过场不再使用。
+
 ## 剧情 × 动画：beat 里的动作字段
 
-`data/story_cutscenes.json` 的对白是剧情，`data/frames.json` 的帧表是动画。两者通过 beat 字段接起来：
+`data/story_cutscenes.json` 的对白是剧情，`scripts/pixel_cast.gd` 的 4 帧角色图集是动画。两者通过 beat 字段接起来：
 
 | 字段 | 写在哪 | 作用 |
 | --- | --- | --- |
 | `action` | `beat` 或 `cast[]` | `idle / walk / wave / raise / sit`；写给 `target` 角色，保持到下一次显式切换 |
 | `target` | `beat` | 执行动作的角色，默认等于 `face` |
 | `face` | `beat` | 对话框立绘是谁（`lead` 或 NPC 角色） |
-| `expr` | `beat` | 立绘表情，10 种；`neutral`/`shock` 会自动映射到 `normal`/`surprise` |
-| `from` | `cast[]` | 入场起点 `[x, y]`；有此字段时角色边走边播 `walk` |
+| `expr` | `beat` | 语义提示（normal / happy / sad / angry / surprise / scared / determined / shy / hurt / blink）；最新素材只有静止/抬手两种立绘，非 normal 会优先用抬手帧 |
+| `from` | `cast[]` | 入场起点 `[x, y]`；有此字段时角色边走边播走路帧 |
 | `walk_time` | `cast[]` | 入场时长，默认 1.0 秒 |
 | `cast[].action` / `cast[].face` | `cast[]` | 该角色的默认动作与表情 |
 
-渲染时按 `frames.json` 的 `fps` 播放对应动作帧；帧表是稀疏的（例如 `idle_2` 只有 blink），取不到精确帧会自动回退到同表情第 0 帧或 normal 帧，不会出现空图。
+渲染时由 `PixelCast.frame_index()` 在 4 帧里换帧：走路 `0→1→0→2`，说话抬手第 3 帧，静止第 0 帧。最新素材没有 `wave`/`raise`/`sit` 专用帧，所以 `wave`/`raise` 复用抬手帧，`sit` 退回静止；这些字段保留语义，等后续补专用素材时不需要改剧情。
 
-例子：V03 里老同学从画面右侧走进来，说完“是我。……我回来了”时挥手，下一句再收回 idle。
+例子：V03 里老同学从画面右侧走进来，说完“是我。……我回来了”时挥手（抬手帧），下一句再收回 idle。
 
 ```json
 {"role": "friend", "x": 118, "y": 74, "from": [152, 74], "walk_time": 1.1, "action": "idle"}
@@ -154,17 +157,18 @@
 - `bg`：`home / classroom / hospital / office / park / grave / bedroom`。
 - `cast[].role`：`lead` 或 `boss / friend / mate / parent / partner / teacher`；`x/y` 是 160×120 逻辑坐标里的脚底位置。
 - `cast[]` 可选 `from: [x, y]` 与 `walk_time`，角色会从场外走进 `x/y`；可选默认 `action` / `face`。
-- `beats[].face`：对话框立绘是谁；`lead` 按年龄取阶段，`expr` 支持 10 种表情；NPC 目前只有 `normal`。
-- `beats[].action` + `target`：让某个角色做 `idle / walk / wave / raise / sit`，动作保持到下一次显式切换。
+- `beats[].face`：对话框立绘是谁；`lead` 按年龄取阶段，`expr` 是语义提示（最新素材只有静止/抬手两种立绘）。
+- `beats[].action` + `target`：让某个角色做 `idle / walk / wave / raise / sit`，动作保持到下一次显式切换；具体映射见上表。
 - **选项不写在这里**：选项沿用事件自己的 `choices`，`main.gd` 会按 `showIf` 过滤、按 `requireRelations/requireTags` 标灰锁定，选择后仍走 `gc.choose` 结算。
 
 ## 素材与角色拼装
 
-- 逐帧数据来自 [`data/frames.json`](../data/frames.json)：每个角色 5 种动作，`idle` 支持 10 表情，其余动作只有 `normal`。
-- 帧图是 `assets/chars/{lead|npc}_{角色}_{动作}_{帧}_{表情}.png`，24×36 同画布；`fps` 也写在 `frames.json`。
-- 帧表是稀疏的（如 `idle_2` 只有 blink），`SpriteKit.action_frame()` 会逐级回退到同表情第 0 帧或 normal 帧。
-- 对话框立绘直接裁 `idle` 帧的头部（上 15px），因此 10 种表情在立绘和场上都一致。
-- 旧的分件合成 `SpriteKit.compose()` 仍保留，作为没有帧数据时的兜底。
+- 角色使用 GitHub 最新提交的 [`pixel_cast.gd`](../scripts/pixel_cast.gd) + [`assets/portraits_v2`](../assets/portraits_v2) 图集；`data/cast.json` 记录 7 个阶段 + 6 个 NPC，每人 4 帧。
+- `assets/cast/*.png` 是同一批帧的独立导出，方便直接查看；`regions.json` 记录每帧在 atlas 里的区域。
+- 姿态只有 4 帧：静止、两种迈步、说话抬手。`pixel_cast.gd` 用 `0→1→0→2` 播走路、`0↔3` 播说话；没有 `wave/raise/sit` 专用帧。
+- 对话框立绘直接裁角色帧上半部约 46%，与场上角色同一套图，不会出现两套画风。
+- 旧的 [`data/frames.json`](../data/frames.json) + `assets/chars` 10 表情素材保留在仓库里，作为后续补表情/专用动作的储备；当前过场不走这条路径。
+- 旧的 `SpriteKit.compose()` 分件合成继续作为兜底保留。
 - 音频是运行时合成的方波/正弦短音（`audio_fx.gd`），无外部音频文件依赖。
 
 ## 怎么新增一个过场

@@ -169,15 +169,19 @@ func _set_action(role: String, action: String) -> void:
 			c["action"] = action
 			return
 
-## 对话框立绘：优先用 frames.json 的 10 表情头部，失败再退回 PixelCast/分件头。
+## 对话框立绘：使用最新 SL 库角色图集（PixelCast.portrait）。
+## 最新素材只有「静止 / 说话抬手」两种立绘，expr 作为语义提示映射到说话帧。
 func _portrait(role: String, expr: String) -> Texture2D:
 	var is_npc := role != "lead"
 	var visual := _visual_role(role) if is_npc else PixelCast.stage_for_age(age)
-	if visual != "infant":
-		var frame_face := SpriteKit.frame_portrait(SpriteKit.key_for(visual, is_npc), expr)
-		if frame_face != null:
-			return frame_face
+	var speaking := _expr_is_speaking(expr)
+	var portrait := PixelCast.portrait(visual, is_npc, speaking)
+	if portrait != null:
+		return portrait
 	return SpriteKit.face(visual, expr, is_npc)
+
+func _expr_is_speaking(expr: String) -> bool:
+	return SpriteKit.norm_face(expr) in ["happy", "sad", "angry", "surprise", "scared", "determined", "hurt", "shy"]
 
 func _visual_role(role: String) -> String:
 	# The existing V13 cast uses generic 'parent' for the father.
@@ -249,20 +253,18 @@ func _draw_cast(c: Dictionary) -> void:
 		foot.x -= 18.0 * (1.0 - smoothstep(0.0, 0.9, clock))
 		entering = true
 	var action := str(c.get("action", "idle"))
-	var face := SpriteKit.norm_face(str(c.get("face", "normal")))
 	if role == "lead":
 		action = lead_action
-		face = SpriteKit.norm_face(lead_expr)
-	if entering:
-		action = "walk"
-		face = "normal"
+	var walking := entering or action == "walk"
+	# 最新 SL 库角色只有 4 帧：静止 / 两帧走 / 说话抬手。
+	# wave/raise 复用「说话抬手」帧；sit 没有专用帧，退回静止。
+	var speaking := action in ["wave", "raise"]
+	if beat_index >= 0 and beat_index < beats.size() and not in_choices:
+		var beat: Dictionary = beats[beat_index]
+		if str(beat.get("face", "lead")) == role and visible_chars < _current_text().length():
+			speaking = true
 	var height := 24.0 if key == "infant" else 36.0
-	var foot_px := origin + foot * view_scale
-	var drawn := false
-	if key != "infant":
-		drawn = SpriteKit.draw_action(self, key, is_npc, foot_px, height * view_scale, action, face, anim_clock)
-	if not drawn:
-		PixelCast.draw_actor(self, key, is_npc, foot_px, height * view_scale, clock, entering, false)
+	PixelCast.draw_actor(self, key, is_npc, origin + foot * view_scale, height * view_scale, clock, walking, speaking)
 
 func _draw_box() -> void:
 	var box := Rect2(8.0, size.y - BOX_H - 8.0, size.x - 16.0, BOX_H)

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "title": "剧情过场时间轴",
-  "description": "按事件 id 匹配的 Undertale 式过场：bg 用房间图集，cast 用 data/frames.json 的逐帧动作（idle/walk/wave/raise/sit）与 10 种表情；beats 是逐字对白，选项取自事件本身。",
+  "description": "按事件 id 匹配的 Undertale 式过场：bg 与人物使用 SL 库最新的 pixel_cast 图集（每角色 4 帧：静止/走/说话抬手）；beat 的 action 语义映射到 walk / 抬手 / 静止，expr 作为立绘提示；beats 是逐字对白，选项取自事件本身。",
   "cutscenes": {
     "OP01": {
       "bg": "hospital",

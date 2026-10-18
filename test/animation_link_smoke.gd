@@ -1,8 +1,11 @@
 extends SceneTree
-## 剧情 × 动画数据联动：过场里的每个 action/expr 都能在 data/frames.json 与 assets/chars 中找到。
+## 剧情 × 最新 SL 库角色技术：过场里的 cast/action/expr 必须能落到 pixel_cast.gd 的图集上。
 const Data := preload("res://scripts/data_loader.gd")
-const SpriteKit := preload("res://scripts/sprite_kit.gd")
 const PixelCast := preload("res://scripts/pixel_cast.gd")
+const SpriteKit := preload("res://scripts/sprite_kit.gd")
+
+const ACTIONS := ["idle", "walk", "wave", "raise", "sit"]
+const EXPRESSIONS := ["normal", "happy", "sad", "angry", "surprise", "scared", "determined", "shy", "hurt", "blink"]
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -14,21 +17,31 @@ func _age_for(eid: String) -> int:
 		"V13": return 40
 		_: return 30
 
-func _key(role: String, age: int) -> String:
-	if role == "lead":
-		return SpriteKit.key_for(SpriteKit.stage_for_age(age), false)
-	return SpriteKit.key_for(role, true)
+func _stage_key(eid: String) -> String:
+	return PixelCast.stage_for_age(_age_for(eid))
 
-func _idle_faces(key: String) -> Array:
-	var actions: Dictionary = SpriteKit.frames_data().get("actions", {}).get(key, {})
-	return actions.get("idle", {}).get("faces", [])
+func _npc_key(role: String, eid: String) -> String:
+	# V13 的父亲在渲染层复用年长男性 mate 外形。
+	if role == "parent" and eid == "V13":
+		return "mate"
+	return role
 
 func run() -> void:
 	Data.ensure_loaded()
-	var frames := SpriteKit.frames_data()
-	assert(not frames.is_empty(), "frames.json should load")
-	assert(int(frames.get("char_canvas", [0, 0])[0]) == 24)
-	assert(float(frames.get("fps", {}).get("walk", 0)) == 9.0)
+
+	# 最新角色技术：7 个阶段 + 6 个 NPC，每角色 4 帧。
+	assert(PixelCast.STAGES.size() == 7, "pixel_cast should expose 7 life stages")
+	assert(PixelCast.ROLES.size() == 6, "pixel_cast should expose 6 NPC roles")
+	var cast_data: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string("res://data/cast.json"))
+	var cast: Dictionary = cast_data.get("cast", {})
+	assert(cast.size() == 13, "cast.json should have 7 stages + 6 NPC")
+	for id in cast:
+		assert(int(cast[id].get("frames", 0)) == 4, "each cast entry should have 4 frames: " + str(id))
+	for stage in PixelCast.STAGES:
+		assert(PixelCast.frame(stage, false, 0) != null, "missing lead frame: " + stage)
+	for role in PixelCast.ROLES:
+		assert(PixelCast.frame(role, true, 0) != null, "missing npc frame: " + role)
 
 	var cutscenes := Data.cutscene_map()
 	assert(cutscenes.size() >= 3)
@@ -36,52 +49,42 @@ func run() -> void:
 	var seen_faces := {}
 	for eid in cutscenes:
 		var cut: Dictionary = cutscenes[eid]
-		var age := _age_for(str(eid))
-		assert(SpriteKit.scene(str(cut.get("bg", "home"))) != null, "missing bg for " + str(eid))
-		var cast: Array = cut.get("cast", [])
+		var bg := str(cut.get("bg", "home"))
+		assert(PixelCast.room(bg) != null, "missing room atlas: " + bg)
+		assert(SpriteKit.scene(bg) != null, "SpriteKit.scene should resolve latest room: " + bg)
+
+		var cast_list: Array = cut.get("cast", [])
 		var by_role := {}
-		for c in cast:
+		for c in cast_list:
 			var role := str(c.get("role", "lead"))
 			by_role[role] = c
-			var key := _key(role, age)
-			assert(SpriteKit.frames_data().get("actions", {}).has(key), "no frame data for " + key)
+			var key := _stage_key(str(eid)) if role == "lead" else _npc_key(role, str(eid))
+			var npc := role != "lead"
+			assert(PixelCast.frame(key, npc, 0) != null, "missing cast frame %s/%s" % [eid, key])
+			assert(PixelCast.portrait(key, npc, false) != null, "missing portrait %s/%s" % [eid, key])
+			assert(PixelCast.portrait(key, npc, true) != null, "missing speaking portrait %s/%s" % [eid, key])
 			var act := str(c.get("action", "idle"))
-			assert(SpriteKit.action_count(key, act) > 0, "%s cast action missing %s/%s" % [eid, key, act])
+			assert(ACTIONS.has(act), "unknown cast action: " + act)
 			seen_actions[act] = true
-			var face := SpriteKit.norm_face(str(c.get("face", "normal")))
-			assert(_idle_faces(key).has(face) or face == "normal", "%s cast face missing %s/%s" % [eid, key, face])
+			if c.has("from"):
+				seen_actions["walk"] = true
+			seen_faces[SpriteKit.norm_face(str(c.get("face", "normal")))] = true
 
 		for b in cut.get("beats", []):
-			var face_role := str(b.get("face", "lead"))
 			var expr := SpriteKit.norm_face(str(b.get("expr", "normal")))
+			assert(EXPRESSIONS.has(expr), "unknown expression: " + expr)
 			seen_faces[expr] = true
-			var face_key := _key(face_role, age)
-			var faces := _idle_faces(face_key)
-			assert(faces.has(expr) or expr == "normal", "%s beat face missing %s/%s" % [eid, face_key, expr])
-
 			if b.has("action"):
-				var target := str(b.get("target", face_role))
-				var target_key := _key(target, age)
 				var action := str(b["action"])
-				assert(SpriteKit.action_count(target_key, action) > 0,
-					"%s beat action missing %s/%s" % [eid, target_key, action])
+				assert(ACTIONS.has(action), "unknown beat action: " + action)
+				var target := str(b.get("target", b.get("face", "lead")))
+				assert(by_role.has(target), "%s beat target not in cast: %s" % [eid, target])
 				seen_actions[action] = true
-			if b.has("target"):
-				assert(by_role.has(str(b["target"])), "%s beat target not in cast: %s" % [eid, str(b["target"])])
 
-	# 至少接入了两种真正的动作，而不是只有 idle。
-	assert(seen_actions.has("wave"), "should use wave action")
-	assert(seen_actions.has("raise"), "should use raise action")
+	# 至少用了走位 + 一个手势语义，证明剧情动作确实接到最新角色帧。
+	assert(seen_actions.has("walk"), "should use walk")
+	assert(seen_actions.has("wave") or seen_actions.has("raise"), "should use a gesture action")
 	assert(seen_faces.has("surprise"), "should use surprise expression")
-	assert(seen_faces.has("blink"), "should use blink expression")
 
-	# 贴图确实能取到：全身体帧 + 头部立绘裁切。
-	assert(SpriteKit.action_frame("lead_adult", "idle", 0, "happy") != null)
-	assert(SpriteKit.action_frame("lead_adult", "walk", 1, "normal") != null)
-	assert(SpriteKit.action_frame("npc_friend", "wave", 2, "normal") != null)
-	assert(SpriteKit.frame_portrait("lead_adult", "shy") != null)
-	assert(SpriteKit.frame_portrait("lead_adult", "blink") != null)
-	assert(SpriteKit.frame_portrait("npc_friend", "normal") != null)
-
-	print("PASS: story cutscene actions/faces resolve against frames.json and assets/chars")
+	print("PASS: story cutscenes resolve against the latest pixel_cast cast/rooms")
 	quit()
