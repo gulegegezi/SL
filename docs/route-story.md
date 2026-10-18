@@ -2,6 +2,7 @@
 
 > 分支：`story`。集成分支：`master`。动画路线：`animation`。
 > 总览：[docs/two-routes.md](two-routes.md)。
+> 叙事总纲：[story-bible.md](story-bible.md)；序章全文：[story-opening.md](story-opening.md)；四条线：[story-links.md](story-links.md)；过场剧本：[story-cutscenes.md](story-cutscenes.md)。
 
 ## 只做这些
 
