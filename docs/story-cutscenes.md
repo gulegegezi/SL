@@ -58,6 +58,28 @@
 - 人物脚下有一层 3 行渐隐软阴影，随 camera 一起缩放，用来把角色「按」在地面上。
 - 如果换了一张房间图，只需要根据图的墙脚线调 `camera.y` / 人物 `y`，或调 `zoom` 取景；不用改代码。
 
+## 传说之下式对白与反应
+
+- **旁白**：不显示名字，正文自动加 `* `，例如 `* 凌晨四点。雨刚停。`
+- **角色**：显示名字与立绘；台词按 Undertale / Deltarune 的短句、省略号、停顿和留白来写。
+- **子帧动画**：4 帧图集上补呼吸/走路上浮、眨眼和说话口型，少帧但看起来更活。
+- **选择后的互动**：每个过场可以有 `reactions`，按选项文字索引，选择后依次播「结果 → 角色反应 → 旁白收尾」。
+
+```json
+"reactions": {
+  "放声大哭，把屋顶掀了": [
+    {"speaker": "妈妈", "face": "parent", "expr": "happy", "text": "……这嗓门。随我。"},
+    {"speaker": "旁白", "face": "lead", "expr": "normal", "text": "你爸在走廊上又腿软了一次。"}
+  ]
+}
+```
+
+`story_demo.gd` 会把 `choice.result` 放在第一拍，再把 `reactions[choice.label]` 的台词接在后面；`demo_trial.gd` 的序章也走同一套反应表。
+
+![传说之下式旁白：无名字、* 开头](undertale-style-preview.png)
+
+![选择后的角色反应](choice-reaction-preview.png)
+
 ## 现在接入了哪些过场
 
 | 事件 | 场景 | 出场 |

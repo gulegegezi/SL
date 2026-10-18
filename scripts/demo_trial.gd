@@ -220,11 +220,18 @@ func _result_cut(choice: Dictionary) -> Dictionary:
 		cast.append(cc)
 	var cam: Dictionary = (current_cut.get("camera", {}) as Dictionary).duplicate(true)
 	cam["zoom"] = float(cam.get("zoom", 1.0)) + 0.06
+	var beats: Array = [{"speaker": "旁白", "face": "lead", "expr": "normal",
+		"text": _fill_text(str(choice.get("result", "")))}]
+	var reactions: Dictionary = current_cut.get("reactions", {})
+	for b in reactions.get(str(choice.get("label", "")), []):
+		var rb: Dictionary = b.duplicate(true)
+		rb["text"] = _fill_text(str(rb.get("text", "")))
+		beats.append(rb)
 	return {
 		"bg": str(current_cut.get("bg", "home")),
 		"cast": cast,
 		"camera": cam,
-		"beats": [{"speaker": "旁白", "face": "lead", "expr": "normal", "text": str(choice.get("result", ""))}],
+		"beats": beats,
 	}
 
 # ==========================================================

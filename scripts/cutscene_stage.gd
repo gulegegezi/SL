@@ -94,8 +94,8 @@ func play() -> void:
 func advance() -> void:
 	if finished_once or in_choices or beat_index < 0:
 		return
-	if visible_chars < _current_text().length():
-		visible_chars = _current_text().length()
+	if visible_chars < _display_text().length():
+		visible_chars = _display_text().length()
 	else:
 		_next_beat()
 
@@ -138,6 +138,21 @@ func _current_text() -> String:
 	if beat_index >= 0 and beat_index < beats.size():
 		return str(beats[beat_index].get("text", ""))
 	return ""
+
+## 传说之下式：旁白没有名字，正文以「* 」开头；角色说话显示名字。
+func _speaker_name() -> String:
+	if in_choices or beat_index < 0 or beat_index >= beats.size():
+		return ""
+	var n := str(beats[beat_index].get("speaker", ""))
+	return "" if n == "旁白" else n
+
+func _display_text() -> String:
+	var t := _current_text()
+	if t.is_empty():
+		return t
+	if _speaker_name().is_empty():
+		return "* " + t
+	return t
 
 func _next_beat() -> void:
 	beat_index += 1
@@ -202,7 +217,7 @@ func _process(delta: float) -> void:
 	if in_choices or beat_index < 0:
 		queue_redraw()
 		return
-	if visible_chars < _current_text().length():
+	if visible_chars < _display_text().length():
 		blip_timer -= delta
 		if blip_timer <= 0.0:
 			blip_timer = 0.045
@@ -283,7 +298,36 @@ func _draw_cast(c: Dictionary) -> void:
 		draw_rect(Rect2(foot.x - sw * 0.5, foot.y - 1.0 + i * 1.2, sw, 1.2),
 			Color(0, 0, 0, 0.20 - i * 0.05))
 	# 在 camera 变换内绘制：foot/height 都是 160x90 场景坐标，和背景同倍缩放。
-	PixelCast.draw_actor(self, key, is_npc, foot, height, clock, walking, speaking)
+	_draw_actor_frame(key, is_npc, foot, height, walking, speaking)
+
+## 4 帧图集 + 子帧位移 / 眨眼 / 说话口型，补出更接近传说之下的少帧节奏。
+func _draw_actor_frame(key: String, is_npc: bool, foot: Vector2, height: float,
+		walking: bool, speaking: bool) -> void:
+	var index := PixelCast.frame_index(clock, walking, speaking)
+	var texture := PixelCast.frame(key, is_npc, index)
+	if texture == null:
+		return
+	var bob := 0.0
+	if walking:
+		bob = -absf(sin(clock * 12.0)) * 1.6
+	elif speaking:
+		bob = -absf(sin(clock * 7.0)) * 1.0
+	else:
+		bob = -roundf(absf(sin(clock * 2.0)))
+	var dim := texture.get_size() * (height / maxf(1.0, texture.get_height()))
+	var rect := Rect2((foot + Vector2(0, bob) - Vector2(dim.x * 0.5, dim.y)).round(), dim)
+	draw_texture_rect(texture, rect, false)
+	if not walking:
+		var seed_off := float(absi(hash(key)) % 7) * 0.6
+		if fmod(clock + seed_off, 4.2) < 0.09:
+			var eye_y := rect.position.y + rect.size.y * 0.30
+			draw_rect(Rect2(rect.position.x + rect.size.x * 0.28, eye_y,
+				rect.size.x * 0.44, maxf(1.0, rect.size.y * 0.022)), Color(0.08, 0.09, 0.12, 0.9))
+	if speaking:
+		var mouth_y := rect.position.y + rect.size.y * 0.42
+		var mouth_h := 1.0 if int(clock * 10.0) % 2 == 0 else 2.0
+		draw_rect(Rect2(rect.position.x + rect.size.x * 0.38, mouth_y,
+			rect.size.x * 0.24, maxf(1.0, mouth_h)), Color(0.22, 0.10, 0.10, 0.65))
 
 func _box_rect() -> Rect2:
 	return Rect2(8.0, origin.y + BG.y * view_scale + 8.0, size.x - 16.0, BOX_H)
@@ -310,8 +354,8 @@ func _draw_box() -> void:
 		name = "选择"
 		text = _current_text()
 	else:
-		name = str(beats[beat_index].get("speaker", ""))
-		text = _current_text()
+		name = _speaker_name()
+		text = _display_text()
 	draw_string(font, Vector2(tx, face_rect.position.y + 8.0), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("fff2c8"))
 	var shown := text if visible_chars < 0 else text.substr(0, visible_chars)
 	draw_multiline_string(font, Vector2(tx, face_rect.position.y + 30.0), shown,

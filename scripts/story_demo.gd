@@ -117,10 +117,25 @@ func _on_finished(choice: Dictionary) -> void:
 		gc.state.story_queue.clear()
 		memories.append(str(choice.get("memory", choice.get("label", ""))))
 		var result_text := _fill_text(str(choice.get("result", "")))
+		var beats: Array = [{"speaker": "旁白", "face": "lead", "expr": "normal", "text": result_text}]
+		var reactions: Dictionary = current_cut.get("reactions", {})
+		for b in reactions.get(str(choice.get("label", "")), []):
+			var rb: Dictionary = b.duplicate(true)
+			rb["text"] = _fill_text(str(rb.get("text", "")))
+			beats.append(rb)
+		var cast: Array = []
+		for c in current_cut.get("cast", []):
+			var cc: Dictionary = c.duplicate(true)
+			cc.erase("from")
+			cc.erase("walk_time")
+			cast.append(cc)
+		var cam: Dictionary = (current_cut.get("camera", {}) as Dictionary).duplicate(true)
+		cam["zoom"] = float(cam.get("zoom", 1.0)) + 0.06
 		var cut := {
 			"bg": str(current_cut.get("bg", "home")),
-			"cast": current_cut.get("cast", []),
-			"beats": [{"speaker": "旁白", "face": "lead", "expr": "normal", "text": result_text}],
+			"cast": cast,
+			"camera": cam,
+			"beats": beats,
 		}
 		var ev := {
 			"id": str(current_event.get("id", "")) + "_result",
