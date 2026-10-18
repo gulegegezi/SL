@@ -315,7 +315,7 @@ func _draw_box() -> void:
 	draw_string(font, Vector2(tx, face_rect.position.y + 8.0), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("fff2c8"))
 	var shown := text if visible_chars < 0 else text.substr(0, visible_chars)
 	draw_multiline_string(font, Vector2(tx, face_rect.position.y + 30.0), shown,
-		HORIZONTAL_ALIGNMENT_LEFT, tw, 14, 2, Color("ffffff"))
+		HORIZONTAL_ALIGNMENT_LEFT, tw, 13, 4, Color("ffffff"))
 	if in_choices:
 		_draw_choices(box)
 	elif visible_chars >= text.length() and beat_index + 1 < beats.size():

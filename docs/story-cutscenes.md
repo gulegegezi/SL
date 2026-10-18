@@ -1,10 +1,10 @@
 # Undertale 式剧情过场时间轴
 
 > 数据文件：[`data/story_cutscenes.json`](../data/story_cutscenes.json)。
-> 渲染：[`scripts/cutscene_stage.gd`](../scripts/cutscene_stage.gd) + [`scripts/sprite_kit.gd`](../scripts/sprite_kit.gd) + [`scripts/audio_fx.gd`](../scripts/audio_fx.gd)。
-> 素材：[`assets/chars`](../assets/chars)、[`assets/scenes`](../assets/scenes)。
+> 渲染：[`scripts/cutscene_stage.gd`](../scripts/cutscene_stage.gd) + [`scripts/pixel_cast.gd`](../scripts/pixel_cast.gd) + [`scripts/sprite_kit.gd`](../scripts/sprite_kit.gd) + [`scripts/audio_fx.gd`](../scripts/audio_fx.gd)。
+> 素材：[`assets/portraits_v2`](../assets/portraits_v2)、[`data/cast.json`](../data/cast.json)、[`assets/rooms`](../assets/rooms)。
 > 剧情数据仍在 GitHub 仓库 **SL**（`gulegegezi/SL`）。
-> 叙事总纲与人物小传见 [story-bible.md](story-bible.md)。
+> 叙事总纲与人物小传见 [story-bible.md](story-bible.md)；三岁前试玩见 [story-demo-pre3.md](story-demo-pre3.md)；经典 Demo 的 Godot 移植见 [demo-trial-godot.md](demo-trial-godot.md)。
 
 ![过场首屏：序章·出生](story-cutscene-preview.png)
 

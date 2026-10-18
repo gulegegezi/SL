@@ -199,6 +199,9 @@ func render_title() -> void:
 	vb.add_child(_btn("试玩 · 三岁前", C.cyan, false, func():
 		get_tree().change_scene_to_file("res://scenes/StoryDemo.tscn")
 	))
+	vb.add_child(_btn("经典 Demo · 序章 + 人生池", C.yellow, false, func():
+		get_tree().change_scene_to_file("res://scenes/DemoTrial.tscn")
+	))
 	screen.add_child(card)
 
 func _on_game_started(s: GameState) -> void:
