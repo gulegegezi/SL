@@ -8,8 +8,10 @@ master（整合基线，必须始终可运行）
   └── animation   动画路线：立绘、分件/逐帧、镜头、对话框、音效、演出器
 ```
 
-- 剧情分支：`story`（路线说明见 [`docs/route-story.md`](route-story.md)）
-- 动画分支：`animation`（路线说明见 [`docs/route-animation.md`](route-animation.md)）
+- 剧情分支：`story`，根目录 `ROUTE.md` + `docs/route-story.md`
+- 动画分支：`animation`，根目录 `ROUTE.md` + `docs/route-animation.md`
+
+两份路线说明分别只存在于对应分支上；在 `master` 上查看时请切到该分支，或用 GitHub 的分支文件 URL。
 
 ## 文件归属
 
