@@ -195,6 +195,10 @@ func render_title() -> void:
 	row.add_child(_btn("结局图鉴 %d/%d" % [dex_n, DataLoader.endings().size()], C.dim, false, render_dex))
 	row.add_child(_btn("成就 %d/%d" % [ach_n, DataLoader.achievements().size()], C.dim, false, render_ach))
 	vb.add_child(row)
+	vb.add_child(_spacer(10))
+	vb.add_child(_btn("试玩 · 三岁前", C.cyan, false, func():
+		get_tree().change_scene_to_file("res://scenes/StoryDemo.tscn")
+	))
 	screen.add_child(card)
 
 func _on_game_started(s: GameState) -> void:

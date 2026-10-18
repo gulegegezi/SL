@@ -1,0 +1,17 @@
+{
+  "title": "三岁前",
+  "subtitle": "一段可以玩的序章",
+  "scenes": [
+    {"event": "OP01", "cutscene": "OP01", "age": 0, "chapter": "第一声"},
+    {"event": "OP05", "cutscene": "OP05", "age": 1, "chapter": "满月"},
+    {"event": "OP09", "cutscene": "OP09", "age": 1, "chapter": "第一个词"},
+    {"event": "OP10", "cutscene": "OP10", "age": 1, "chapter": "第一步"},
+    {"event": "OP11", "cutscene": "OP11", "age": 1, "chapter": "抓周"},
+    {"event": "C33", "cutscene": "C33", "age": 2, "chapter": "一岁半的午后"},
+    {"event": "C34", "cutscene": "C34", "age": 2, "chapter": "两岁的雨"}
+  ],
+  "end": {
+    "title": "三岁前",
+    "text": "三岁生日那天，你吹灭了蜡烛。\n从明天起，你会跑、会问为什么、会第一次说“我自己来”。\n三岁前的故事，到这里就讲完了。"
+  }
+}
