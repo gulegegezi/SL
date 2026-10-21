@@ -47,3 +47,42 @@ static func compose(stage_or_role: String, is_npc: bool, expr: String) -> Array:
 		out.append(npc_part(stage_or_role, p) if is_npc else lead_part(stage_or_role, p))
 	out.append(face(stage_or_role, expr, is_npc))
 	return out
+
+
+# ==========================================================
+# 逐帧动作（data/frames.json）
+# ==========================================================
+static var _frame_json: Dictionary = {}
+
+static func frame_defs() -> Dictionary:
+	if _frame_json.is_empty():
+		var raw := FileAccess.get_file_as_string("res://data/frames.json")
+		_frame_json = JSON.parse_string(raw) if not raw.is_empty() else {}
+	return _frame_json
+
+static func action_info(key: String, action: String) -> Dictionary:
+	var actions: Dictionary = frame_defs().get("actions", {})
+	var per: Dictionary = actions.get(key, {})
+	return per.get(action, {})
+
+static func action_fps(action: String) -> float:
+	var fps: Dictionary = frame_defs().get("fps", {})
+	return float(fps.get(action, 8))
+
+## 取某一帧：表情只烘焙在第 0 帧，其余帧回落到 normal。
+static func frame(key: String, action: String, index: int, expr: String = "normal", is_npc: bool = false) -> Texture2D:
+	var k := ("npc_" + key) if is_npc else key
+	var info := action_info(k, action)
+	var n := int(info.get("n", 0))
+	if n <= 0:
+		return null
+	var idx := clampi(index, 0, n - 1)
+	var faces: Array = info.get("faces", ["normal"])
+	var face := expr if faces.has(expr) else "normal"
+	if idx != 0:
+		face = "normal"
+	var p := "res://assets/chars/%s_%s_%d_%s.png" % [k, action, idx, face]
+	if ResourceLoader.exists(p):
+		return tex(p)
+	p = "res://assets/chars/%s_%s_%d_normal.png" % [k, action, idx]
+	return tex(p) if ResourceLoader.exists(p) else null

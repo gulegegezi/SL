@@ -6,6 +6,7 @@ signal finished(choice: Dictionary)
 
 const SpriteKit := preload("res://scripts/sprite_kit.gd")
 const AudioFX := preload("res://scripts/audio_fx.gd")
+const BeatDirector := preload("res://scripts/beat_director.gd")
 
 const BG := Vector2(160, 90)
 const CHAR := Vector2(24, 36)
@@ -34,6 +35,18 @@ var lead_expr := "neutral"
 var cur_face: Texture2D
 var view_scale := 3.0
 var origin := Vector2.ZERO
+
+# ---- 逐帧动作 / 镜头 / 节拍 ----
+var actors: Dictionary = {}      # role -> {action, expr, clock}
+var cam_zoom := 1.0
+var cam_focus := Vector2(80, 45)
+var cam_target_zoom := 1.0
+var cam_target_focus := Vector2(80, 45)
+var hold_timer := 0.0            # 先动起来，再开口
+var type_acc := 0.0
+var weather := ""                # 文字里说的天气：雨/雪/风/夜
+var motion_role := ""            # 正在做动作的人
+var motion_timer := 0.0          # 文本没喊停，动作再延续一会儿
 
 var _blip_player: AudioStreamPlayer
 var _select_player: AudioStreamPlayer
@@ -69,6 +82,14 @@ func configure(ev: Dictionary, cutscene: Dictionary, s, choice_list: Array = [])
 	cast = cutscene.get("cast", [])
 	bg_tex = SpriteKit.scene(str(cutscene.get("bg", "home")))
 	lead_expr = "neutral"
+	actors.clear()
+	for c in cast:
+		actors[str(c.get("role", "lead"))] = {"action": "idle", "expr": "normal", "clock": 0.0}
+	var cam: Dictionary = cutscene.get("camera", {})
+	cam_zoom = float(cam.get("zoom", 1.0))
+	cam_target_zoom = cam_zoom
+	cam_focus = Vector2(float(cam.get("x", 80)), float(cam.get("y", 45)))
+	cam_target_focus = cam_focus
 	_layout()
 	queue_redraw()
 
@@ -78,6 +99,12 @@ func play() -> void:
 	choice_index = 0
 	visible_chars = 0
 	finished_once = false
+	hold_timer = 0.0
+	type_acc = 0.0
+	for k in actors:
+		actors[k]["action"] = "idle"
+		actors[k]["expr"] = "normal"
+		actors[k]["clock"] = 0.0
 	_next_beat()
 
 # ==========================================================
@@ -142,13 +169,65 @@ func _next_beat() -> void:
 	queue_redraw()
 
 func _apply_beat(beat: Dictionary) -> void:
-	var face := str(beat.get("face", "lead"))
-	var expr := str(beat.get("expr", "neutral"))
-	if face == "lead":
-		lead_expr = expr
-		cur_face = SpriteKit.face(SpriteKit.stage_for_age(age), expr, false)
+	var role := str(beat.get("face", "lead"))
+	var text_now := str(beat.get("text", ""))
+	var w := BeatDirector.weather_for(text_now)
+	if w == "clear":
+		weather = ""
+	elif w != "":
+		weather = w
+	var d := BeatDirector.direction(beat, role)
+	var explicit := not str(beat.get("action", "")).strip_edges().is_empty()
+	if str(d["action"]) == "idle" and not explicit and motion_timer > 0.0 and motion_role == role:
+		# 上一拍还在走/挥手，这一句没说停，就让动作再延续一会儿（表情照常更新）
+		_set_actor(role, _action_of(role), str(d["expr"]))
 	else:
-		cur_face = SpriteKit.face(face, "neutral", true)
+		_set_actor(role, str(d["action"]), str(d["expr"]))
+		if str(d["action"]) != "idle":
+			motion_role = role
+			motion_timer = 1.4
+		else:
+			motion_role = ""
+			motion_timer = 0.0
+	hold_timer = float(d["hold"])
+	if role == "lead":
+		lead_expr = str(d["expr"])
+		cur_face = SpriteKit.face(SpriteKit.stage_for_age(age), str(d["expr"]), false)
+	else:
+		cur_face = SpriteKit.face(role, str(d["expr"]), true)
+	# 镜头往说话的人身上压；旁白拉远
+	var ax := 80.0
+	var who := _cast_by_role(role)
+	if not who.is_empty():
+		ax = float(who.get("x", 80))
+	var base := float((cut.get("camera", {}) as Dictionary).get("zoom", 1.0))
+	var shot := BeatDirector.shot_for(beat, ax, base)
+	cam_target_zoom = float(shot["zoom"])
+	cam_target_focus = Vector2(float(shot["x"]), float(shot["y"]))
+
+
+func _action_of(role: String) -> String:
+	var a: Dictionary = actors.get(role, {})
+	return str(a.get("action", "idle"))
+
+
+func _cast_by_role(role: String) -> Dictionary:
+	for c in cast:
+		if str(c.get("role", "")) == role:
+			return c
+	return {}
+
+
+func _set_actor(role: String, action: String, expr: String) -> void:
+	var a: Dictionary = actors.get(role, {"action": "idle", "expr": "normal", "clock": 0.0})
+	if str(a.get("action", "")) != action:
+		a["clock"] = 0.0
+	var who := _cast_by_role(role)
+	if action == "walk" and not a.has("dir"):
+		a["dir"] = 1.0 if float(who.get("x", 80)) < 80.0 else -1.0
+	a["action"] = action
+	a["expr"] = expr
+	actors[role] = a
 
 func _enter_choices() -> void:
 	in_choices = true
@@ -160,15 +239,39 @@ func _enter_choices() -> void:
 
 func _process(delta: float) -> void:
 	clock += delta
+	# 镜头缓动：不瞬间跳过去
+	var k := 1.0 - exp(-delta * 7.0)
+	cam_zoom = lerpf(cam_zoom, cam_target_zoom, k)
+	cam_focus = cam_focus.lerp(cam_target_focus, k)
 	if in_choices or beat_index < 0:
 		queue_redraw()
 		return
-	if visible_chars < _current_text().length():
-		blip_timer -= delta
-		if blip_timer <= 0.0:
-			blip_timer = 0.045
+	for key in actors:
+		var a: Dictionary = actors[key]
+		a["clock"] = float(a.get("clock", 0.0)) + delta
+		if str(a.get("action", "")) == "walk":
+			# 朝远离画面中心的方向走，走到边就停住
+			var off := float(a.get("offset_x", 0.0)) + float(a.get("dir", 1)) * 26.0 * delta
+			a["offset_x"] = clampf(off, -52.0, 52.0)
+	if motion_timer > 0.0:
+		motion_timer -= delta
+		if motion_timer <= 0.0 and motion_role != "":
+			_set_actor(motion_role, "idle", str(actors.get(motion_role, {}).get("expr", "normal")))
+			motion_role = ""
+	# 动作起手：先让人动起来，再开口
+	if hold_timer > 0.0:
+		hold_timer -= delta
+		queue_redraw()
+		return
+	var full := _current_text()
+	if visible_chars < full.length():
+		type_acc -= delta
+		if type_acc <= 0.0:
+			var ch := full.substr(visible_chars, 1)
 			visible_chars += 1
-			_blip_player.play()
+			type_acc = BeatDirector.char_delay(ch)
+			if not BeatDirector.is_pause(ch) and ch.strip_edges() != "":
+				_blip_player.play()
 	queue_redraw()
 
 # ==========================================================
@@ -193,27 +296,84 @@ func _layout() -> void:
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("000000"))
 	if bg_tex != null:
-		draw_texture_rect(bg_tex, Rect2(origin, BG * view_scale), false)
+		# 背景和人物放在同一个 camera 变换里：推近时人和景一起走，不会互相漂
+		var s := view_scale * cam_zoom
+		var screen_focus := origin + cam_focus * view_scale
+		var offset := screen_focus - cam_focus * s
+		draw_set_transform(offset, 0.0, Vector2(s, s))
+		draw_texture_rect(bg_tex, Rect2(Vector2.ZERO, BG), false)
 		for c in cast:
 			_draw_cast(c)
+		draw_set_transform(Vector2.ZERO)
+		_draw_weather()
 	if beat_index >= 0 or in_choices:
 		_draw_box()
+
+## 天气跟着文字走：说了雨就下雨，说停了就停
+func _draw_weather() -> void:
+	if weather.is_empty() or bg_tex == null:
+		return
+	var r := Rect2(origin, BG * view_scale)
+	if weather == "night":
+		draw_rect(r, Color(0.02, 0.03, 0.10, 0.38))
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261021
+	if weather == "rain":
+		for i in range(52):
+			var x: float = r.position.x + fmod(rng.randf() * r.size.x + clock * 70.0, r.size.x)
+			var y: float = r.position.y + fmod(rng.randf() * r.size.y + clock * 430.0, r.size.y)
+			draw_line(Vector2(x, y), Vector2(x - 5.0, y + 13.0), Color(0.78, 0.88, 1.0, 0.32), 1.0)
+	elif weather == "snow":
+		for i in range(44):
+			var sx: float = r.position.x + fmod(rng.randf() * r.size.x + sin(clock * 0.8 + i) * 12.0, r.size.x)
+			var sy: float = r.position.y + fmod(rng.randf() * r.size.y + clock * 34.0, r.size.y)
+			draw_circle(Vector2(sx, sy), 1.6, Color(1, 1, 1, 0.55))
+	elif weather == "wind":
+		for i in range(16):
+			var wy: float = r.position.y + rng.randf() * r.size.y
+			var wx: float = r.position.x + fmod(rng.randf() * r.size.x + clock * 230.0, r.size.x)
+			draw_line(Vector2(wx, wy), Vector2(wx + 20.0, wy), Color(1, 1, 1, 0.16), 1.0)
+
 
 func _draw_cast(c: Dictionary) -> void:
 	var role := str(c.get("role", "lead"))
 	var is_npc := role != "lead"
 	var key := role if is_npc else SpriteKit.stage_for_age(age)
-	var expr := "neutral" if is_npc else lead_expr
-	var parts := SpriteKit.compose(key, is_npc, expr)
-	var px := origin.x + float(c.get("x", 80)) * view_scale
-	var py := origin.y + float(c.get("y", 64)) * view_scale - CHAR.y * view_scale
-	var bob := 0.0
-	if beat_index >= 0 and not in_choices:
-		bob = roundf(sin(clock * 2.0) * 0.5) / 2.0
-	var rect := Rect2(px, py + bob, CHAR.x * view_scale, CHAR.y * view_scale)
-	for t in parts:
-		if t != null:
-			draw_texture_rect(t, rect, false)
+	var a: Dictionary = actors.get(role, {"action": "idle", "expr": "normal", "clock": 0.0})
+	var action := str(a.get("action", "idle"))
+	var expr := str(a.get("expr", "normal"))
+	if action == "idle" and _blink_phase(key):
+		expr = "blink"
+	var lookup := ("npc_" + key) if is_npc else key
+	var n := int(SpriteKit.action_info(lookup, action).get("n", 1))
+	var fps := SpriteKit.action_fps(action)
+	var idx := 0
+	if n > 1:
+		idx = int(float(a.get("clock", 0.0)) * fps) % n
+		if action == "idle" and expr != "normal" and expr != "blink":
+			# 有情绪的这一拍停在烘焙了表情的第 0 帧，别让脸在两帧之间跳回无表情
+			idx = 0
+	var tex := SpriteKit.frame(key, action, idx, expr, is_npc)
+	var foot := Vector2(float(c.get("x", 80)) + float(a.get("offset_x", 0.0)), float(c.get("y", 64)))
+	var rect := Rect2(foot - Vector2(CHAR.x * 0.5, CHAR.y), CHAR)
+	# 不是这一拍说话的人压暗一点：文字和画面指向同一张脸
+	var speaking := true
+	if beat_index >= 0 and beat_index < beats.size():
+		speaking = role == str(beats[beat_index].get("face", "lead"))
+	var tint := Color(1, 1, 1, 1) if (speaking or in_choices) else Color(1, 1, 1, 0.72)
+	if tex != null:
+		draw_texture_rect(tex, rect, false, tint)
+	else:
+		for t in SpriteKit.compose(key, is_npc, expr):
+			if t != null:
+				draw_texture_rect(t, rect, false, tint)
+
+
+## 眨眼：idle 第 0 帧里有 blink 表情，隔几秒闪一下
+func _blink_phase(key: String) -> bool:
+	var off := float(absi(hash(key)) % 7) * 0.6
+	return fmod(clock + off, 4.2) < 0.10
 
 func _draw_box() -> void:
 	var box := Rect2(8.0, size.y - BOX_H - 8.0, size.x - 16.0, BOX_H)
