@@ -447,6 +447,18 @@ func choice_available(c: Dictionary) -> bool:
 			return false
 	return true
 
+func choice_visible(c: Dictionary) -> bool:
+	return choice_available(c)
+
+func choice_lock_hint(c: Dictionary) -> String:
+	for key in c.get("require", {}):
+		if state.get_attr(str(key)) < int(c.require[key]): return "%s需 %d" % [key, c.require[key]]
+	for tag in c.get("requireTags", []):
+		if not state.has_tag(str(tag)): return "需要「%s」" % tag
+	for who in c.get("requireRelations", {}):
+		if state.get_relation(str(who)) < int(c.requireRelations[who]): return "需要与%s更亲近" % who
+	return ""
+
 # ==========================================================
 # 阶段推进
 # ==========================================================

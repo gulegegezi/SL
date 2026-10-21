@@ -1,4 +1,6 @@
 extends RefCounted
+const PixelCast := preload("res://scripts/pixel_cast.gd")
+const BACKGROUNDS := {"nursery": "home", "living": "home", "bedroom": "bedroom", "classroom": "classroom", "office": "office", "hospital": "hospital", "park": "park"}
 ## 独立场景布景；共享像素绘制与人物系统，使用原创色板和道具。
 const NAMES := {"nursery": "抓周 · 家中的午后", "classroom": "教室 · 窗边的课桌", "office": "办公室 · 灯下的工位", "hospital": "医院 · 走廊尽头", "agency": "售楼处 · 一张合同", "chapel": "婚礼 · 两个人的仪式", "park": "公园 · 长椅旁", "living": "客厅 · 熟悉的灯光", "bedroom": "卧室 · 属于自己的时间", "stage": "小剧场 · 聚光灯下", "river": "河岸 · 水面的回声", "garden": "菜园 · 泥土与新芽", "playground": "操场 · 向前一步", "station": "车站 · 下一站"}
 
@@ -8,7 +10,14 @@ static func draw(s) -> void:
 	var room: String = s.shot.room
 	var outside := room in ["park", "river", "garden", "playground", "station"]
 	s.box(0, 0, 320, 192, "10121e")
-	if outside: exterior(s, room)
+	if BACKGROUNDS.has(room):
+		s.draw_texture_rect(PixelCast.room(BACKGROUNDS[room]), Rect2(0, 0, 320, 192), false)
+		# Persistent furnishings remain visible after life choices.
+		if room in ["nursery", "living", "bedroom"] and int(s.world.home_level) > 0:
+			s.icon("spark", Vector2(278, 105), 12)
+		if room in ["nursery", "living", "bedroom"] and bool(s.world.child):
+			PixelCast.draw_actor(s, "child", false, Vector2(252, 157), 27, s.clock)
+	elif outside: exterior(s, room)
 	else: interior(s, room)
 	# 同一场景内连续走位，再操作目标道具，最后停留呈现结果。
 	var arrival := Vector2(142, 143)
@@ -25,8 +34,10 @@ static func draw(s) -> void:
 		avatar(s, npc, "b095ae", true)
 		if room == "hospital": avatar(s, Vector2(235, 134), "d9ddd8", true)
 	if s.mode == "rest" and s.beat_index > 0:
-		s.box(142, 119, 23, 11, "86a3b5")
-		s.box(136, 113, 10, 9, "f2ca9c")
+		var bed: Vector2 = s.map_origin + Vector2(177, 66) * s.map_scale
+		s.draw_set_transform(bed, -PI * 0.5, Vector2.ONE * s.map_scale)
+		PixelCast.draw_actor(s, PixelCast.stage_for_age(s.age), false, Vector2.ZERO, 44, s.clock)
+		s.draw_set_transform(s.map_origin, 0, Vector2.ONE * s.map_scale)
 	else:
 		avatar(s, p, "cbad6b" if s.age < 18 else "7f9eb0", false)
 	if s.beat_index >= 1: interaction(s, room, p)
@@ -43,16 +54,18 @@ static func draw(s) -> void:
 	s.box(10, dialogue_y + 2, s.size.x - 20, s.size.y - dialogue_y - 38, "07080d")
 	# 独立肖像槽，头像也随人物年龄变化。
 	s.box(19, dialogue_y + 15, 27, 32, "2e3344")
-	s.box(23, dialogue_y + 19, 19, 20, "d0c9b5")
-	s.box(23, dialogue_y + 16, 19, 6, "c2c1b5" if s.age >= 60 else "5e5361")
-	s.box(27, dialogue_y + 27, 2, 2, "1d1d29")
-	s.box(36, dialogue_y + 27, 2, 2, "1d1d29")
-	s.box(30, dialogue_y + 34, 5, 1, "70616a")
+	var portrait := PixelCast.portrait(PixelCast.stage_for_age(s.age), false, s.beat_index == 1)
+	if portrait != null:
+		s.draw_texture_rect(portrait, Rect2(20, dialogue_y + 16, 25, 30), false)
 
 static func avatar(s, pos: Vector2, shirt: String, npc: bool) -> void:
-	s.draw_set_transform(s.map_origin + pos * s.map_scale, 0, Vector2.ONE * s.map_scale * 1.65)
-	s.person(Vector2.ZERO, shirt, npc)
-	s.draw_set_transform(s.map_origin, 0, Vector2.ONE * s.map_scale)
+	var role: String = PixelCast.stage_for_age(s.age)
+	if npc:
+		role = {"nursery": "parent", "classroom": "teacher", "office": "boss", "hospital": "parent", "agency": "boss", "chapel": "partner", "park": "friend", "living": "parent"}.get(s.shot.room, "friend")
+	var walking: bool = not npc and (s.beat_index == 0 or (s.beat_index == 1 and s.mode in ["sport", "explore", "walk"]) or (s.beat_index == 2 and s.mode == "refuse"))
+	var speaking: bool = not walking and s.beat_index == 1
+	var height := 25.0 if role == "infant" else 44.0
+	PixelCast.draw_actor(s, role, npc, pos, height, s.clock, walking, speaking)
 
 static func interior(s, room: String) -> void:
 	var wall := "2d2940"
