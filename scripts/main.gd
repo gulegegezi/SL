@@ -62,8 +62,8 @@ func render_title() -> void:
 	vb.add_child(_btn("开 始 人 生", C.green, true, func(): gc.new_game()))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	var dex_n := meta.get("endings", {}).size()
-	var ach_n := meta.get("achievements", {}).size()
+	var dex_n: int = meta.get("endings", {}).size()
+	var ach_n: int = meta.get("achievements", {}).size()
 	row.add_child(_btn("结局图鉴 %d/%d" % [dex_n, DataLoader.endings().size()], C.dim, false, render_dex))
 	row.add_child(_btn("成就 %d/%d" % [ach_n, DataLoader.achievements().size()], C.dim, false, render_ach))
 	vb.add_child(row)
@@ -101,7 +101,7 @@ func render_roll(s: GameState) -> void:
 	var tier_wrap := VBoxContainer.new()
 	tier_wrap.modulate.a = 0.0
 	var tk := s.get_tier_key()
-	var tcol := {"lawanle": C.red, "npc": C.dim, "renshangren": C.cyan, "hang": C.yellow}.get(tk, C.green)
+	var tcol: Color = {"lawanle": C.red, "npc": C.dim, "renshangren": C.cyan, "hang": C.yellow}.get(tk, C.green)
 	tier_wrap.add_child(_make_label(s.tier.get("name", ""), tcol, 26, true, 3.0))
 	tier_wrap.add_child(_make_label(s.tier.get("desc", ""), C.dim, 12))
 	tier_wrap.add_child(_spacer(12))
@@ -210,7 +210,7 @@ func _on_game_ended(s: GameState, ending: Dictionary, info: Dictionary) -> void:
 func render_ending(s: GameState, ending: Dictionary, info: Dictionary) -> void:
 	clear_screen()
 	age_tag.text = "结局"
-	var rc := {
+	var rc: Color = {
 		"hang": C.yellow, "renshangren": C.cyan, "npc": C.dim, "lawanle": C.red
 	}.get(info.rating, C.green)
 	var card := _make_panel()
@@ -263,8 +263,8 @@ func render_dex() -> void:
 		var grid := GridContainer.new()
 		grid.columns = 2
 		for e in group[1]:
-			var got := meta.get("endings", {}).has(e.get("id"))
-			var n := e.get("name", "") if got else "？ ？ ？"
+			var got: bool = meta.get("endings", {}).has(e.get("id"))
+			var n: String = e.get("name", "") if got else "？ ？ ？"
 			var col := C.purple if (got and e.get("hidden", false)) else (C.txt if got else C.dim)
 			grid.add_child(_make_label(n, col, 12, true))
 		vb.add_child(grid)
@@ -282,11 +282,11 @@ func render_ach() -> void:
 	age_tag.text = "成就"
 	var card := _make_card()
 	var vb := _cv(card)
-	var an := meta.get("achievements", {}).size()
+	var an: int = meta.get("achievements", {}).size()
 	vb.add_child(_make_label("成就 %d/%d" % [an, DataLoader.achievements().size()], C.green, 15, true))
 	vb.add_child(_spacer(12))
 	for a in DataLoader.achievements():
-		var on := meta.get("achievements", {}).has(a.get("name"))
+		var on: bool = meta.get("achievements", {}).has(a.get("name"))
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 10)
 		row.add_child(_make_label("🏆" if on else "🔒", C.txt if on else C.dim, 17))
@@ -366,7 +366,7 @@ func _choice_btn(c: Dictionary, s: GameState) -> Button:
 	var b := Button.new()
 	b.text = "▸ " + str(c.get("label", ""))
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b.alignment = BoxContainer.ALIGNMENT_BEGIN
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	var col := C.txt
 	if c.has("require"):
 		for k in c["require"]:
