@@ -21,7 +21,7 @@
 
 1. **线稿重上色**：`assets/ink` 是灰度线稿，按亮度重映射到 5 阶
    （墨黑 / 深青 / 中青 / 浅青 / 米白），输出到 `assets/ink_umdc/`。
-   生成脚本在工作区 `_recolor_ink.py`，可重跑；缺图时 `comic_page.ink_tex` 会回落到原灰度图。
+   生成脚本是 `tools/recolor_ink.py`，可重跑；缺图时 `comic_page.ink_tex` 会回落到原灰度图。
 2. **像素化**：页面与分格纹理从线性过滤改成 **nearest**，放大后是硬边方块，不再是糊的插画。
 3. **文字板**：旁白框由「白底黑字」改为「暗板 + 米白字 + 左侧红条」；对白气泡同理，尾巴描米白边。
 4. **红杠**：页眉「第 N 话」下加一条红杠；选项按钮左侧加 4px 红条；继续按钮红底米白字。
@@ -37,7 +37,7 @@
 
 ```bash
 # 重新生成 UMDC 色板线稿（需要 Pillow）
-python _recolor_ink.py gamelife-1.2/assets/ink gamelife-1.2/assets/ink_umdc
+python tools/recolor_ink.py assets/ink assets/ink_umdc
 
 # 截图（会开窗口跑一遍）
 godot --path . --script res://tools/capture_comic.gd -- <输出目录>
