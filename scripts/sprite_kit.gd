@@ -38,7 +38,15 @@ static func face(role: String, expr: String, is_npc: bool) -> Texture2D:
 	return npc_part(role, "head") if is_npc else lead_part(role, "head")
 
 static func scene(name: String) -> Texture2D:
+	var detailed := preload("res://scripts/pixel_cast.gd").room(name)
+	if detailed != null: return detailed
 	return tex("res://assets/scenes/scene_%s.png" % name)
+
+## 保持 master 的剧情资源校验 API；旧动画保留其独立 shock 图。
+static func norm_face(expr: String) -> String:
+	if expr in ["", "neutral"]: return "normal"
+	if expr == "shock": return "surprise"
+	return expr
 
 static func stage_for_age(age: int) -> String:
 	if age <= 6: return "child"

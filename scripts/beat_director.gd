@@ -6,6 +6,7 @@
 ##
 ## 优先级：beat 里显式写的 expr / action / camera > 文本推断 > 默认值。
 extends RefCounted
+const Semantic := preload("res://scripts/comic_performance.gd")
 
 ## 数据里出现过 shock 这类旧别名，统一收到 10 表情里
 const EXPR_ALIAS := {
@@ -65,19 +66,16 @@ const PUNCT_SHORT := ["，", "、", "：", "；"]
 
 
 static func expression_for(text: String) -> String:
-	for rule in EXPR_RULES:
-		for w in rule[1]:
-			if text.find(w) >= 0:
-				return str(rule[0])
-	return "normal"
+	var expr := str(Semantic.direction(text).expr)
+	return "blink" if expr == "sleep" else expr
 
 
 static func action_for(text: String) -> String:
-	for rule in ACTION_RULES:
-		for w in rule[1]:
-			if text.find(w) >= 0:
-				return str(rule[0])
-	return "idle"
+	var action := str(Semantic.direction(text).action)
+	if action == "sleep": return "sit"
+	if action == "put_down": return "idle"
+	if action in ["sign", "phone", "read", "type", "poweroff"]: return "raise"
+	return action
 
 
 ## 一句台词 → 这一拍怎么动
@@ -97,6 +95,7 @@ static func direction(beat: Dictionary, actor: String = "lead") -> Dictionary:
 	return {
 		"expr": expr,
 		"action": action,
+		"stop": bool(Semantic.direction(text).get("cancel_action", false)),
 		"hold": hold,
 		"emotion": expr != "normal",
 		"actor": actor,
@@ -137,14 +136,4 @@ static func is_pause(ch: String) -> bool:
 
 ## 天气：文字里说了雨/雪/风/夜，画面就跟着下
 static func weather_for(text: String) -> String:
-	if text.find("雨停") >= 0 or text.find("放晴") >= 0 or text.find("停了") >= 0:
-		return "clear"
-	if text.find("雨") >= 0:
-		return "rain"
-	if text.find("雪") >= 0:
-		return "snow"
-	if text.find("风") >= 0:
-		return "wind"
-	if text.find("夜") >= 0 or text.find("天黑") >= 0:
-		return "night"
-	return ""
+	return Semantic.weather_for(text)

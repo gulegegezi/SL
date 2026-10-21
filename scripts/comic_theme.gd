@@ -138,11 +138,12 @@ static func text_width(f: Font, text: String, size: int, cap: float, floor_w: fl
 
 
 ## 旁白框：暗板 + 米白字 + 左侧红条（解体中心的标记）
-static func caption_box(c: CanvasItem, pos: Vector2, text: String, max_w: float, size: int = 13, dark: bool = false) -> Rect2:
+static func caption_box(c: CanvasItem, pos: Vector2, text: String, max_w: float, size: int = 13, dark: bool = false, layout_text: String = "") -> Rect2:
 	var f := font_body()
 	var pad := 8.0
-	var inner_w: float = text_width(f, text, size, max_w, minf(96, max_w))
-	var measured: Vector2 = f.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, inner_w - pad * 2 - 4, size)
+	var extent := text if layout_text.is_empty() else layout_text
+	var inner_w: float = text_width(f, extent, size, max_w, minf(96, max_w))
+	var measured: Vector2 = f.get_multiline_string_size(extent, HORIZONTAL_ALIGNMENT_LEFT, inner_w - pad * 2 - 4, size)
 	var h: float = maxf(measured.y, size + 6) + pad * 2
 	var r := Rect2(pos, Vector2(inner_w, h))
 	c.draw_rect(r, INK)
@@ -154,11 +155,12 @@ static func caption_box(c: CanvasItem, pos: Vector2, text: String, max_w: float,
 
 
 ## 对白气泡：暗板 + 米白边 + 一个三角尾巴 + 自动换行
-static func bubble(c: CanvasItem, pos: Vector2, text: String, max_w: float, size: int = 13, tail_dir: int = 1) -> Rect2:
+static func bubble(c: CanvasItem, pos: Vector2, text: String, max_w: float, size: int = 13, tail_dir: int = 1, layout_text: String = "") -> Rect2:
 	var f := font_body()
 	var pad := 9.0
-	var inner_w: float = text_width(f, text, size, minf(max_w, 220.0), 88.0)
-	var measured: Vector2 = f.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, inner_w - pad * 2, size)
+	var extent := text if layout_text.is_empty() else layout_text
+	var inner_w: float = text_width(f, extent, size, minf(max_w, 220.0), 88.0)
+	var measured: Vector2 = f.get_multiline_string_size(extent, HORIZONTAL_ALIGNMENT_LEFT, inner_w - pad * 2, size)
 	var h: float = maxf(measured.y, size + 6) + pad * 2
 	var r := Rect2(pos, Vector2(inner_w, h))
 	var sb := StyleBoxFlat.new()

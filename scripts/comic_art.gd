@@ -2,6 +2,8 @@ extends RefCounted
 const BASE := "res://assets/comic_city/"
 static var _regions: Dictionary = {}
 static var _cache: Dictionary = {}
+static var _expressions: Dictionary = {}
+const EXPRESSION_FRAMES := {"happy": 0, "love": 0, "smug": 0, "cry": 1, "angry": 2, "rage": 2, "shock": 3, "surprise": 3, "panic": 4, "scared": 4, "sleep": 5}
 
 static func background(room: String) -> Texture2D:
 	var key := "room:" + room
@@ -17,7 +19,22 @@ static func cover_region(texture: Texture2D, viewport_size: Vector2) -> Rect2:
 	var crop := viewport_size / ratio
 	return Rect2((source - crop) * 0.5, crop)
 
-static func portrait(key: String, pose: int) -> Texture2D:
+static func portrait(key: String, pose: int, expression: String = "") -> Texture2D:
+	if expression in EXPRESSION_FRAMES:
+		if _expressions.is_empty():
+			_expressions = JSON.parse_string(FileAccess.get_file_as_string("res://assets/comic_expressions/regions.json"))
+		if _expressions.has(key):
+			var id := "%s:expr:%s" % [key, expression]
+			if _cache.has(id): return _cache[id]
+			var data: Dictionary = _expressions[key]
+			var rect: Array = data.frames[int(EXPRESSION_FRAMES[expression])]
+			var image := AtlasTexture.new()
+			image.atlas = load("res://assets/comic_expressions/" + str(data.file))
+			image.region = Rect2(rect[0], rect[1], rect[2], rect[3])
+			image.filter_clip = true
+			_cache[id] = image
+			return image
+	if expression in ["sad", "hurt", "shy", "determined"]: pose = 1
 	if _regions.is_empty():
 		_regions = JSON.parse_string(FileAccess.get_file_as_string(BASE + "regions.json"))
 	if not _regions.has(key): return null

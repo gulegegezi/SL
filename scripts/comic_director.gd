@@ -2,6 +2,7 @@
 ## 决定：这一岁画几格、怎么切版、每格什么镜别、哪些年直接「提笔带过」。
 ## 全部是纯逻辑（不碰节点），所以可以用 test/comic_smoke.gd 无头跑。
 extends RefCounted
+const SemanticPlan := preload("res://scripts/comic_performance.gd")
 
 # ---- 版式：归一化坐标（0..1），分格越多个数越多，但始终有一格是「大格」 ----
 const LAYOUTS := {
@@ -243,7 +244,7 @@ static func build(s, ev: Dictionary, run: Dictionary, rng: RandomNumberGenerator
 			panels[i]["sfx"] = _sfx(i, is_abs, rng)
 			panels[i]["vertical"] = i == n - 1
 
-	return {
+	return SemanticPlan.annotate({
 		"no": no,
 		"age": int(s.age),
 		"stage": _stage(int(s.age)),
@@ -252,7 +253,7 @@ static func build(s, ev: Dictionary, run: Dictionary, rng: RandomNumberGenerator
 		"panels": panels,
 		"slots": slots,
 		"series": series_len(s),
-	}
+	})
 
 
 static func _shot(i: int, n: int, rng: RandomNumberGenerator) -> String:
@@ -372,7 +373,7 @@ static func build_result(s, c: Dictionary, result_text: String, rng: RandomNumbe
 		 "caption": effect_summary(c), "bubble": "",
 		 "sfx": sfx_text, "vertical": true},
 	]
-	return {
+	return SemanticPlan.annotate({
 		"no": no,
 		"age": int(s.age),
 		"stage": _stage(int(s.age)),
@@ -382,7 +383,7 @@ static func build_result(s, c: Dictionary, result_text: String, rng: RandomNumbe
 		"panels": panels,
 		"slots": [Rect2(0, 0, 1, 0.42), Rect2(0, 0.42, 0.62, 0.58), Rect2(0.62, 0.42, 0.38, 0.58)],
 		"series": series_len(s),
-	}
+	})
 
 static func effect_summary(choice: Dictionary) -> String:
 	var labels := {"health": "体质", "int": "心智", "charm": "魅力", "luck": "运气", "money": "金钱", "lifespan": "寿命", "abstract": "抽象度"}

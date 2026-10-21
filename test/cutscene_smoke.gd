@@ -132,6 +132,8 @@ func run() -> void:
 	assert(wave.lead_expr == "happy", "lead expression should switch to happy")
 	wave.queue_free()
 	await process_frame
+	# 等音频服务器释放最后一次确认音的播放句柄。
+	await create_timer(0.15).timeout
 
 	print("PASS: cutscene data, sprite kit, beats -> heart choices, locked skip, beat-driven actions")
 	quit()

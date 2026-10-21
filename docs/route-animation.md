@@ -3,6 +3,8 @@
 > 分支：`animation`。集成分支：`master`。剧情路线：`story`。
 > 总览：[docs/two-routes.md](two-routes.md)。
 
+2026-10-21：按用户要求，后续动画改动保存在本分支。已同步 master 的人生条漫阅读器，新增 `comic_performance.gd`、`comic_panel.gd`、`comic_art.gd` 及相关导演、主题模块和 `assets/comic_expressions`，均属于动画路线；详见 [文本驱动漫画演出](comic-performance.md)。`scenes/PerformanceLab.tscn` 可 F6 独立预览，不影响存档。共享主控与剧情数据仍按下述约定管理。
+
 ## 只做这些
 
 动画路线负责「玩家看到什么、怎么动、怎么被演出来」：

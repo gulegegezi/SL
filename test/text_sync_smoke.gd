@@ -76,6 +76,9 @@ func run() -> void:
 	assert(str(stage.actors["lead"]["expr"]) == "happy", "显式表情优先")
 	assert(stage.hold_timer > 0.0, "动作要先起手，再开字")
 
+	stage._apply_beat({"face": "lead", "text": "你没有走出房间。"})
+	assert(str(stage.actors["lead"]["action"]) == "idle" and stage.motion_timer == 0.0, "否定动作必须结束上一拍位移")
+
 	# 6) 冲击帧：夸张表情会拉起 impact
 	var stage2 = CutsceneStage.new()
 	stage2.size = Vector2(480, 420)
@@ -90,6 +93,10 @@ func run() -> void:
 	await process_frame
 	assert(str(stage2.actors["lead"]["expr"]) == "rage", "暴怒要换脸")
 	assert(stage2.impact > 0.0, "暴怒要拉起冲击帧")
+	stage.queue_free()
+	stage2.queue_free()
+	await process_frame
+	await create_timer(0.15).timeout
 
 	print("PASS: text-driven beats (action/expr/camera/hold/impact)")
 	quit()

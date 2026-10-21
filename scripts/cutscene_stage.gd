@@ -77,14 +77,14 @@ func _ready() -> void:
 ## 兼容直接传原始选项数组（测试用），此时视为全部解锁。
 func configure(ev: Dictionary, cutscene: Dictionary, s, choice_list: Array = []) -> void:
 	event = ev
-	cut = cutscene
+	cut = cutscene.duplicate(true)
 	state = s
 	age = int(s.age)
-	beats = cutscene.get("beats", [])
+	beats = cut.get("beats", [])
 	choices = choice_list
 	if choices.is_empty():
 		choices = [{"choice": {"label": "继续", "result": "", "effects": {}}, "locked": false, "hint": ""}]
-	cast = cutscene.get("cast", [])
+	cast = cut.get("cast", [])
 	bg_tex = SpriteKit.scene(str(cutscene.get("bg", "home")))
 	lead_expr = "neutral"
 	actors.clear()
@@ -183,13 +183,16 @@ func _apply_beat(beat: Dictionary) -> void:
 		weather = w
 	var d := BeatDirector.direction(beat, role)
 	var explicit := not str(beat.get("action", "")).strip_edges().is_empty()
-	if str(d["action"]) == "idle" and not explicit and motion_timer > 0.0 and motion_role == role:
+	var action_role := str(beat.get("target", role))
+	var action_expr := str(d["expr"]) if action_role == role else str(actors.get(action_role, {}).get("expr", "normal"))
+	if action_role != role: _set_actor(role, _action_of(role), str(d["expr"]))
+	if str(d["action"]) == "idle" and not explicit and not bool(d.get("stop", false)) and motion_timer > 0.0 and motion_role == action_role:
 		# 上一拍还在走/挥手，这一句没说停，就让动作再延续一会儿（表情照常更新）
-		_set_actor(role, _action_of(role), str(d["expr"]))
+		_set_actor(action_role, _action_of(action_role), action_expr)
 	else:
-		_set_actor(role, str(d["action"]), str(d["expr"]))
+		_set_actor(action_role, str(d["action"]), action_expr)
 		if str(d["action"]) != "idle":
-			motion_role = role
+			motion_role = action_role
 			motion_timer = 1.4
 		else:
 			motion_role = ""
@@ -199,7 +202,7 @@ func _apply_beat(beat: Dictionary) -> void:
 		lead_expr = str(d["expr"])
 		cur_face = SpriteKit.face(SpriteKit.stage_for_age(age), str(d["expr"]), false)
 	else:
-		cur_face = SpriteKit.face(role, str(d["expr"]), true)
+		cur_face = SpriteKit.face(_visual_role(role), str(d["expr"]), true)
 	# 镜头往说话的人身上压；旁白拉远
 	var ax := 80.0
 	var who := _cast_by_role(role)
@@ -224,6 +227,9 @@ func _action_of(role: String) -> String:
 	var a: Dictionary = actors.get(role, {})
 	return str(a.get("action", "idle"))
 
+func _visual_role(role: String) -> String:
+	return "mate" if role == "parent" and str(event.get("id", "")) == "V13" else role
+
 
 func _cast_by_role(role: String) -> Dictionary:
 	for c in cast:
@@ -242,6 +248,8 @@ func _set_actor(role: String, action: String, expr: String) -> void:
 	a["action"] = action
 	a["expr"] = expr
 	actors[role] = a
+	var cast_actor := _cast_by_role(role)
+	if not cast_actor.is_empty(): cast_actor["action"] = action
 
 func _enter_choices() -> void:
 	in_choices = true
@@ -397,13 +405,13 @@ func _draw_weather() -> void:
 func _draw_cast(c: Dictionary) -> void:
 	var role := str(c.get("role", "lead"))
 	var is_npc := role != "lead"
-	var key := role if is_npc else SpriteKit.stage_for_age(age)
+	var key := _visual_role(role) if is_npc else SpriteKit.stage_for_age(age)
 	var a: Dictionary = actors.get(role, {"action": "idle", "expr": "normal", "clock": 0.0})
 	var action := str(a.get("action", "idle"))
 	var expr := str(a.get("expr", "normal"))
 	if action == "idle" and _blink_phase(key):
 		expr = "blink"
-	var lookup := ("npc_" + key) if is_npc else key
+	var lookup := ("npc_" + key) if is_npc else "lead_" + key
 	var n := int(SpriteKit.action_info(lookup, action).get("n", 1))
 	var fps := SpriteKit.action_fps(action)
 	var idx := 0
@@ -412,7 +420,7 @@ func _draw_cast(c: Dictionary) -> void:
 		if action == "idle" and expr != "normal" and expr != "blink":
 			# 有情绪的这一拍停在烘焙了表情的第 0 帧，别让脸在两帧之间跳回无表情
 			idx = 0
-	var tex := SpriteKit.frame(key, action, idx, expr, is_npc)
+	var tex := SpriteKit.frame(key if is_npc else "lead_" + key, action, idx, expr, is_npc)
 	var foot := Vector2(float(c.get("x", 80)) + float(a.get("offset_x", 0.0)), float(c.get("y", 64)))
 	var rect := Rect2(foot - Vector2(CHAR.x * 0.5, CHAR.y), CHAR)
 	# 不是这一拍说话的人压暗一点：文字和画面指向同一张脸
