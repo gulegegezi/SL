@@ -103,6 +103,11 @@ p.text{font-size:13px;line-height:1.85;color:#d8e2ec;white-space:pre-line;margin
 .opt:disabled{opacity:.45;cursor:default;transform:none;border-color:var(--inkDim)}
 .opt.cont{background:#243a24;border-color:var(--green);color:#bff0a0;text-align:center;font-weight:700}
 .opt.cont:hover{background:#2c4a2c}
+.tap{position:absolute;right:14px;bottom:26px;font-size:11px;color:#f2e6c8;
+  background:rgba(10,14,22,.88);border:1px solid #7fd94a;border-radius:3px;
+  padding:3px 9px;opacity:0;transition:opacity .16s;pointer-events:none;z-index:11}
+.tap.show{opacity:1;animation:tapPulse 1.1s ease-in-out infinite}
+@keyframes tapPulse{0%,100%{opacity:1}50%{opacity:.42}}
 .over{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
   background:rgba(8,10,16,.9);color:#ffd154;z-index:20;text-align:center;padding:24px;line-height:1.9}
 .over.show{display:flex}
@@ -147,6 +152,7 @@ p.text{font-size:13px;line-height:1.85;color:#d8e2ec;white-space:pre-line;margin
     <div class="bar bot" id="barBot"></div>
     <div class="flash" id="flash"></div>
     <div class="vfx" id="vfx"></div>
+    <div class="tap" id="tapHint">▼ 点按继续</div>
     <div class="banner" id="banner"></div>
     <div class="res" id="res"><div class="lab">结果</div><div id="resText"></div></div>
   </div>
@@ -389,15 +395,45 @@ function poseFor(label){
   return {frame:'raise', tag:'动手', shake:false};
 }
 
-/* ================= 节拍 ================= */
-function runBeats(steps,done){
-  let i=0;
-  (function next(){
-    if(i>=steps.length){ if(done) done(); return; }
-    const s=steps[i++];
+/* ================= 相位推进（点按继续，不再自动连播） ================= */
+const Phase={
+  steps:[], i:0, done:null, timer:null, active:false,
+  start:function(steps,done){
+    this.steps=steps; this.i=0; this.done=done; this.active=true;
+    showTap(false);
+    this.tick();
+  },
+  tick:function(){
+    if(!this.active) return;
+    if(this.i>=this.steps.length){ this.end(); return; }
+    const s=this.steps[this.i++];
     if(s.run) s.run();
-    setTimeout(next, s.dur||0);
-  })();
+    this.timer=setTimeout(()=>this.tick(), s.dur||0);
+  },
+  /* 播放途中点按：把本相位剩余步骤立刻跑完，落到下一个停顿点 */
+  skip:function(){
+    if(!this.active) return;
+    clearTimeout(this.timer);
+    while(this.i<this.steps.length){ const s=this.steps[this.i++]; if(s.run) s.run(); }
+    this.end();
+  },
+  end:function(){
+    const d=this.done; this.active=false; this.done=null;
+    clearTimeout(this.timer);
+    if(d) d();
+  }
+};
+
+let tapPending=null;
+function showTap(on){
+  const h=$('tapHint');
+  if(h) h.classList.toggle('show', !!on);
+}
+function waitTap(cb){ tapPending=cb; showTap(true); }
+function clearTap(){ tapPending=null; showTap(false); }
+function doTap(){
+  if(Phase.active){ Phase.skip(); return; }
+  if(tapPending){ const cb=tapPending; tapPending=null; showTap(false); cb(); }
 }
 
 /* ================= 导演工具 ================= */
@@ -471,7 +507,7 @@ function reveal(choice,act,dl,set,net,rig,nrig){
   }
 }
 
-/* ================= 分镜：入场 → 走位 → 停一拍 → 转身 → 动作 → 定格 → 揭晓 ================= */
+/* ================= 分镜：A 走近对话 →（点按）→ B 动作 →（点按）→ C 揭晓 ================= */
 function perform(choice, after){
   const rig=$('rigPlayer'), nrig=$('rigNpc');
   const act=poseFor(choice.b);
@@ -481,36 +517,45 @@ function perform(choice, after){
   const sc=sceneFor(S.age,S.node);
   const targetX=SCENE_X+(NPC_X[sc]-24)*SCALE;
   rig.style.left=(SCENE_X+14*SCALE)+'px';
-  const shots=[];
 
-  shots.push({dur:sp(T.fade),   run:function(){ doFlash('#000000',0.9,T.fade); }});
-  shots.push({dur:sp(T.barsIn), run:function(){ bars(true); }});
-  shots.push({dur:sp(T.pushIn), run:function(){ camPush(1.10,50,84,T.pushIn); }});
+  /* 相位 A：黑闪 → 黑边 → 推镜 → 走位 → 急停 → NPC 转身 → 气泡 */
+  const A=[
+    {dur:sp(T.fade),    run:function(){ doFlash('#000000',0.9,T.fade); }},
+    {dur:sp(T.barsIn),  run:function(){ bars(true); }},
+    {dur:sp(T.pushIn),  run:function(){ camPush(1.10,50,84,T.pushIn); }},
+    {dur:sp(T.walk),    run:function(){ ownTranslate(rig,targetX,sp(T.walk)); playWalk(rig,2); }},
+    {dur:sp(45),        run:function(){ restIdle(rig); }},
+    {dur:sp(T.hold1)},
+    {dur:sp(T.npcTurn), run:function(){ nrig.style.transform='scaleX(-1)'; playSpeak(nrig,3); }},
+    {dur:sp(T.hold2)},
+    {dur:sp(T.bubble),  run:function(){ showBubble(choice,act); }}
+  ];
+  /* 相位 B：动作 → 定格 → 再推镜 */
+  const B=[
+    {dur:sp(40), run:function(){
+      playSpeak(rig,2);
+      if(act.shake){ $('camera').classList.add('shk'); setTimeout(function(){$('camera').classList.remove('shk');},sp(T.act)); }
+    }},
+    {dur:sp(T.act)},
+    {dur:sp(50)},
+    {dur:sp(T.freeze), run:function(){ camPush(1.22,50,82,T.freeze); }}
+  ];
+  /* 相位 C：白闪 → 换表情/特效 → 结果逐字 → 黑边收 + 镜头复位 */
+  const C=[
+    {dur:sp(T.reveal),  run:function(){ reveal(choice,act,dl,set,net,rig,nrig); }},
+    {dur:sp(T.read)},
+    {dur:sp(T.barsOut), run:function(){ bars(false); camReset(T.barsOut); }}
+  ];
 
-  ownTranslate(rig,targetX,sp(T.walk));
-  shots.push({dur:sp(T.walk), run:function(){ playWalk(rig,2); }});
-  shots.push({dur:sp(45), run:function(){ restIdle(rig); }});
-  shots.push({dur:sp(T.hold1)});
-
-  shots.push({dur:sp(T.npcTurn), run:function(){
-    nrig.style.transform='scaleX(-1)'; playSpeak(nrig,3); }});
-  shots.push({dur:sp(T.hold2)});
-  shots.push({dur:sp(T.bubble), run:function(){ showBubble(choice,act); }});
-
-  shots.push({dur:sp(40), run:function(){
-    playSpeak(rig,2);
-    if(act.shake){ $('camera').classList.add('shk'); setTimeout(function(){$('camera').classList.remove('shk');},sp(T.act)); }
-  }});
-  shots.push({dur:sp(T.act)});
-  shots.push({dur:sp(50)});
-  shots.push({dur:sp(T.freeze), run:function(){ camPush(1.22,50,82,T.freeze); }});
-
-  shots.push({dur:sp(T.reveal), run:function(){ reveal(choice,act,dl,set,net,rig,nrig); }});
-  shots.push({dur:sp(T.read)});
-  shots.push({dur:sp(T.barsOut), run:function(){ bars(false); camReset(T.barsOut); }});
-  shots.push({dur:sp(T.out), run:function(){ if(after) after(); }});
-
-  runBeats(shots);
+  Phase.start(A, function(){
+    waitTap(function(){
+      Phase.start(B, function(){
+        waitTap(function(){
+          Phase.start(C, function(){ if(after) after(); });
+        });
+      });
+    });
+  });
 }
 
 /* ================= 数值 ================= */
@@ -557,6 +602,7 @@ function setupScene(seed){
   rn.style.transform='none';
   placeCast(rn, npcKey(sc), SCENE_X+NPC_X[sc]*SCALE);
   $('bubble').classList.remove('show');
+  clearTap();
   return sc;
 }
 
@@ -693,6 +739,11 @@ function restart(){
   clearVfx(); renderProgress();
   showNode(OPEN.start.normal);
 }
+$('stage').onclick=function(){ doTap(); };
+document.onkeydown=function(e){
+  if(!e) return;
+  if(e.key===' '||e.key==='Enter'||e.code==='Space'){ doTap(); }
+};
 $('btnRestart').onclick=restart;
 $('btnFast').onclick=function(){ FAST=!FAST; this.classList.toggle('on',FAST); };
 restart();
