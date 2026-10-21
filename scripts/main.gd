@@ -9,6 +9,7 @@ const ComicDirector := preload("res://scripts/comic_director.gd")
 const ComicPage := preload("res://scripts/comic_page.gd")
 const ComicTheme := preload("res://scripts/comic_theme.gd")
 const CrtOverlay := preload("res://scripts/crt_overlay.gd")
+const ComicArchive := preload("res://scripts/comic_archive.gd")
 
 # ---- 颜色 ----
 const C := {
@@ -45,13 +46,28 @@ var _status_layer: PanelContainer = null
 var _status_box: VBoxContainer = null
 var _action_layer: PanelContainer = null
 var _action_box: VBoxContainer = null
+var _action_scroll: ScrollContainer
 var _scroll: ScrollContainer = null
+var _history: Array = []
+var _after_choice := false
+var _restoring := false
+var _advance_busy := false
+var _scroll_tween: Tween
+var _reader_tools: HBoxContainer
+var archive_path := ComicArchive.RUN_PATH
+var autosave_enabled := true
+var _completed := false
+var _readonly_archive := false
 
 func _ready() -> void:
 	DataLoader.ensure_loaded()
 	screen = $MarginContainer/ScrollContainer/VBox/Screen
 	age_tag = $MarginContainer/ScrollContainer/VBox/TopBar/AgeTag
 	_scroll = $MarginContainer/ScrollContainer
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.follow_focus = false
+	_scroll.scroll_deadzone = 10
+	_scroll.gui_input.connect(_reader_input)
 	_build_action_layer()
 	$MarginContainer/ScrollContainer/VBox/Footer.modulate = C.dim
 	gc = GameController.new()
@@ -64,12 +80,14 @@ func _ready() -> void:
 	gc.game_ended.connect(_on_game_ended)
 	# CRT 叠层最后加，保证盖在内容之上
 	add_child(CrtOverlay.new())
+	resized.connect(_layout_reader)
 	render_title()
 
 func clear_screen() -> void:
 	for c in screen.get_children():
 		c.queue_free()
 	_strip = false
+	if _scroll_tween != null: _scroll_tween.kill()
 	_blanks.clear()
 	_strip_pages = null
 	_status_node = null
@@ -83,6 +101,8 @@ func clear_screen() -> void:
 	if mc != null:
 		mc.add_theme_constant_override("margin_bottom", 24)
 		mc.add_theme_constant_override("margin_top", 10)
+	if _reader_tools != null: _reader_tools.hide()
+	$MarginContainer/ScrollContainer/VBox/TopBar.show()
 
 
 ## 底部固定操作条：选项不跟着漫画滚走
@@ -105,7 +125,12 @@ func _build_action_layer() -> void:
 	_action_layer.add_theme_stylebox_override("panel", sb)
 	_action_box = VBoxContainer.new()
 	_action_box.add_theme_constant_override("separation", 6)
-	_action_layer.add_child(_action_box)
+	_action_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_action_scroll = ScrollContainer.new()
+	_action_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_action_scroll.follow_focus = true
+	_action_scroll.add_child(_action_box)
+	_action_layer.add_child(_action_scroll)
 	add_child(_action_layer)
 
 	# 固定状态条：数值不跟着漫画滚走
@@ -122,6 +147,22 @@ func _build_action_layer() -> void:
 	_status_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_status_layer.add_child(_status_box)
 	add_child(_status_layer)
+	_reader_tools = HBoxContainer.new()
+	_reader_tools.add_theme_constant_override("separation", 8)
+	_reader_tools.position = Vector2(14, 10)
+	var name_label := _ink_label("人生未完 / LIFE IN INK", ComicTheme.CREAM, 13, true)
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_reader_tools.add_child(name_label)
+	for title in ["存档", "书签"]:
+		var button := Button.new()
+		button.text = title
+		button.add_theme_font_override("font", ComicTheme.font_body())
+		button.pressed.connect(save_current if title == "存档" else _return_to_title)
+		_reader_tools.add_child(button)
+	add_child(_reader_tools)
+	_reader_tools.hide()
+	_status_layer.offset_top = 48
+	_status_layer.offset_bottom = 115
 
 # ==========================================================
 # 标题页
@@ -136,7 +177,14 @@ func render_title() -> void:
 	vb.add_child(_spacer(20))
 	vb.add_child(_make_label("你将随机出生在一个地方，\n随机抽到一种出身，随机走上一条人生线。\n你唯一能带走的，是结局和成就。", C.txt, 13))
 	vb.add_child(_spacer(22))
+	var saved := ComicArchive.load_run(archive_path)
+	if not saved.is_empty():
+		var resume_title := "回看上一生" if bool(saved.get("completed", false)) else "继续阅读"
+		vb.add_child(_btn("%s · %d 岁的书签" % [resume_title, int(saved.state.get("age", 1))], C.cyan, true, resume_saved))
+	var books := ComicArchive.books()
+	if not books.is_empty(): vb.add_child(_btn("完结书架 · %d 本人生" % books.size(), C.dim, false, render_books))
 	vb.add_child(_btn("开 始 人 生", C.green, true, func(): gc.new_game()))
+	vb.add_child(_wrap_label("每一生有不同的留白。健康改变篇幅，选择留下性格。\n向下阅读，走过的年份将逐格成画。", C.dim, 12))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	var dex_n: int = meta.get("endings", {}).size()
@@ -147,6 +195,17 @@ func render_title() -> void:
 	screen.add_child(card)
 
 func _on_game_started(s: GameState) -> void:
+	_comic = ComicDirector.new_run(gc.rng)
+	_history.clear()
+	_skipped.clear()
+	_page_no = 0
+	_after_choice = false
+	_busy = false
+	_advance_busy = false
+	_last_result = ""
+	current_event = {}
+	_completed = false
+	_readonly_archive = false
 	render_roll(s)
 
 # ==========================================================
@@ -225,7 +284,14 @@ func render_main() -> void:
 		_comic = ComicDirector.new_run(gc.rng)
 
 	# 开局的两年一定有画面：还没进入人生就「提笔带过」会很突兀
-	if _page_no >= 2 and ComicDirector.should_montage(s, _comic, gc.rng):
+	var montage_this := _page_no >= 2 and ComicDirector.can_montage(ev, s) and ComicDirector.should_montage(s, _comic, gc.rng)
+	# Flush quiet intervals before the next ordinary chapter, keeping ages in order.
+	if not montage_this and not _skipped.is_empty():
+		_strip_begin()
+		_page_no += 1
+		_append_life_page(ComicDirector.build_montage(s, _skipped, gc.rng, _page_no), 470)
+		_skipped.clear()
+	if montage_this:
 		_render_montage(ev)
 	else:
 		_render_page(ev)
@@ -238,20 +304,23 @@ func _strip_begin() -> void:
 		return
 	clear_screen()
 	_strip = true
+	$MarginContainer/ScrollContainer/VBox/TopBar.hide()
 	var mc := get_node_or_null("MarginContainer")
 	if mc != null:
-		mc.add_theme_constant_override("margin_bottom", 200)
+		mc.add_theme_constant_override("margin_bottom", 210)
 	if _action_layer != null:
 		_action_layer.visible = true
 	if _status_layer != null:
 		_status_layer.visible = true
 	if mc != null:
-		mc.add_theme_constant_override("margin_top", 76)
+		mc.add_theme_constant_override("margin_top", 126)
+	_reader_tools.show()
 	_strip_pages = VBoxContainer.new()
-	_strip_pages.add_theme_constant_override("separation", 18)
+	_strip_pages.add_theme_constant_override("separation", 38)
 	screen.add_child(_strip_pages)
 	_add_blank()
 	_add_blank()
+	_layout_reader()
 
 
 ## 还没轮到的年份：一页空白分镜，等人生活到那里再填
@@ -264,7 +333,7 @@ func _add_blank() -> void:
 		"slots": [Rect2(0, 0, 1, 0.5), Rect2(0, 0.5, 1, 0.5)],
 		"panels": [{}, {}],
 	}, 420.0)
-	var wrap := CenterContainer.new()
+	var wrap := VBoxContainer.new()
 	wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	wrap.add_child(pg)
 	_strip_pages.add_child(wrap)
@@ -273,6 +342,7 @@ func _add_blank() -> void:
 
 ## 把新的一页填进第一个空白位，再在末尾补一个新的空白
 func _append_life_page(spec: Dictionary, h: float) -> Control:
+	if not _restoring: _history.append({"spec": spec.duplicate(true), "height": h})
 	var wrap := _comic_page_node(spec, h)
 	var idx := -1
 	if not _blanks.is_empty():
@@ -284,9 +354,9 @@ func _append_life_page(spec: Dictionary, h: float) -> Control:
 		_strip_pages.move_child(wrap, idx)
 	_add_blank()
 	var pg = wrap.get_child(0)
-	if pg != null and pg.has_method("reveal_panels"):
+	if not _restoring and pg != null and pg.has_method("reveal_panels"):
 		pg.reveal_panels()
-	_scroll_to(wrap)
+	if not _restoring: _scroll_to(wrap)
 	return wrap
 
 
@@ -304,6 +374,8 @@ func _set_action(node: Control) -> void:
 	for c in _action_box.get_children():
 		c.queue_free()
 	_action_box.add_child(node)
+	_action_scroll.scroll_vertical = 0
+	call_deferred("_layout_reader")
 
 
 ## 往下一格一格滑：像手机上看纵向漫画
@@ -313,25 +385,29 @@ func _scroll_to(node: Control) -> void:
 	if _scroll == null or not is_instance_valid(node):
 		return
 	var target := int(node.global_position.y - _scroll.global_position.y + _scroll.scroll_vertical) - 6
-	var tw := create_tween()
-	tw.tween_property(_scroll, "scroll_vertical", maxi(0, target), 0.62) 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	if _scroll_tween != null: _scroll_tween.kill()
+	_scroll_tween = create_tween()
+	_scroll_tween.tween_property(_scroll, "scroll_vertical", maxi(0, target), 0.62).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_scroll_tween.finished.connect(_autosave)
 
 
 ## 正常一页：本话 = 这一岁的事件
 func _render_page(ev: Dictionary) -> void:
+	_after_choice = false
 	var s := gc.state
 	_strip_begin()
-	_refresh_status()
 	_page_no += 1
+	_refresh_status()
 	var spec := ComicDirector.build(s, ev, _comic, gc.rng, _page_no)
 	_append_life_page(spec, 540.0)
 	_set_action(_choice_column(ev))
 	_set_footer("第 %d 话 · 本话 %d 格 · 选一个，往下翻" % [_page_no, spec["panels"].size()])
+	_autosave()
 
 ## 提笔带过：不画过程，只留一格说明
 func _render_montage(ev: Dictionary) -> void:
 	var s := gc.state
-	var choices: Array = ev.get("choices", [])
+	var choices: Array = ev.get("choices", []).filter(func(c): return gc.choice_visible(c) and gc.choice_lock_hint(c).is_empty())
 	if choices.size() > 0:
 		var pickc: Dictionary = choices[gc.rng.randi_range(0, choices.size() - 1)]
 		gc.choose(pickc, current_event)     # 自动选一个，数值照常结算
@@ -349,28 +425,32 @@ func _render_montage(ev: Dictionary) -> void:
 		return
 
 	_strip_begin()
-	_refresh_status()
 	_page_no += 1
+	_refresh_status()
 	var spec := ComicDirector.build_montage(s, _skipped, gc.rng, _page_no)
 	var merged := _skipped.size()
 	_skipped = []
 	_append_life_page(spec, 470.0)
-	var btn := _ink_btn_text("▶ 继续（略过 %d 年）" % merged, ComicTheme.ACCENT)
-	btn.pressed.connect(func(): gc.advance_after_choice(current_event))
+	var btn := _ink_btn_text("▶ 继续（带过 %d 段日常）" % merged, ComicTheme.ACCENT)
+	btn.pressed.connect(_advance_page)
 	_set_action(_action_wrap(btn))
 	_set_footer("第 %d 话 · 这一段被提笔带过" % _page_no)
+	_after_choice = true
+	_autosave()
 
 ## 选择后的结果页
 func _render_result(ev: Dictionary, c: Dictionary) -> void:
+	_after_choice = true
 	var s := gc.state
 	_strip_begin()
 	_refresh_status()
 	var spec := ComicDirector.build_result(s, c, _last_result, gc.rng, _page_no)
 	_append_life_page(spec, 520.0)
 	var btn := _ink_btn_text("▶ 继续", ComicTheme.ACCENT)
-	btn.pressed.connect(func(): gc.advance_after_choice(ev))
+	btn.pressed.connect(_advance_page)
 	_set_action(_action_wrap(btn))
 	_set_footer("第 %d 话 · 结果" % _page_no)
+	_autosave()
 
 func _action_wrap(node: Control) -> Control:
 	var vb := VBoxContainer.new()
@@ -380,9 +460,10 @@ func _action_wrap(node: Control) -> Control:
 
 
 func _on_comic_choice(c: Dictionary) -> void:
-	if _busy:
+	if _busy or _after_choice or not gc.choice_visible(c) or not gc.choice_lock_hint(c).is_empty():
 		return
 	_busy = true
+	for button in _action_box.find_children("*", "Button", true, false): button.disabled = true
 	gc.choose(c, current_event)
 	await get_tree().create_timer(0.10).timeout
 	_render_result(current_event, c)
@@ -395,11 +476,12 @@ func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
 	pass
 
 func _on_phase_advanced(_s: GameState) -> void:
+	_advance_busy = false
 	render_main()
 
 # ---- 漫画页组装 ----
 func _comic_page_node(spec: Dictionary, h: float) -> Control:
-	var wrap := CenterContainer.new()
+	var wrap := VBoxContainer.new()
 	wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var pg = ComicPage.new()
 	pg.build(spec, h)
@@ -430,48 +512,50 @@ func _status_style() -> StyleBoxFlat:
 ## 状态条的内容（数值行 + 抽象度刻度），固定条与页内条共用
 func _fill_status(vb: VBoxContainer, s: GameState) -> void:
 	vb.add_theme_constant_override("separation", 3)
+	var persona := ComicDirector.persona_bias(s)
+	var disposition := "性格未定" if persona == 0 else ("偏向行动与相遇" if persona > 0 else "偏向独白与观察")
+	var title := _ink_label("%02d 岁  /  第 %02d 话  ·  %s" % [s.age, _page_no, disposition], ComicTheme.CREAM, 12, true)
+	title.tooltip_text = "体质改变未来分镜密度；性格改变叙述节奏；寿命与健康决定终章。"
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	vb.add_child(title)
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
+	row.add_theme_constant_override("separation", 6)
 	for item in [["智", s.intl], ["体", s.health], ["魅", s.charm], ["运", s.luck], ["钱", s.money], ["寿", s.lifespan]]:
-		var k := _ink_label(str(item[0]), Color(ComicTheme.CREAM, 0.55), 10)
-		row.add_child(k)
-		row.add_child(_ink_label(str(item[1]), ComicTheme.CREAM, 11, true))
-	var tag_txt := ""
-	for t in s.tags:
-		var ts := str(t)
-		if ts.begins_with("_") or not s.tags[t]:
-			continue
-		tag_txt += ("·" if tag_txt.is_empty() else " ·") + ts
-		if tag_txt.length() > 26:
-			break
-	if not tag_txt.is_empty():
-		var sp := _ink_label(tag_txt, ComicTheme.ACCENT, 9)
-		sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		sp.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		row.add_child(sp)
+		var chip := _ink_label("%s %s" % [item[0], item[1]], ComicTheme.CREAM, 11, true)
+		chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		chip.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		row.add_child(chip)
 	vb.add_child(row)
 
 	# 抽象度：一条墨线刻度
-	var a: int = s.abstract_val
+	var a: int = s.health
 	var bar := Control.new()
 	bar.custom_minimum_size = Vector2(0, 7)
 	bar.draw.connect(func():
 		var w: float = bar.size.x
 		bar.draw_rect(Rect2(0, 2, w, 3), Color(ComicTheme.CREAM, 0.18))
-		bar.draw_rect(Rect2(0, 2, w * (a / 100.0), 3), ComicTheme.ACCENT if a >= 61 else ComicTheme.CREAM)
+		bar.draw_rect(Rect2(0, 2, w * clampf(a / 20.0, 0, 1), 3), ComicTheme.ACCENT if a <= 5 else ComicTheme.CREAM)
 	)
 	vb.add_child(bar)
 
 func _choice_column(ev: Dictionary) -> VBoxContainer:
 	var cb := VBoxContainer.new()
 	cb.add_theme_constant_override("separation", 7)
-	var head := _ink_label("接下来 ——", Color(0.86, 0.84, 0.78), 10)
+	var head := _ink_label("这一格，由你落笔  /  CHOOSE", ComicTheme.CREAM, 11)
+	head.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	cb.add_child(head)
+	var unlocked := 0
 	for c in ev.get("choices", []):
+		if not gc.choice_visible(c): continue
 		var b := _ink_choice_btn(c, gc.state)
 		if not b.disabled:
+			unlocked += 1
 			b.pressed.connect(_on_comic_choice.bind(c))
 		cb.add_child(b)
+	if unlocked == 0:
+		var wait := _ink_btn_text("▶ 暂时放下，继续生活", ComicTheme.ACCENT)
+		wait.pressed.connect(_on_comic_choice.bind({"label": "暂时放下", "effects": {}, "result": "你把这个问题留给未来，眼前的生活仍在继续。"}))
+		cb.add_child(wait)
 	return cb
 
 func _ink_label(text: String, col: Color, sz: int, bold: bool = false) -> Label:
@@ -509,11 +593,18 @@ func _ink_btn_text(text: String, col: Color) -> Button:
 func _ink_choice_btn(c: Dictionary, s: GameState) -> Button:
 	var b := Button.new()
 	b.text = "▶  " + str(c.get("label", ""))
+	b.tooltip_text = str(c.get("label", ""))
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for property in b.get_property_list():
+		if str(property.name) == "autowrap_mode": b.set("autowrap_mode", TextServer.AUTOWRAP_WORD_SMART)
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.add_theme_font_override("font", ComicTheme.font_body())
 	b.add_theme_font_size_override("font_size", 14)
 	var col := ComicTheme.CREAM
+	var lock := gc.choice_lock_hint(c)
+	if not lock.is_empty():
+		b.disabled = true
+		b.text += " （%s）" % lock
 	if c.has("require"):
 		for k in c["require"]:
 			if s.get_attr(k) < int(c["require"][k]):
@@ -551,6 +642,107 @@ func _ink_choice_btn(c: Dictionary, s: GameState) -> Button:
 	b.add_child(bar)
 	return b
 
+func _reader_input(event: InputEvent) -> void:
+	if event is InputEventPanGesture or event is InputEventScreenDrag or (event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]):
+		if _scroll_tween != null: _scroll_tween.kill()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and autosave_enabled and _strip:
+		save_current()
+
+func _layout_reader() -> void:
+	if not _strip or _action_layer == null: return
+	_reader_tools.size.x = maxf(200, size.x - 28)
+	var wanted := clampf(_action_box.get_combined_minimum_size().y + 24, 72, minf(270, size.y * 0.40))
+	_action_layer.offset_top = -wanted - 8
+	var mc := get_node_or_null("MarginContainer")
+	if mc != null:
+		mc.add_theme_constant_override("margin_bottom", int(wanted + 22))
+		mc.add_theme_constant_override("margin_top", 124)
+
+func _advance_page() -> void:
+	if _advance_busy or not _after_choice: return
+	_advance_busy = true
+	for button in _action_box.find_children("*", "Button", true, false): button.disabled = true
+	_after_choice = false
+	gc.advance_after_choice(current_event)
+
+func _snapshot() -> Dictionary:
+	return {"state": ComicArchive.state_data(gc.state), "comic": _comic.duplicate(true),
+		"history": _history.duplicate(true), "event": current_event.duplicate(true),
+		"page_no": _page_no, "after_choice": _after_choice, "result": _last_result,
+		"skipped": _skipped.duplicate(true), "rng_seed": gc.rng.seed, "rng_state": gc.rng.state,
+		"scroll": _scroll.scroll_vertical, "completed": _completed}
+
+func _autosave() -> void:
+	if autosave_enabled and (not _busy or _after_choice) and not _readonly_archive and not _restoring and gc.state != null and not _history.is_empty():
+		ComicArchive.save_run(_snapshot(), archive_path)
+
+func save_current() -> void:
+	if gc.state == null or not _strip or _busy: return
+	if _readonly_archive:
+		_set_footer("这本人生已经归档，翻阅不会改变当前书签")
+		return
+	if ComicArchive.save_run(_snapshot(), archive_path):
+		_set_footer("书签已保存 · 已画的分镜与随机序列都会保留")
+	else:
+		_set_footer("书签保存失败，请检查存储空间")
+
+func _return_to_title() -> void:
+	if _busy: return
+	save_current()
+	render_title()
+
+func resume_saved(book_path: String = "") -> void:
+	var saved := ComicArchive.load_run(archive_path if book_path.is_empty() else book_path)
+	if saved.is_empty(): return
+	clear_screen()
+	gc.state = GameState.new()
+	ComicArchive.restore_state(gc.state, saved.state)
+	gc.rng.seed = int(saved.get("rng_seed", 0))
+	gc.rng.state = int(saved.get("rng_state", 0))
+	_comic = saved.get("comic", {}).duplicate(true)
+	_history = saved.history.duplicate(true)
+	current_event = saved.get("event", {}).duplicate(true)
+	_page_no = int(saved.get("page_no", 0))
+	_after_choice = bool(saved.get("after_choice", false))
+	_last_result = str(saved.get("result", ""))
+	_skipped = saved.get("skipped", []).duplicate(true)
+	_busy = false
+	_advance_busy = false
+	_completed = bool(saved.get("completed", false))
+	_readonly_archive = not book_path.is_empty()
+	_restoring = true
+	_strip_begin()
+	_refresh_status()
+	for entry in _history: _append_life_page(entry.spec, float(entry.height))
+	_restoring = false
+	if bool(saved.get("completed", false)):
+		var back := _ink_btn_text("这一生已完结 · 返回书架", ComicTheme.ACCENT)
+		back.pressed.connect(render_title)
+		_set_action(_action_wrap(back))
+	elif _after_choice:
+		var next := _ink_btn_text("▶ 继续", ComicTheme.ACCENT)
+		next.pressed.connect(_advance_page)
+		_set_action(_action_wrap(next))
+	else:
+		_set_action(_choice_column(current_event))
+	_set_footer("书签已恢复 · 向上可回看已绘的人生")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_scroll.scroll_vertical = int(saved.get("scroll", 0))
+
+func render_books() -> void:
+	clear_screen()
+	var card := _make_card()
+	var box := _cv(card)
+	box.add_child(_make_label("留在书架上的人生", C.cyan, 24, true))
+	box.add_child(_wrap_label("重新翻阅不会改变正在进行的人生。", C.dim, 12))
+	for book in ComicArchive.books():
+		box.add_child(_btn("%d 岁 · %d 张漫画页" % [book.age, book.pages], C.txt, false, resume_saved.bind(str(book.path))))
+	box.add_child(_btn("返回首页", C.dim, false, render_title))
+	screen.add_child(card)
+
 func _set_footer(t: String) -> void:
 	var f := get_node_or_null("MarginContainer/ScrollContainer/VBox/Footer")
 	if f:
@@ -561,6 +753,17 @@ func _set_footer(t: String) -> void:
 # 结局页
 # ==========================================================
 func _on_game_ended(s: GameState, ending: Dictionary, info: Dictionary) -> void:
+	if not _skipped.is_empty():
+		_page_no += 1
+		_append_life_page(ComicDirector.build_montage(s, _skipped, gc.rng, _page_no), 470)
+		_skipped.clear()
+	_after_choice = true
+	_completed = true
+	if autosave_enabled and not _history.is_empty():
+		var snapshot := _snapshot()
+		snapshot["completed"] = true
+		ComicArchive.save_run(snapshot, archive_path)
+		ComicArchive.save_book(snapshot)
 	render_ending(s, ending, info)
 
 func render_ending(s: GameState, ending: Dictionary, info: Dictionary) -> void:
@@ -588,10 +791,15 @@ func render_ending(s: GameState, ending: Dictionary, info: Dictionary) -> void:
 		grid.add_child(_make_label(item[0], C.dim, 12))
 		grid.add_child(_make_label(item[1], C.txt, 12))
 	vb.add_child(grid)
+	var drawn := 0
+	for entry in _history: drawn += entry.spec.get("panels", []).size()
+	vb.add_child(_spacer(10))
+	vb.add_child(_make_label("这一生留下 %d 话 · %d 张漫画页 · %d 格记忆" % [_page_no, _history.size(), drawn], C.cyan, 12))
 	if info.get("first_time", false):
 		vb.add_child(_spacer(14))
 		vb.add_child(_make_label("★ 新结局解锁！ 图鉴 %d/%d" % [meta.get("endings", {}).size(), DataLoader.endings().size()], C.yellow, 12))
 	vb.add_child(_spacer(18))
+	vb.add_child(_btn("从头翻阅这一生", C.cyan, false, resume_saved))
 	vb.add_child(_btn("再来一次", C.green, true, func(): gc.new_game()))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)

@@ -55,15 +55,14 @@ static func new_run(rng: RandomNumberGenerator) -> Dictionary:
 	}
 
 
-## 年龄 → 基础格数：随年龄增长而增加，中年后略收
+## 年龄增加基础篇幅；健康和选择形成的性格再影响密度。
 static func stage_base(age: int) -> int:
 	if age <= 6: return 2
 	if age <= 12: return 2
 	if age <= 18: return 3
 	if age <= 30: return 4
-	if age <= 45: return 3
-	if age <= 60: return 3
-	return 2
+	if age <= 60: return 5
+	return 5
 
 
 ## 性格倾向：外向的人一页能塞更多「事件」，内向的人更多独白格
@@ -118,6 +117,35 @@ static func should_montage(s, run: Dictionary, rng: RandomNumberGenerator) -> bo
 	var p: float = float(run.get("skip_rate", 0.25)) * mul
 	return rng.randf() < clampf(p, 0.0, 0.32)
 
+## Only ordinary low-impact events may be summarized. Never silently choose a branch,
+## personality, romance, death/lifespan or relationship decision for the player.
+static func can_montage(ev: Dictionary, s) -> bool:
+	if int(s.health) <= 6: return false
+	if not s.story_queue.is_empty(): return false
+	if str(ev.get("id", "")).begins_with("OP") or str(ev.get("id", "")).begins_with("V"): return false
+	if ev.has("next") or ev.has("tags") or bool(ev.get("important", false)): return false
+	var context := str(ev.get("title", "")) + str(ev.get("text", ""))
+	for word in ["结婚", "婚礼", "生子", "生娃", "去世", "死亡", "买房", "高考", "辞职"]:
+		if context.contains(word): return false
+	for choice in ev.get("choices", []):
+		for protected in ["next", "tags", "relations", "nearDeath", "require", "requireTags", "requireRelations", "showIf", "hideIf"]:
+			if choice.has(protected): return false
+		for attr in choice.get("effects", {}):
+			if str(attr) == "lifespan" or absi(int(choice.effects[attr])) > 2: return false
+	return not ev.get("choices", []).is_empty()
+
+static func scene_for(text: String, age: int) -> String:
+	for pair in [["hospital", ["医院", "病", "治疗", "医生"]], ["classroom", ["学校", "老师", "考试", "作业"]], ["office", ["工作", "公司", "加班", "同事"]], ["bedroom", ["睡", "宿舍", "休息", "房间"]]]:
+		for word in pair[1]:
+			if text.contains(word): return pair[0]
+	return "home" if age < 14 else "office"
+
+static func supporting_role(text: String, age: int) -> String:
+	for pair in [["teacher", ["老师", "上课", "学校"]], ["boss", ["上司", "老板", "公司"]], ["partner", ["爱人", "恋爱", "伴侣", "结婚"]], ["parent", ["妈妈", "爸爸", "家人", "父母"]]]:
+		for word in pair[1]:
+			if text.contains(word): return "npc_" + str(pair[0])
+	return "npc_parent" if age < 14 else "npc_friend"
+
 
 # ==========================================================
 # 生成一页
@@ -161,10 +189,13 @@ static func build(s, ev: Dictionary, run: Dictionary, rng: RandomNumberGenerator
 	var sentences := split_sentences(str(ev.get("text", "")))
 	var title := str(ev.get("title", ""))
 	var is_abs := int(s.abstract_val) >= 61
+	var context := title + str(ev.get("text", ""))
 
 	var panels: Array = []
 	for i in range(n):
 		panels.append({
+			"scene": scene_for(context, int(s.age)),
+			"support": supporting_role(context, int(s.age)) if i == 0 else "",
 			"shot": _shot(i, n, rng),
 			"tone": _tone(i, n),
 			"ink": ink,
@@ -334,11 +365,11 @@ static func build_result(s, c: Dictionary, result_text: String, rng: RandomNumbe
 		sfx_text = "……"
 	var panels := [
 		{"shot": "medium", "tone": "paper", "ink": ink, "caption": "▶ " + label,
-		 "bubble": "", "sfx": "", "vertical": false},
+		 "bubble": "", "sfx": "", "vertical": false, "scene": scene_for(label + result_text, int(s.age)), "frame": 1},
 		{"shot": "close", "tone": tone2, "ink": ink, "caption": result_text,
 		 "bubble": "", "sfx": "", "vertical": false},
 		{"shot": "detail", "tone": "black" if delta < 0 else "paper", "ink": "",
-		 "caption": ("%+d" % delta) if delta != 0 else "", "bubble": "",
+		 "caption": effect_summary(c), "bubble": "",
 		 "sfx": sfx_text, "vertical": true},
 	]
 	return {
@@ -352,3 +383,11 @@ static func build_result(s, c: Dictionary, result_text: String, rng: RandomNumbe
 		"slots": [Rect2(0, 0, 1, 0.42), Rect2(0, 0.42, 0.62, 0.58), Rect2(0.62, 0.42, 0.38, 0.58)],
 		"series": series_len(s),
 	}
+
+static func effect_summary(choice: Dictionary) -> String:
+	var labels := {"health": "体质", "int": "心智", "charm": "魅力", "luck": "运气", "money": "金钱", "lifespan": "寿命", "abstract": "抽象度"}
+	var lines: PackedStringArray = []
+	for key in choice.get("effects", {}):
+		lines.append("%s %+d" % [labels.get(key, key), int(choice.effects[key])])
+	for tag in choice.get("tags", []): lines.append("留下性格：" + str(tag))
+	return " · ".join(lines) if not lines.is_empty() else "这一刻，留在了记忆里。"

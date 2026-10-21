@@ -3,6 +3,7 @@
 extends Control
 
 const T := preload("res://scripts/comic_theme.gd")
+const Art := preload("res://scripts/comic_art.gd")
 
 var spec: Dictionary = {}
 var ink: Texture2D = null
@@ -32,6 +33,15 @@ func _draw() -> void:
 	T.fill(self, r, tone_kind)
 
 	if revealed:
+		var background := Art.background(str(spec.get("scene", "")))
+		if background != null:
+			draw_texture_rect_region(background, r, Art.cover_region(background, r.size), Color(0.25, 0.8, 0.85, 0.42))
+		if str(spec.get("shot", "")) == "wide":
+			var supporting := Art.portrait(str(spec.get("support", "")), int(spec.get("frame", 0)))
+			if supporting != null:
+				var height := r.size.y * 0.73
+				var dimensions := supporting.get_size() * (height / supporting.get_height())
+				draw_texture_rect(supporting, Rect2(Vector2(r.size.x * 0.75 - dimensions.x * 0.5, r.end.y - dimensions.y), dimensions), false, Color(0.5, 0.8, 0.8))
 		_draw_ink(r, dark)
 
 	# 墨框（黑板格用纸色描边，否则黑框看不见）
@@ -73,17 +83,18 @@ func _draw_ink(r: Rect2, dark: bool) -> void:
 	# 全用脚贴底的话，一放大头就被推到画面上方格外面 —— 只剩一片头发。
 	match shot:
 		"wide":
-			h = r.size.y * 0.72
+			h = r.size.y * 0.86
+			cx = r.size.x * 0.37
 		"medium":
 			h = r.size.y * 0.98
 			cx = r.size.x * 0.58
 		"close":
-			h = r.size.y * 1.42
+			h = r.size.y * 1.28
 			top = -r.size.y * 0.03
 			anchor_bottom = false
 			cx = r.size.x * 0.55
 		"extreme":
-			h = r.size.y * 2.10
+			h = r.size.y * 1.7
 			top = -r.size.y * 0.16
 			anchor_bottom = false
 			cx = r.size.x * 0.5
@@ -91,7 +102,7 @@ func _draw_ink(r: Rect2, dark: bool) -> void:
 			h = r.size.y * 0.8
 
 	var dx: float = float(spec.get("dx", 0.0))
-	if shot == "wide" or shot == "medium":
+	if shot == "medium":
 		cx = r.size.x * (0.5 + dx)
 	var w: float = h * (src.size.x / src.size.y)
 	# 窄格按高度算会横向溢出 → 改成按宽度收，避免只看到脸中间一条
@@ -128,7 +139,7 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 	var pad := 8.0
 	var col := T.CREAM if dark else T.INK
 	# 小格用更小的字号：13px 的旁白框在 5 格版里会盖掉大半格
-	var cap_sz := 13
+	var cap_sz := 15
 	if r.size.x < 230:
 		cap_sz = 11
 	if r.size.x < 165:

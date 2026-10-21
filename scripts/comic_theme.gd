@@ -4,7 +4,7 @@
 extends RefCounted
 
 # ---- 青与墨 ----
-const PAPER := Color(0.216, 0.553, 0.565)      # 页面底：青
+const PAPER := Color("087f8d")      # petrol teal / cream / oxblood
 const PAPER_DIM := Color(0.176, 0.463, 0.475)
 const INK := Color(0.039, 0.078, 0.086)        # 主墨色
 const INK_SOFT := Color(0.110, 0.290, 0.298)
@@ -80,6 +80,8 @@ static func fill(c: CanvasItem, r: Rect2, kind: String) -> void:
 
 ## 手绘感的墨框：用四条略带抖动的折线，而不是 draw_rect
 static func frame(c: CanvasItem, r: Rect2, w: float = 3.0, wobble: float = 0.7, col: Color = INK) -> void:
+	var frame_rng := RandomNumberGenerator.new()
+	frame_rng.seed = int(r.size.x * 31 + r.size.y * 137)
 	var pts := [
 		Vector2(r.position.x, r.position.y),
 		Vector2(r.end.x, r.position.y),
@@ -91,7 +93,7 @@ static func frame(c: CanvasItem, r: Rect2, w: float = 3.0, wobble: float = 0.7, 
 		var a: Vector2 = pts[i]
 		var b: Vector2 = pts[i + 1]
 		# 中间插一个抖动点，线看起来是手画的
-		var mid: Vector2 = (a + b) * 0.5 + Vector2(randf_range(-wobble, wobble), randf_range(-wobble, wobble))
+		var mid: Vector2 = (a + b) * 0.5 + Vector2(frame_rng.randf_range(-wobble, wobble), frame_rng.randf_range(-wobble, wobble))
 		c.draw_polyline(PackedVector2Array([a, mid, b]), col, w, true)
 
 
@@ -139,7 +141,7 @@ static func text_width(f: Font, text: String, size: int, cap: float, floor_w: fl
 static func caption_box(c: CanvasItem, pos: Vector2, text: String, max_w: float, size: int = 13, dark: bool = false) -> Rect2:
 	var f := font_body()
 	var pad := 8.0
-	var inner_w: float = text_width(f, text, size, minf(max_w, 250.0), 96.0)
+	var inner_w: float = text_width(f, text, size, max_w, minf(96, max_w))
 	var measured: Vector2 = f.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, inner_w - pad * 2 - 4, size)
 	var h: float = maxf(measured.y, size + 6) + pad * 2
 	var r := Rect2(pos, Vector2(inner_w, h))

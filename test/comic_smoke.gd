@@ -127,17 +127,14 @@ func run() -> void:
 	var main = (load("res://scenes/Main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
+	main.autosave_enabled = false
+	preload("res://scripts/save_manager.gd").writes_enabled = false
 	main.gc.new_game()
 	main.gc.state.age = 1
 	main.gc.state.step = 0
 	main.render_main()
 	await process_frame
-	var found_page := false
-	for c in main.screen.get_children():
-		for d in c.get_children():
-			if d is ComicPage:
-				found_page = true
-	_ok(found_page, "render_main 产出了漫画页")
+	_ok(_filled_pages(main.screen) > 0, "render_main 产出了已填充漫画页")
 	var counter := [0]
 	_walk_buttons(main, func(_b): counter[0] += 1)
 	_ok(counter[0] >= 2, "页面上有选项按钮（%d 个）" % counter[0])
@@ -156,3 +153,8 @@ func _walk_buttons(n: Node, cb: Callable) -> void:
 		cb.call(n)
 	for c in n.get_children():
 		_walk_buttons(c, cb)
+
+func _filled_pages(node: Node) -> int:
+	var count := 1 if node is ComicPage and not node.blank else 0
+	for child in node.get_children(): count += _filled_pages(child)
+	return count

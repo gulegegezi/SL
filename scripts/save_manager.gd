@@ -2,6 +2,7 @@
 extends RefCounted
 
 const SAVE_PATH := "user://gamelife_save.json"
+static var writes_enabled := true  # Tests can inspect a life without changing player meta.
 
 static func default_meta() -> Dictionary:
 	return {
@@ -28,6 +29,7 @@ static func load_meta() -> Dictionary:
 	return result
 
 static func save_meta(meta: Dictionary) -> void:
+	if not writes_enabled: return
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
 		push_error("SaveManager: cannot write to " + SAVE_PATH)
