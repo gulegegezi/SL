@@ -103,9 +103,9 @@ func render_roll(s: GameState) -> void:
 	var tk := s.get_tier_key()
 	var tcol: Color = {"lawanle": C.red, "npc": C.dim, "renshangren": C.cyan, "hang": C.yellow}.get(tk, C.green)
 	tier_wrap.add_child(_make_label(s.tier.get("name", ""), tcol, 26, true, 3.0))
-	tier_wrap.add_child(_make_label(s.tier.get("desc", ""), C.dim, 12))
+	tier_wrap.add_child(_wrap_label(s.tier.get("desc", ""), C.dim, 12))
 	tier_wrap.add_child(_spacer(12))
-	tier_wrap.add_child(_make_label(DataLoader.regions()[s.region].get("flavor", ""), C.dim, 12))
+	tier_wrap.add_child(_wrap_label(DataLoader.regions()[s.region].get("flavor", ""), C.dim, 12))
 	tier_wrap.add_child(_make_label(s.parent_job.get("desc", ""), C.cyan, 11))
 	tier_wrap.add_child(_make_label(s.birth_hour.get("desc", ""), C.cyan, 11))
 	tier_wrap.add_child(_make_label(s.birth_dream, C.purple, 11))
@@ -167,7 +167,7 @@ func render_main() -> void:
 	var vb := _cv(card)
 	vb.add_child(_make_label(_stage_name(s.age), C.dim, 10))
 	vb.add_child(_make_label(title, C.pink if is_abs else C.yellow, 16, true, 0.5))
-	vb.add_child(_make_label(banner + text, C.txt, 14))
+	vb.add_child(_wrap_label(banner + text, C.txt, 14))
 	screen.add_child(card)
 
 	var cb := VBoxContainer.new()
@@ -195,7 +195,7 @@ func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
 func _on_choice_resolved(s: GameState, result_text: String) -> void:
 	for child in screen.get_children():
 		if child is PanelContainer:
-			_cv(child).add_child(_make_label(result_text, C.green, 13))
+			_cv(child).add_child(_wrap_label(result_text, C.green, 13))
 			break
 
 func _on_phase_advanced(_s: GameState) -> void:
@@ -343,6 +343,13 @@ func _make_label(text: String, col: Color, sz: int, bold: bool = false, ls: floa
 	l.add_theme_font_size_override("font_size", sz)
 	if ls > 0:
 		l.add_theme_constant_override("spacing", int(ls))
+	return l
+
+func _wrap_label(text: String, col: Color, sz: int) -> Label:
+	"""长文本专用：不换行的 Label 最小宽度 = 整段文字宽度，会把卡片撑出 520 宽视口。"""
+	var l := _make_label(text, col, sz)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return l
 
 func _spacer(h: int) -> Control:
