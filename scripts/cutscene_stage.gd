@@ -45,6 +45,11 @@ var cam_target_focus := Vector2(80, 45)
 var hold_timer := 0.0            # 先动起来，再开口
 var type_acc := 0.0
 var weather := ""                # 文字里说的天气：雨/雪/风/夜
+# ---- 夸张漫画面：冲击帧 ----
+var impact := 0.0
+var impact_flash := 0.0
+var impact_sfx := ""
+var shake := 0.0
 var motion_role := ""            # 正在做动作的人
 var motion_timer := 0.0          # 文本没喊停，动作再延续一会儿
 
@@ -204,6 +209,15 @@ func _apply_beat(beat: Dictionary) -> void:
 	var shot := BeatDirector.shot_for(beat, ax, base)
 	cam_target_zoom = float(shot["zoom"])
 	cam_target_focus = Vector2(float(shot["x"]), float(shot["y"]))
+	# 夸张表情配一记冲击帧：白闪 + 集中线 + 抖屏 + 拟声词
+	var imp := BeatDirector.impact_for(str(d["expr"]))
+	if not imp.is_empty():
+		impact = 1.0
+		impact_flash = float(imp.get("flash", 0.0))
+		impact_sfx = str(imp.get("sfx", ""))
+		shake = float(imp.get("shake", 0.0))
+		cam_zoom += float(imp.get("punch", 0.0))
+		hold_timer = maxf(hold_timer, 0.34)
 
 
 func _action_of(role: String) -> String:
@@ -240,6 +254,8 @@ func _enter_choices() -> void:
 func _process(delta: float) -> void:
 	clock += delta
 	# 镜头缓动：不瞬间跳过去
+	impact = maxf(0.0, impact - delta * 1.6)
+	shake = maxf(0.0, shake - delta * 26.0)
 	var k := 1.0 - exp(-delta * 7.0)
 	cam_zoom = lerpf(cam_zoom, cam_target_zoom, k)
 	cam_focus = cam_focus.lerp(cam_target_focus, k)
@@ -300,14 +316,56 @@ func _draw() -> void:
 		var s := view_scale * cam_zoom
 		var screen_focus := origin + cam_focus * view_scale
 		var offset := screen_focus - cam_focus * s
+		if shake > 0.0:
+			offset += Vector2(sin(clock * 140.0), cos(clock * 117.0)) * shake * impact
 		draw_set_transform(offset, 0.0, Vector2(s, s))
 		draw_texture_rect(bg_tex, Rect2(Vector2.ZERO, BG), false)
 		for c in cast:
 			_draw_cast(c)
 		draw_set_transform(Vector2.ZERO)
 		_draw_weather()
+		_draw_impact()
+		_draw_cutin()
 	if beat_index >= 0 or in_choices:
 		_draw_box()
+
+## 大脸特写：夸张表情在 24x36 的小人身上看不清，就切一张漫画式的反应大脸
+func _draw_cutin() -> void:
+	if impact < 0.15 or cur_face == null:
+		return
+	var r := Rect2(origin, BG * view_scale)
+	var w := 150.0
+	var rect := Rect2(r.end.x - w - 10.0 + (1.0 - impact) * 46.0, r.position.y + 10.0, w, w * 0.82)
+	draw_rect(rect.grow(3.0), Color(0, 0, 0, 0.88 * impact))
+	draw_rect(rect.grow(3.0), Color(1, 1, 1, impact), false, 2.0)
+	draw_texture_rect_region(cur_face, rect, Rect2(4, 0, 16, 13), Color(1, 1, 1, minf(1.0, impact * 1.3)))
+
+
+## 冲击帧：白闪、集中线、拟声词 —— 漫画里「这一格要有冲击力」的那套
+func _draw_impact() -> void:
+	if impact <= 0.0 or bg_tex == null:
+		return
+	var r := Rect2(origin, BG * view_scale)
+	if impact_flash > 0.0:
+		draw_rect(r, Color(1, 1, 1, impact_flash * impact))
+	if shake > 0.0 or impact_flash > 0.0:
+		var center := r.get_center()
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 77
+		var reach := r.size.length() * 0.8
+		for i in range(34):
+			var ang: float = rng.randf() * TAU
+			var p0: Vector2 = center + Vector2(cos(ang), sin(ang)) * reach * 0.22
+			var p1: Vector2 = center + Vector2(cos(ang), sin(ang)) * reach
+			draw_line(p0, p1, Color(0, 0, 0, 0.55 * impact), rng.randf_range(1.0, 3.0))
+	if impact_sfx != "":
+		var f := ThemeDB.fallback_font
+		var sz := int(44 + 16 * impact)
+		var pos := Vector2(r.position.x + 26.0, r.position.y + 104.0)
+		for d in [Vector2(-3, 0), Vector2(3, 0), Vector2(0, -3), Vector2(0, 3)]:
+			draw_string(f, pos + d, impact_sfx, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color(1, 1, 1, minf(1.0, impact * 2.0)))
+		draw_string(f, pos, impact_sfx, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color(0, 0, 0, minf(1.0, impact * 2.4)))
+
 
 ## 天气跟着文字走：说了雨就下雨，说停了就停
 func _draw_weather() -> void:

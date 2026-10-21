@@ -26,6 +26,16 @@ func run() -> void:
 	assert(BeatDirector.action_for("她挥了挥手") == "wave")
 	assert(BeatDirector.action_for("走廊里很安静") == "idle", "「走廊」不该触发 walk")
 
+	# 1b) 夸张面相关键词
+	assert(BeatDirector.expression_for("他愣住了，失神地看着地面") == "dead")
+	assert(BeatDirector.expression_for("她爆哭起来") == "cry")
+	assert(BeatDirector.expression_for("他暴怒地掀桌") == "rage")
+	assert(BeatDirector.expression_for("她得意地挑眉") == "smug")
+	assert(BeatDirector.expression_for("他心里咚的一下，心动了") == "love")
+	assert(BeatDirector.expression_for("糟了，怎么办") == "panic")
+	assert(not BeatDirector.impact_for("rage").is_empty(), "暴怒要有冲击帧")
+	assert(BeatDirector.impact_for("normal").is_empty(), "平常不要冲击帧")
+
 	# 2) 显式字段优先
 	var d := BeatDirector.direction({"text": "她笑了", "expr": "sad", "action": "sit"})
 	assert(str(d["expr"]) == "sad" and str(d["action"]) == "sit")
@@ -40,6 +50,9 @@ func run() -> void:
 	assert(SpriteKit.frame("lead_adult", "idle", 0, "happy") != null, "idle happy 帧缺失")
 	assert(SpriteKit.frame("lead_adult", "walk", 2) != null, "walk 帧缺失")
 	assert(SpriteKit.frame("parent", "idle", 0, "normal", true) != null, "npc idle 帧缺失")
+	assert(SpriteKit.frame("lead_adult", "idle", 0, "rage") != null, "rage 帧缺失")
+	assert(SpriteKit.face("adult", "cry", false) != null, "cry 立绘缺失")
+	assert(SpriteKit.face("parent", "rage", true) != null, "npc rage 立绘缺失")
 
 	# 5) 舞台：一句「跑了出去」应切到 walk，并先起手再开字
 	var stage = CutsceneStage.new()
@@ -63,5 +76,20 @@ func run() -> void:
 	assert(str(stage.actors["lead"]["expr"]) == "happy", "显式表情优先")
 	assert(stage.hold_timer > 0.0, "动作要先起手，再开字")
 
-	print("PASS: text-driven beats (action/expr/camera/hold)")
+	# 6) 冲击帧：夸张表情会拉起 impact
+	var stage2 = CutsceneStage.new()
+	stage2.size = Vector2(480, 420)
+	root.add_child(stage2)
+	var cut2 := {
+		"bg": "home",
+		"cast": [{"role": "lead", "x": 60, "y": 64}],
+		"beats": [{"speaker": "你", "face": "lead", "text": "他暴怒地吼了出来。"}],
+	}
+	stage2.configure({"id": "T2"}, cut2, _state())
+	stage2.play()
+	await process_frame
+	assert(str(stage2.actors["lead"]["expr"]) == "rage", "暴怒要换脸")
+	assert(stage2.impact > 0.0, "暴怒要拉起冲击帧")
+
+	print("PASS: text-driven beats (action/expr/camera/hold/impact)")
 	quit()

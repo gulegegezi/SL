@@ -5,7 +5,14 @@ extends RefCounted
 
 const LEAD_STAGES := ["child", "teen", "youth", "adult", "middle", "elder"]
 const NPC_ROLES := ["boss", "friend", "mate", "parent", "partner", "teacher"]
-const EXPR_PARTS := {"neutral": "head", "happy": "head_happy", "sad": "head_sad", "shock": "head_shock"}
+const EXPR_PARTS := {
+	"neutral": "head", "normal": "head", "happy": "head_happy", "sad": "head_sad",
+	"shock": "head_shock", "angry": "head_angry", "surprise": "head_surprise",
+	"scared": "head_scared", "determined": "head_determined", "shy": "head_shy",
+	"hurt": "head_hurt", "blink": "head_blink", "smug": "head_smug",
+	"panic": "head_panic", "cry": "head_cry", "dead": "head_dead",
+	"love": "head_love", "rage": "head_rage",
+}
 
 static var _cache: Dictionary = {}
 
@@ -24,9 +31,11 @@ static func npc_part(role: String, part: String) -> Texture2D:
 
 ## 对话框立绘：主角按年龄取阶段；NPC 无表情变体，恒用 base head。
 static func face(role: String, expr: String, is_npc: bool) -> Texture2D:
-	if is_npc:
-		return npc_part(role, "head")
-	return lead_part(role, EXPR_PARTS.get(expr, "head"))
+	var part := str(EXPR_PARTS.get(expr, "head"))
+	var path := ("res://assets/chars/npc_%s_%s.png" if is_npc else "res://assets/chars/lead_%s_%s.png") % [role, part]
+	if ResourceLoader.exists(path):
+		return tex(path)
+	return npc_part(role, "head") if is_npc else lead_part(role, "head")
 
 static func scene(name: String) -> Texture2D:
 	return tex("res://assets/scenes/scene_%s.png" % name)

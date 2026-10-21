@@ -30,11 +30,12 @@
 ## 现有能力
 
 - 24×36 分件立绘：`legL/legR/torso/armL/armR/head`，同一画布叠加；`data/rig.json` 记录锚点。
-- 10 种表情：`normal / happy / sad / angry / surprise / scared / determined / shy / hurt / blink`。
+- **17 种表情**：10 个基础 + 7 个夸张漫画面（smug / panic / cry / dead / love / rage / shock），NPC 也有全套。
 - 逐帧动作：`idle`（3 帧，支持 10 表情）、`walk / wave`（4 帧）、`raise / sit`（3 帧），`data/frames.json` 记录数量与 fps。
 - Godot 过场：背景贴图 + 拼装角色 + 底部对话框（名字/立绘/逐字）+ 合成 blip + 心形光标选择 + 锁定项灰显。
 - **逐帧动作已接进过场**：`CutsceneStage` 按 `frames.json` 的 fps 播 `idle/walk/wave/raise/sit`，走路带真实位移。
 - **文本驱动演出**：`beat_director.gd` 从句子里读动作/表情/天气，显式字段优先；详见 [animation-text-sync.md](animation-text-sync.md)。
+- **夸张漫画面**：rage/shock 等表情自带冲击帧（白闪 + 集中线 + 抖屏 + 拟声词 + 反应大脸）；详见 [animation-expressions.md](animation-expressions.md)。
 - **镜头**：按说话人推近/拉远，0.15s 缓动；旁白拉远、情绪句推近。
 - **天气层**：台词里的雨/雪/风/夜会画在场景上，「雨停/放晴」收掉。
 - `docs/demo-trial.html` 已验证镜头推拉、上下黑边、黑闪、反应前静默、结果逐字。
@@ -42,7 +43,7 @@
 ## 还缺什么
 
 1. ~~逐帧动作~~ 已完成：`idle/walk/wave/raise/sit` 按 fps 播放。
-2. ~~表情与眨眼~~ 已完成：10 表情 + 4.2 秒眨眼；NPC 仍只有 base 头。
+2. ~~表情与眨眼~~ 已完成：17 表情 + 4.2 秒眨眼，NPC 也有表情头。
 3. ~~镜头~~ 已完成推近/拉远；黑边、黑闪、静默节拍仍只在 HTML demo 里。
 4. NPC 只有 base 头，没有表情变体。
 5. 音频只有 blip/confirm，没有 BGM、脚步、选择音。
