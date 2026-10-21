@@ -36,11 +36,23 @@ var _page_no: int = 0            # 话数
 var _skipped: Array = []         # 待合并为「提笔带过」的年份
 var _last_result: String = ""    # 最近一次选择的结果文案
 var _busy: bool = false
+# ---- 竖向滚动的漫画流 ----
+var _strip: bool = false
+var _strip_pages: VBoxContainer = null
+var _blanks: Array = []
+var _status_node: Control = null
+var _status_layer: PanelContainer = null
+var _status_box: VBoxContainer = null
+var _action_layer: PanelContainer = null
+var _action_box: VBoxContainer = null
+var _scroll: ScrollContainer = null
 
 func _ready() -> void:
 	DataLoader.ensure_loaded()
 	screen = $MarginContainer/ScrollContainer/VBox/Screen
 	age_tag = $MarginContainer/ScrollContainer/VBox/TopBar/AgeTag
+	_scroll = $MarginContainer/ScrollContainer
+	_build_action_layer()
 	$MarginContainer/ScrollContainer/VBox/Footer.modulate = C.dim
 	gc = GameController.new()
 	gc.init()
@@ -57,6 +69,59 @@ func _ready() -> void:
 func clear_screen() -> void:
 	for c in screen.get_children():
 		c.queue_free()
+	_strip = false
+	_blanks.clear()
+	_strip_pages = null
+	_status_node = null
+	if _status_layer != null:
+		_status_layer.visible = false
+	if _action_layer != null:
+		_action_layer.visible = false
+		for c in _action_box.get_children():
+			c.queue_free()
+	var mc := get_node_or_null("MarginContainer")
+	if mc != null:
+		mc.add_theme_constant_override("margin_bottom", 24)
+		mc.add_theme_constant_override("margin_top", 10)
+
+
+## 底部固定操作条：选项不跟着漫画滚走
+func _build_action_layer() -> void:
+	_action_layer = PanelContainer.new()
+	_action_layer.visible = false
+	_action_layer.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_action_layer.offset_left = 8
+	_action_layer.offset_right = -8
+	_action_layer.offset_top = -196
+	_action_layer.offset_bottom = -8
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(ComicTheme.INK, 0.95)
+	sb.border_color = Color(ComicTheme.CREAM, 0.75)
+	sb.set_border_width_all(2)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 8
+	_action_layer.add_theme_stylebox_override("panel", sb)
+	_action_box = VBoxContainer.new()
+	_action_box.add_theme_constant_override("separation", 6)
+	_action_layer.add_child(_action_box)
+	add_child(_action_layer)
+
+	# 固定状态条：数值不跟着漫画滚走
+	_status_layer = PanelContainer.new()
+	_status_layer.visible = false
+	_status_layer.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_status_layer.offset_left = 8
+	_status_layer.offset_right = -8
+	_status_layer.offset_top = 8
+	_status_layer.offset_bottom = 66
+	_status_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_status_layer.add_theme_stylebox_override("panel", _status_style())
+	_status_box = VBoxContainer.new()
+	_status_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_status_layer.add_child(_status_box)
+	add_child(_status_layer)
 
 # ==========================================================
 # 标题页
@@ -165,16 +230,103 @@ func render_main() -> void:
 	else:
 		_render_page(ev)
 
+# ==========================================================
+# 竖向漫画流
+# ==========================================================
+func _strip_begin() -> void:
+	if _strip:
+		return
+	clear_screen()
+	_strip = true
+	var mc := get_node_or_null("MarginContainer")
+	if mc != null:
+		mc.add_theme_constant_override("margin_bottom", 200)
+	if _action_layer != null:
+		_action_layer.visible = true
+	if _status_layer != null:
+		_status_layer.visible = true
+	if mc != null:
+		mc.add_theme_constant_override("margin_top", 76)
+	_strip_pages = VBoxContainer.new()
+	_strip_pages.add_theme_constant_override("separation", 18)
+	screen.add_child(_strip_pages)
+	_add_blank()
+	_add_blank()
+
+
+## 还没轮到的年份：一页空白分镜，等人生活到那里再填
+func _add_blank() -> void:
+	if _strip_pages == null:
+		return
+	var pg = ComicPage.new()
+	pg.build({
+		"no": 0, "age": 0, "stage": "", "series": 1, "blank": true,
+		"slots": [Rect2(0, 0, 1, 0.5), Rect2(0, 0.5, 1, 0.5)],
+		"panels": [{}, {}],
+	}, 420.0)
+	var wrap := CenterContainer.new()
+	wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wrap.add_child(pg)
+	_strip_pages.add_child(wrap)
+	_blanks.append(wrap)
+
+
+## 把新的一页填进第一个空白位，再在末尾补一个新的空白
+func _append_life_page(spec: Dictionary, h: float) -> Control:
+	var wrap := _comic_page_node(spec, h)
+	var idx := -1
+	if not _blanks.is_empty():
+		var b = _blanks.pop_front()
+		idx = b.get_index()
+		b.queue_free()
+	_strip_pages.add_child(wrap)
+	if idx >= 0:
+		_strip_pages.move_child(wrap, idx)
+	_add_blank()
+	var pg = wrap.get_child(0)
+	if pg != null and pg.has_method("reveal_panels"):
+		pg.reveal_panels()
+	_scroll_to(wrap)
+	return wrap
+
+
+func _refresh_status() -> void:
+	if _status_box == null:
+		return
+	for c in _status_box.get_children():
+		c.queue_free()
+	_fill_status(_status_box, gc.state)
+
+
+func _set_action(node: Control) -> void:
+	if _action_box == null:
+		return
+	for c in _action_box.get_children():
+		c.queue_free()
+	_action_box.add_child(node)
+
+
+## 往下一格一格滑：像手机上看纵向漫画
+func _scroll_to(node: Control) -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if _scroll == null or not is_instance_valid(node):
+		return
+	var target := int(node.global_position.y - _scroll.global_position.y + _scroll.scroll_vertical) - 6
+	var tw := create_tween()
+	tw.tween_property(_scroll, "scroll_vertical", maxi(0, target), 0.62) 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+
 ## 正常一页：本话 = 这一岁的事件
 func _render_page(ev: Dictionary) -> void:
 	var s := gc.state
-	clear_screen()
-	screen.add_child(_comic_status(s))
+	_strip_begin()
+	_refresh_status()
 	_page_no += 1
 	var spec := ComicDirector.build(s, ev, _comic, gc.rng, _page_no)
-	screen.add_child(_comic_page_node(spec, 540.0))
-	screen.add_child(_choice_column(ev))
-	_set_footer("第 %d 话 · 本话 %d 格 · 选一个，翻页看结果" % [_page_no, spec["panels"].size()])
+	_append_life_page(spec, 540.0)
+	_set_action(_choice_column(ev))
+	_set_footer("第 %d 话 · 本话 %d 格 · 选一个，往下翻" % [_page_no, spec["panels"].size()])
 
 ## 提笔带过：不画过程，只留一格说明
 func _render_montage(ev: Dictionary) -> void:
@@ -196,29 +348,36 @@ func _render_montage(ev: Dictionary) -> void:
 		gc.advance_after_choice(current_event)
 		return
 
-	clear_screen()
-	screen.add_child(_comic_status(s))
+	_strip_begin()
+	_refresh_status()
 	_page_no += 1
 	var spec := ComicDirector.build_montage(s, _skipped, gc.rng, _page_no)
 	var merged := _skipped.size()
 	_skipped = []
-	screen.add_child(_comic_page_node(spec, 470.0))
+	_append_life_page(spec, 470.0)
 	var btn := _ink_btn_text("▶ 继续（略过 %d 年）" % merged, ComicTheme.ACCENT)
 	btn.pressed.connect(func(): gc.advance_after_choice(current_event))
-	screen.add_child(btn)
+	_set_action(_action_wrap(btn))
 	_set_footer("第 %d 话 · 这一段被提笔带过" % _page_no)
 
 ## 选择后的结果页
 func _render_result(ev: Dictionary, c: Dictionary) -> void:
 	var s := gc.state
-	clear_screen()
-	screen.add_child(_comic_status(s))
+	_strip_begin()
+	_refresh_status()
 	var spec := ComicDirector.build_result(s, c, _last_result, gc.rng, _page_no)
-	screen.add_child(_comic_page_node(spec, 520.0))
+	_append_life_page(spec, 520.0)
 	var btn := _ink_btn_text("▶ 继续", ComicTheme.ACCENT)
 	btn.pressed.connect(func(): gc.advance_after_choice(ev))
-	screen.add_child(btn)
+	_set_action(_action_wrap(btn))
 	_set_footer("第 %d 话 · 结果" % _page_no)
+
+func _action_wrap(node: Control) -> Control:
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	vb.add_child(node)
+	return vb
+
 
 func _on_comic_choice(c: Dictionary) -> void:
 	if _busy:
@@ -251,15 +410,25 @@ func _comic_page_node(spec: Dictionary, h: float) -> Control:
 func _comic_status(s: GameState) -> Control:
 	var box := PanelContainer.new()
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_theme_stylebox_override("panel", _status_style())
+	var vb := VBoxContainer.new()
+	_fill_status(vb, s)
+	box.add_child(vb)
+	return box
+
+
+func _status_style() -> StyleBoxFlat:
 	var st := StyleBoxFlat.new()
 	st.bg_color = ComicTheme.INK
 	st.border_color = Color(ComicTheme.CREAM, 0.8)
 	st.set_border_width_all(2)
 	st.content_margin_left = 8; st.content_margin_top = 5
 	st.content_margin_right = 8; st.content_margin_bottom = 5
-	box.add_theme_stylebox_override("panel", st)
+	return st
 
-	var vb := VBoxContainer.new()
+
+## 状态条的内容（数值行 + 抽象度刻度），固定条与页内条共用
+func _fill_status(vb: VBoxContainer, s: GameState) -> void:
 	vb.add_theme_constant_override("separation", 3)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
@@ -292,8 +461,6 @@ func _comic_status(s: GameState) -> Control:
 		bar.draw_rect(Rect2(0, 2, w * (a / 100.0), 3), ComicTheme.ACCENT if a >= 61 else ComicTheme.CREAM)
 	)
 	vb.add_child(bar)
-	box.add_child(vb)
-	return box
 
 func _choice_column(ev: Dictionary) -> VBoxContainer:
 	var cb := VBoxContainer.new()

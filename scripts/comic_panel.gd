@@ -6,6 +6,8 @@ const T := preload("res://scripts/comic_theme.gd")
 
 var spec: Dictionary = {}
 var ink: Texture2D = null
+## 面板「画没画上去」：空白格只留框，等剧情推进再逐格填
+var revealed := true
 
 
 func setup(p: Dictionary, ink_tex: Texture2D) -> void:
@@ -16,13 +18,21 @@ func setup(p: Dictionary, ink_tex: Texture2D) -> void:
 	queue_redraw()
 
 
+func set_revealed(v: bool) -> void:
+	if revealed == v:
+		return
+	revealed = v
+	queue_redraw()
+
+
 func _draw() -> void:
 	var r := Rect2(Vector2.ZERO, size)
 	var tone_kind := str(spec.get("tone", "paper"))
 	var dark := tone_kind == "black"
 	T.fill(self, r, tone_kind)
 
-	_draw_ink(r, dark)
+	if revealed:
+		_draw_ink(r, dark)
 
 	# 墨框（黑板格用纸色描边，否则黑框看不见）
 	var frame_col: Color = T.CREAM if dark else T.INK
@@ -31,7 +41,13 @@ func _draw() -> void:
 	if size.x > 120:
 		T.frame(self, r.grow(-7.0), 1.0, 0.5, Color(frame_col, 0.35))
 
-	_draw_text(r, dark)
+	if revealed:
+		_draw_text(r, dark)
+	else:
+		# 空白格：只有框和一个「未发生」，像还没画上去的一格
+		var f := T.font_body()
+		draw_string(f, Vector2(0, r.size.y * 0.5 + 4), "未发生",
+			HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 10, Color(frame_col, 0.30))
 
 
 # ----------------------------------------------------------

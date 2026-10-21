@@ -12,6 +12,7 @@ const MARGIN := 10.0
 
 var spec: Dictionary = {}
 var page_h := 620.0
+var blank := false
 var panels: Array = []
 
 static var _ink_cache: Dictionary = {}
@@ -35,6 +36,7 @@ static func ink_tex(key: String, frame: int = 0) -> Texture2D:
 func build(page: Dictionary, height: float = 620.0) -> void:
 	spec = page
 	page_h = height
+	blank = bool(page.get("blank", false))
 	# 像素画风：线稿也要 nearest，放大后是硬边方块而不是糊的
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	custom_minimum_size = Vector2(PAGE_W, page_h)
@@ -79,8 +81,28 @@ func _build_panels() -> void:
 		panels.append(p)
 
 
+## 逐格把画面「画上去」：新的一页先全是空白框，再一格一格填。
+func reveal_panels(step: float = 0.08) -> void:
+	if panels.is_empty():
+		return
+	for i in range(panels.size()):
+		var p = panels[i]
+		p.set_revealed(false)
+	for i in range(panels.size()):
+		var p = panels[i]
+		var tw := create_tween()
+		tw.tween_interval(0.08 + i * step)
+		tw.tween_callback(func(): p.set_revealed(true))
+
+
 func _draw() -> void:
 	var page := Rect2(Vector2.ZERO, Vector2(PAGE_W, page_h))
+
+	if blank:
+		# 还没轮到的年份：只铺底色和页边，页眉页脚都不写
+		draw_rect(page, Color(T.PAPER, 0.75))
+		draw_rect(page, Color(T.INK, 0.45), false, 1.5)
+		return
 
 	# 纸
 	draw_rect(page, T.PAPER)

@@ -38,7 +38,10 @@ func _run() -> void:
 	var choice := _first_choice_button()
 	if choice != null:
 		choice.emit_signal("pressed")
-		await _wait(1.2)
+		# 新一页刚放上去：分格还空着，正在被一格一格填
+		await _wait(0.18)
+		await _shot("05_filling")
+		await _wait(1.0)
 		await _shot("05_result")
 
 	# 再往后翻两页，看看不同版式
