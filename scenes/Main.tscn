@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://duldgj3d35jq3"]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 
-[node name="Main" type="Control" unique_id=1115227331]
+[node name="Main" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_main")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1845637210]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.043, 0.051, 0.063, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=421622262]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,32 +32,32 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 24
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=394184078]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="MarginContainer/ScrollContainer" unique_id=1415735668]
+[node name="VBox" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 9
 
-[node name="TopBar" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBox" unique_id=1714957632]
+[node name="TopBar" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBox"]
 layout_mode = 2
 alignment = 1
 
-[node name="Logo" type="Label" parent="MarginContainer/ScrollContainer/VBox/TopBar" unique_id=139767079]
+[node name="Logo" type="Label" parent="MarginContainer/ScrollContainer/VBox/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "gamelife"
 
-[node name="AgeTag" type="Label" parent="MarginContainer/ScrollContainer/VBox/TopBar" unique_id=1464874077]
+[node name="AgeTag" type="Label" parent="MarginContainer/ScrollContainer/VBox/TopBar"]
 layout_mode = 2
 text = "— 岁"
 
-[node name="Screen" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBox" unique_id=29458289]
+[node name="Screen" type="VBoxContainer" parent="MarginContainer/ScrollContainer/VBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Footer" type="Label" parent="MarginContainer/ScrollContainer/VBox" unique_id=590615772]
+[node name="Footer" type="Label" parent="MarginContainer/ScrollContainer/VBox"]
 layout_mode = 2
 text = "点击选项继续 · 一局约 5-10 分钟"
