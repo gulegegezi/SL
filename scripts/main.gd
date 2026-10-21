@@ -5,20 +5,24 @@ extends Control
 const GameController := preload("res://scripts/game_controller.gd")
 const GameState := preload("res://scripts/game_state.gd")
 const DataLoader := preload("res://scripts/data_loader.gd")
+const ComicDirector := preload("res://scripts/comic_director.gd")
+const ComicPage := preload("res://scripts/comic_page.gd")
+const ComicTheme := preload("res://scripts/comic_theme.gd")
+const CrtOverlay := preload("res://scripts/crt_overlay.gd")
 
 # ---- 颜色 ----
 const C := {
-	"panel": Color(0.071, 0.086, 0.110, 1),
-	"panel2": Color(0.090, 0.110, 0.141, 1),
-	"line": Color(0.141, 0.173, 0.220, 1),
-	"txt": Color(0.788, 0.831, 0.886, 1),
-	"dim": Color(0.400, 0.451, 0.541, 1),
-	"green": Color(0.224, 1.0, 0.533, 1),
-	"cyan": Color(0.310, 0.890, 1.0, 1),
-	"pink": Color(1.0, 0.373, 0.824, 1),
-	"yellow": Color(1.0, 0.827, 0.310, 1),
-	"red": Color(1.0, 0.302, 0.369, 1),
-	"purple": Color(0.627, 0.420, 1.0, 1),
+	"panel": Color(0.043, 0.106, 0.117, 1),
+	"panel2": Color(0.063, 0.161, 0.173, 1),
+	"line": Color(0.110, 0.290, 0.298, 1),
+	"txt": Color(0.914, 0.875, 0.788, 1),
+	"dim": Color(0.498, 0.651, 0.639, 1),
+	"green": Color(0.435, 0.827, 0.769, 1),
+	"cyan": Color(0.663, 0.894, 0.871, 1),
+	"pink": Color(0.788, 0.627, 0.659, 1),
+	"yellow": Color(0.847, 0.702, 0.416, 1),
+	"red": Color(0.824, 0.141, 0.173, 1),
+	"purple": Color(0.624, 0.714, 0.788, 1),
 }
 
 var screen: VBoxContainer
@@ -26,6 +30,12 @@ var age_tag: Label
 var gc: GameController
 var meta: Dictionary
 var current_event: Dictionary = {}
+# ---- 漫画分镜状态 ----
+var _comic: Dictionary = {}      # 本局的分镜参数（每局随机）
+var _page_no: int = 0            # 话数
+var _skipped: Array = []         # 待合并为「提笔带过」的年份
+var _last_result: String = ""    # 最近一次选择的结果文案
+var _busy: bool = false
 
 func _ready() -> void:
 	DataLoader.ensure_loaded()
@@ -40,6 +50,8 @@ func _ready() -> void:
 	gc.choice_resolved.connect(_on_choice_resolved)
 	gc.phase_advanced.connect(_on_phase_advanced)
 	gc.game_ended.connect(_on_game_ended)
+	# CRT 叠层最后加，保证盖在内容之上
+	add_child(CrtOverlay.new())
 	render_title()
 
 func clear_screen() -> void:
@@ -124,7 +136,7 @@ func render_roll(s: GameState) -> void:
 	tw.tween_property(tier_wrap, "modulate:a", 1.0, 0.5).set_delay(0.42)
 
 # ==========================================================
-# 主游戏页
+# 主游戏页 —— 漫画分镜
 # ==========================================================
 func render_main() -> void:
 	var s := gc.state
@@ -144,62 +156,239 @@ func render_main() -> void:
 		gc.end_game()
 		return
 	current_event = ev
+	if _comic.is_empty():
+		_comic = ComicDirector.new_run(gc.rng)
+
+	# 开局的两年一定有画面：还没进入人生就「提笔带过」会很突兀
+	if _page_no >= 2 and ComicDirector.should_montage(s, _comic, gc.rng):
+		_render_montage(ev)
+	else:
+		_render_page(ev)
+
+## 正常一页：本话 = 这一岁的事件
+func _render_page(ev: Dictionary) -> void:
+	var s := gc.state
 	clear_screen()
-	screen.add_child(_render_stats(s))
-	screen.add_child(_render_abstract(s))
-	screen.add_child(_render_tags(s))
+	screen.add_child(_comic_status(s))
+	_page_no += 1
+	var spec := ComicDirector.build(s, ev, _comic, gc.rng, _page_no)
+	screen.add_child(_comic_page_node(spec, 540.0))
+	screen.add_child(_choice_column(ev))
+	_set_footer("第 %d 话 · 本话 %d 格 · 选一个，翻页看结果" % [_page_no, spec["panels"].size()])
 
-	var is_abs := s.line == "absurd" or s.abstract_val >= 86
-	var use_alt := s.abstract_val >= 90
-	var title: String = ev.get("altTitle", ev.get("title", "")) if (use_alt and ev.has("altTitle")) else ev.get("title", "")
-	var text: String = ev.get("altText", ev.get("text", "")) if (use_alt and ev.has("altText")) else ev.get("text", "")
-	var choices: Array = ev.get("altChoices", ev.get("choices", [])) if (use_alt and ev.has("altChoices")) else ev.get("choices", [])
+## 提笔带过：不画过程，只留一格说明
+func _render_montage(ev: Dictionary) -> void:
+	var s := gc.state
+	var choices: Array = ev.get("choices", [])
+	if choices.size() > 0:
+		var pickc: Dictionary = choices[gc.rng.randi_range(0, choices.size() - 1)]
+		gc.choose(pickc, current_event)     # 自动选一个，数值照常结算
+	_skipped.append({
+		"age": int(s.age),
+		"title": str(ev.get("title", "")),
+		"result": _last_result,
+	})
+	if _skipped.size() > 3:
+		_skipped = _skipped.slice(_skipped.size() - 3)
 
-	var banner := ""
-	if not s.family.is_empty() and s.age <= 7 and s.step == 0:
-		banner += "【%s】%s\n" % [s.family.get("name", ""), s.family.get("desc", "")]
-	if not s.talent.is_empty() and s.age == 7:
-		banner += "【天赋觉醒 · %s】%s\n" % [s.talent.get("name", ""), s.talent.get("desc", "")]
-	if not banner.is_empty():
-		banner += "\n"
+	# 只跳一年就先不画：攒够两年再合成一页「提笔带过」，节奏才不碎
+	if _skipped.size() < 2:
+		gc.advance_after_choice(current_event)
+		return
 
-	var card := _make_card(is_abs)
-	var vb := _cv(card)
-	vb.add_child(_make_label(_stage_name(s.age), C.dim, 10))
-	vb.add_child(_make_label(title, C.pink if is_abs else C.yellow, 16, true, 0.5))
-	vb.add_child(_wrap_label(banner + text, C.txt, 14))
-	screen.add_child(card)
+	clear_screen()
+	screen.add_child(_comic_status(s))
+	_page_no += 1
+	var spec := ComicDirector.build_montage(s, _skipped, gc.rng, _page_no)
+	var merged := _skipped.size()
+	_skipped = []
+	screen.add_child(_comic_page_node(spec, 470.0))
+	var btn := _ink_btn_text("▶ 继续（略过 %d 年）" % merged, ComicTheme.ACCENT)
+	btn.pressed.connect(func(): gc.advance_after_choice(current_event))
+	screen.add_child(btn)
+	_set_footer("第 %d 话 · 这一段被提笔带过" % _page_no)
 
-	var cb := VBoxContainer.new()
-	cb.add_theme_constant_override("separation", 8)
-	for c in choices:
-		var b := _choice_btn(c, s)
-		if not b.disabled:
-			b.pressed.connect(_on_choice.bind(c))
-		cb.add_child(b)
-	screen.add_child(cb)
+## 选择后的结果页
+func _render_result(ev: Dictionary, c: Dictionary) -> void:
+	var s := gc.state
+	clear_screen()
+	screen.add_child(_comic_status(s))
+	var spec := ComicDirector.build_result(s, c, _last_result, gc.rng, _page_no)
+	screen.add_child(_comic_page_node(spec, 520.0))
+	var btn := _ink_btn_text("▶ 继续", ComicTheme.ACCENT)
+	btn.pressed.connect(func(): gc.advance_after_choice(ev))
+	screen.add_child(btn)
+	_set_footer("第 %d 话 · 结果" % _page_no)
 
-func _on_choice(c: Dictionary) -> void:
-	for child in screen.get_children():
-		if child is VBoxContainer:
-			for btn in child.get_children():
-				if btn is Button:
-					btn.disabled = true
+func _on_comic_choice(c: Dictionary) -> void:
+	if _busy:
+		return
+	_busy = true
 	gc.choose(c, current_event)
-	await get_tree().create_timer(0.95).timeout
-	gc.advance_after_choice(current_event)
+	await get_tree().create_timer(0.10).timeout
+	_render_result(current_event, c)
+	_busy = false
+
+func _on_choice_resolved(_s: GameState, result_text: String) -> void:
+	_last_result = result_text
 
 func _on_event_picked(_s: GameState, _ev: Dictionary) -> void:
 	pass
 
-func _on_choice_resolved(s: GameState, result_text: String) -> void:
-	for child in screen.get_children():
-		if child is PanelContainer:
-			_cv(child).add_child(_wrap_label(result_text, C.green, 13))
-			break
-
 func _on_phase_advanced(_s: GameState) -> void:
 	render_main()
+
+# ---- 漫画页组装 ----
+func _comic_page_node(spec: Dictionary, h: float) -> Control:
+	var wrap := CenterContainer.new()
+	wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var pg = ComicPage.new()
+	pg.build(spec, h)
+	wrap.add_child(pg)
+	return wrap
+
+## 顶部状态条：也用墨线风格，不用原来的圆角卡片
+func _comic_status(s: GameState) -> Control:
+	var box := PanelContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var st := StyleBoxFlat.new()
+	st.bg_color = ComicTheme.INK
+	st.border_color = Color(ComicTheme.CREAM, 0.8)
+	st.set_border_width_all(2)
+	st.content_margin_left = 8; st.content_margin_top = 5
+	st.content_margin_right = 8; st.content_margin_bottom = 5
+	box.add_theme_stylebox_override("panel", st)
+
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 3)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	for item in [["智", s.intl], ["体", s.health], ["魅", s.charm], ["运", s.luck], ["钱", s.money], ["寿", s.lifespan]]:
+		var k := _ink_label(str(item[0]), Color(ComicTheme.CREAM, 0.55), 10)
+		row.add_child(k)
+		row.add_child(_ink_label(str(item[1]), ComicTheme.CREAM, 11, true))
+	var tag_txt := ""
+	for t in s.tags:
+		var ts := str(t)
+		if ts.begins_with("_") or not s.tags[t]:
+			continue
+		tag_txt += ("·" if tag_txt.is_empty() else " ·") + ts
+		if tag_txt.length() > 26:
+			break
+	if not tag_txt.is_empty():
+		var sp := _ink_label(tag_txt, ComicTheme.ACCENT, 9)
+		sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		sp.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(sp)
+	vb.add_child(row)
+
+	# 抽象度：一条墨线刻度
+	var a: int = s.abstract_val
+	var bar := Control.new()
+	bar.custom_minimum_size = Vector2(0, 7)
+	bar.draw.connect(func():
+		var w: float = bar.size.x
+		bar.draw_rect(Rect2(0, 2, w, 3), Color(ComicTheme.CREAM, 0.18))
+		bar.draw_rect(Rect2(0, 2, w * (a / 100.0), 3), ComicTheme.ACCENT if a >= 61 else ComicTheme.CREAM)
+	)
+	vb.add_child(bar)
+	box.add_child(vb)
+	return box
+
+func _choice_column(ev: Dictionary) -> VBoxContainer:
+	var cb := VBoxContainer.new()
+	cb.add_theme_constant_override("separation", 7)
+	var head := _ink_label("接下来 ——", Color(0.86, 0.84, 0.78), 10)
+	cb.add_child(head)
+	for c in ev.get("choices", []):
+		var b := _ink_choice_btn(c, gc.state)
+		if not b.disabled:
+			b.pressed.connect(_on_comic_choice.bind(c))
+		cb.add_child(b)
+	return cb
+
+func _ink_label(text: String, col: Color, sz: int, bold: bool = false) -> Label:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_color_override("font_color", col)
+	l.add_theme_font_size_override("font_size", sz)
+	if bold:
+		l.add_theme_font_override("font", ComicTheme.font_big())
+	else:
+		l.add_theme_font_override("font", ComicTheme.font_body())
+	return l
+
+func _ink_btn_text(text: String, col: Color) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b.add_theme_font_override("font", ComicTheme.font_big())
+	b.add_theme_font_size_override("font_size", 14)
+	b.add_theme_color_override("font_color", ComicTheme.CREAM)
+	b.add_theme_color_override("font_hover_color", ComicTheme.CREAM)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = col
+	sb.set_border_width_all(2)
+	sb.border_color = ComicTheme.INK
+	sb.content_margin_left = 10; sb.content_margin_top = 8
+	sb.content_margin_right = 10; sb.content_margin_bottom = 8
+	var sb2 := sb.duplicate()
+	sb2.bg_color = ComicTheme.INK
+	b.add_theme_stylebox_override("normal", sb)
+	b.add_theme_stylebox_override("hover", sb2)
+	b.add_theme_stylebox_override("pressed", sb2)
+	return b
+
+func _ink_choice_btn(c: Dictionary, s: GameState) -> Button:
+	var b := Button.new()
+	b.text = "▶  " + str(c.get("label", ""))
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.add_theme_font_override("font", ComicTheme.font_body())
+	b.add_theme_font_size_override("font_size", 14)
+	var col := ComicTheme.CREAM
+	if c.has("require"):
+		for k in c["require"]:
+			if s.get_attr(k) < int(c["require"][k]):
+				col = ComicTheme.ACCENT
+				b.text += "　（%s需 %d）" % [_attr_cn(k), int(c["require"][k])]
+				b.disabled = true
+				break
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = ComicTheme.INK
+	normal.border_color = Color(ComicTheme.CREAM, 0.65)
+	normal.set_border_width_all(2)
+	normal.content_margin_left = 14; normal.content_margin_top = 7
+	normal.content_margin_right = 10; normal.content_margin_bottom = 7
+	var hover := normal.duplicate()
+	hover.bg_color = ComicTheme.ACCENT
+	hover.border_color = ComicTheme.CREAM
+	var dis := normal.duplicate()
+	dis.bg_color = Color(ComicTheme.INK, 0.55)
+	dis.border_color = Color(ComicTheme.CREAM, 0.2)
+	b.add_theme_stylebox_override("normal", normal)
+	b.add_theme_stylebox_override("hover", hover)
+	b.add_theme_stylebox_override("pressed", hover)
+	b.add_theme_stylebox_override("disabled", dis)
+	b.add_theme_color_override("font_color", col)
+	b.add_theme_color_override("font_hover_color", ComicTheme.CREAM)
+	b.add_theme_color_override("font_disabled_color", Color(ComicTheme.CREAM, 0.3))
+	# 左侧红条：和标题下的红杠是同一个记号
+	var bar := ColorRect.new()
+	bar.color = ComicTheme.ACCENT
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	bar.offset_right = 4.0
+	bar.offset_top = 3.0
+	bar.offset_bottom = -3.0
+	b.add_child(bar)
+	return b
+
+func _set_footer(t: String) -> void:
+	var f := get_node_or_null("MarginContainer/ScrollContainer/VBox/Footer")
+	if f:
+		f.text = t
+		f.add_theme_color_override("font_color", Color(0.72, 0.70, 0.64))
 
 # ==========================================================
 # 结局页

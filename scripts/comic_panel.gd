@@ -111,6 +111,12 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 	var shot := str(spec.get("shot", "wide"))
 	var pad := 8.0
 	var col := T.CREAM if dark else T.INK
+	# 小格用更小的字号：13px 的旁白框在 5 格版里会盖掉大半格
+	var cap_sz := 13
+	if r.size.x < 230:
+		cap_sz = 11
+	if r.size.x < 165:
+		cap_sz = 10
 
 	# 黑格里文字反白，所以旁白框改成「透明底 + 白字」
 	if not cap.is_empty():
@@ -119,12 +125,14 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		else:
 			# 旁白统一压在格子下沿：角色头部永远在格子上方，压上面必定盖脸
 			var f := T.font_body()
-			var measured: Vector2 = f.get_multiline_string_size(cap, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - pad * 2 - 14, 13)
+			var box_w: float = r.size.x - pad * 2 - 8
+			var measured: Vector2 = f.get_multiline_string_size(cap, HORIZONTAL_ALIGNMENT_LEFT, box_w - 14, cap_sz)
 			var y: float = r.end.y - measured.y - pad * 2 - 11
-			T.caption_box(self, Vector2(r.position.x + pad, y), cap, r.size.x - pad * 2 - 8, 13, false)
+			T.caption_box(self, Vector2(r.position.x + pad, y), cap, box_w, cap_sz, false)
 
 	if not bub.is_empty():
 		var bw: float = minf(r.size.x - pad * 2 - 10, 210.0)
+		var bub_sz := 13 if bw > 170 else 11
 		var f2 := T.font_body()
 		var m2: Vector2 = f2.get_multiline_string_size(bub, HORIZONTAL_ALIGNMENT_LEFT, bw - 18, 13)
 		var bh: float = maxf(m2.y, 19) + 18
@@ -133,7 +141,7 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		if shot == "close" or shot == "extreme":
 			bx = r.position.x + pad
 			by = r.position.y + pad
-		T.bubble(self, Vector2(bx, by), bub, bw, 13, -1 if bx < r.get_center().x else 1)
+		T.bubble(self, Vector2(bx, by), bub, bw, bub_sz, -1 if bx < r.get_center().x else 1)
 
 	if not sfx_s.is_empty():
 		if bool(spec.get("vertical", false)):
