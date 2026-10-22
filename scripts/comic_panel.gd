@@ -6,6 +6,8 @@ const T := preload("res://scripts/comic_theme.gd")
 const Art := preload("res://scripts/comic_art.gd")
 const SemanticPlan := preload("res://scripts/comic_performance.gd")
 const Interaction := preload("res://scripts/comic_interaction.gd")
+const Motion := preload("res://scripts/comic_motion.gd")
+const Actor := preload("res://scripts/comic_actor.gd")
 signal interacted(progress: Dictionary)
 var interactions_enabled := true:
 	set(value):
@@ -19,7 +21,9 @@ var interaction_dragging := false
 var interaction_holding := false
 var interaction_offset := Vector2.ZERO
 var _drag_start := Vector2.ZERO
-var _interaction_clock := 1.0
+var _pointer_captured := false
+var _interaction_clock := Motion.DURATION
+var _actor_render: Dictionary = {}
 
 var spec: Dictionary = {}
 var ink: Texture2D = null
@@ -42,6 +46,10 @@ var _weather := ""
 
 
 func setup(p: Dictionary, ink_tex: Texture2D) -> void:
+	_moment_index = -1
+	_hold = 0
+	_impact_left = 0
+	impact_count = 0
 	spec = SemanticPlan.panel(p)
 	ink = ink_tex
 	_base_ink = str(spec.get("ink", ""))
@@ -53,6 +61,11 @@ func setup(p: Dictionary, ink_tex: Texture2D) -> void:
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	interaction_done = bool(spec.get("interaction_progress",{}).get("completed",false))
+	_interaction_clock = Motion.DURATION
+	interaction_holding = false
+	interaction_dragging = false
+	interaction_offset = Vector2.ZERO
+	_pointer_captured = false
 	interaction_amount = 1.0 if interaction_done else 0.0
 	if spec.has("interaction"): mouse_filter = Control.MOUSE_FILTER_PASS
 	queue_redraw()
@@ -63,6 +76,7 @@ func set_revealed(v: bool) -> void:
 		return
 	revealed = v
 	if v:
+		_hold = 0
 		visible_characters = 0
 		_moment_index = -1
 		_age = 0
@@ -77,15 +91,17 @@ func set_revealed(v: bool) -> void:
 	queue_redraw()
 
 func _activate(index: int, animated: bool = true) -> void:
+	var next: Dictionary = moments[index]
+	var continuing := animated and _moment_index >= 0 and str(current_direction.get("actor","lead")) == str(next.get("actor","lead")) and str(current_direction.get("action","idle")) == str(next.get("action","idle"))
 	_moment_index = index
-	_moment_age = 0
+	if not continuing: _moment_age = 0
 	current_direction = moments[index].duplicate(true)
 	_weather = ""
 	for previous in range(index + 1):
 		var kind := str(moments[previous].get("weather", ""))
 		if kind == "clear": _weather = ""
 		elif not kind.is_empty(): _weather = kind
-	if not animated: _moment_age = 1.5
+	if not animated: _moment_age = Motion.DURATION
 	var role := str(current_direction.get("actor", "lead"))
 	var key := _base_ink if role == "lead" else "npc_" + role
 	if not _base_ink.is_empty(): ink = Art.portrait(key, int(spec.get("frame", 0)), str(current_direction.expr))
@@ -111,12 +127,19 @@ func _process(delta: float) -> void:
 		while _next_token <= 0 and visible_characters < _full_text.length() and guard < 256:
 			guard += 1
 			while _moment_index + 1 < moments.size() and visible_characters >= int(moments[_moment_index + 1].trigger):
+				if _moment_index >= 0:
+					var next: Dictionary = moments[_moment_index+1]
+					var changed := str(next.get("action","idle")) != str(current_direction.get("action","idle")) or str(next.get("actor","lead")) != str(current_direction.get("actor","lead"))
+					var minimum := Motion.minimum_time(Motion.kind(current_direction))
+					if changed and _moment_age < minimum:
+						_hold = minimum-_moment_age
+						break
 				_activate(_moment_index + 1)
 			if _hold > 0: break
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
 			_next_token += 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", "\n"] else 0.025)
-	if visible_characters >= _full_text.length() and _moment_age >= 1.0 and _impact_left <= 0 and not interaction_holding and _interaction_clock >= 0.9:
+	if visible_characters >= _full_text.length() and _moment_age >= Motion.DURATION and _impact_left <= 0 and not interaction_holding and _interaction_clock >= Motion.DURATION:
 		set_process(false)
 	queue_redraw()
 
@@ -124,7 +147,7 @@ func complete_interaction() -> void:
 	if interaction_done or not interactions_enabled: return
 	interaction_done = true
 	interaction_amount = 1
-	_interaction_clock = 0
+	_interaction_clock = 1.6 if interaction_holding else (0.82 if interaction_dragging else 0.0)
 	interaction_dragging = false
 	interaction_holding = false
 	spec["interaction_progress"] = {"completed":true}
@@ -133,10 +156,23 @@ func complete_interaction() -> void:
 	queue_redraw()
 
 func _gui_input(event: InputEvent) -> void:
+	# Consume the matching release even when press already completed a tap/hold.
+	# Otherwise a parent ScrollContainer receives an unmatched release.
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and _pointer_captured:
+		_pointer_captured = false
+		if interaction_dragging:
+			if Interaction.target_rect(size).grow(12).has_point(event.position): complete_interaction()
+			else: interaction_offset = Vector2.ZERO; interaction_amount = 0
+		interaction_dragging = false
+		interaction_holding = false
+		queue_redraw()
+		accept_event()
+		return
 	if not interactions_enabled or interaction_done or not revealed or not spec.has("interaction"): return
 	var kind := str(spec.interaction.get("kind","tap"))
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed and Interaction.object_rect(size).grow(14).has_point(event.position):
+		if event.pressed and Interaction.object_rect(size,str(spec.interaction.get("prop",""))).grow(14).has_point(event.position):
+			_pointer_captured = true
 			finish_reveal()
 			if kind in ["tap","reveal"]: complete_interaction()
 			elif kind == "drag": interaction_dragging = true; _drag_start = event.position
@@ -156,15 +192,18 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 func finish_reveal() -> void:
+	_hold = 0
 	visible_characters = _full_text.length()
 	if not moments.is_empty(): _activate(moments.size() - 1, false)
-	_moment_age = 1.5
+	_moment_age = Motion.DURATION
+	_interaction_clock = Motion.DURATION
 	_impact_left = 0
 	set_process(false)
 	queue_redraw()
 
 
 func _draw() -> void:
+	_actor_render = {}
 	var r := Rect2(Vector2.ZERO, size)
 	var tone_kind := str(spec.get("tone", "paper"))
 	var dark := tone_kind == "black"
@@ -173,7 +212,18 @@ func _draw() -> void:
 	if revealed:
 		var background := Art.background(str(spec.get("scene", "")))
 		if background != null:
-			draw_texture_rect_region(background, r, Art.cover_region(background, r.size), Color(0.25, 0.8, 0.85, 0.42))
+			var region := Art.cover_region(background,r.size)
+			var camera := 1.0
+			if not reduced_motion:
+				var action := Motion.kind(current_direction)
+				var time := _moment_age
+				if bool(spec.get("stage_action",false)):
+					action = Motion.interaction_kind(spec.get("interaction",{}))
+					time = Interaction.action_time(self)
+				camera = float(Motion.sample(action,time).camera)
+			var cropped := region.size/camera
+			region = Rect2(region.position+(region.size-cropped)*0.5,cropped)
+			draw_texture_rect_region(background,r,region,Color(0.25,0.8,0.85,0.42))
 		_draw_weather(r)
 		if str(spec.get("shot", "")) == "wide":
 			var supporting_key := str(spec.get("support", "")) if str(current_direction.get("actor", "lead")) == "lead" else _base_ink
@@ -208,6 +258,18 @@ func _draw() -> void:
 
 # ----------------------------------------------------------
 func _draw_ink(r: Rect2, dark: bool) -> void:
+	var acting := Motion.kind(current_direction)
+	if acting in Motion.NAMED and not _base_ink.is_empty() and str(spec.get("shot","")) != "detail":
+		var role := str(current_direction.get("actor","lead"))
+		var key := _base_ink if role == "lead" else "npc_"+role
+		var foot := Vector2(r.size.x*0.5,r.size.y*0.84)
+		var actor_height := r.size.y*0.78
+		if acting == "drum": foot.y = r.size.y*0.70; actor_height = r.size.y*0.64
+		if acting == "walk":
+			var travel: float = Motion.sample("walk",_moment_age,reduced_motion).travel
+			foot.x += travel*r.size.x*0.9 if bool(current_direction.get("exit",false)) else (travel-1)*r.size.x*0.40
+		_actor_render = Actor.draw_actor(self,key,foot,actor_height,r.size.x*0.84,acting,_moment_age,str(current_direction.get("expr","normal")),false,Color.WHITE,reduced_motion,str(current_direction.get("prop","")))
+		if not _actor_render.is_empty(): return
 	var shot := str(spec.get("shot", "wide"))
 	# 黑格先铺速度线，再把米白人物压上去：读起来像「暗场里的剪影」
 	if dark and _impact_left > 0:
@@ -309,7 +371,17 @@ func _draw_weather(r: Rect2) -> void:
 
 func _draw_prop(r: Rect2) -> void:
 	var prop := str(current_direction.get("prop", ""))
+	if not _actor_render.is_empty() and Motion.kind(current_direction) == "drum":
+		Actor.drumming(self,_actor_render.rect,_moment_age,reduced_motion)
+		return
+	if bool(_actor_render.get("baked",false)) and str(current_direction.get("action","")) in ["phone","sign","read"]: return
 	var at := Vector2(r.size.x * 0.74, r.size.y * 0.40)
+	if not _actor_render.is_empty():
+		var body: Rect2 = _actor_render.rect
+		var sample: Dictionary = _actor_render.sample
+		var hand := body.position+body.size*Vector2(0.67,0.77)
+		if prop == "phone": hand = body.position+body.size*Vector2(0.26,0.30)
+		at = at.lerp(hand-Vector2(35,25),float(sample.reach))
 	if str(spec.get("shot", "")) == "detail" and not prop.is_empty() and prop != "bed":
 		var dimensions := Vector2(45,73) if prop == "phone" else Vector2(100,70)
 		var zoom := minf(2.4, r.size.y * 0.55 / dimensions.y)
@@ -359,6 +431,20 @@ func _draw_impact(r: Rect2) -> void:
 
 func _draw_gesture(r: Rect2) -> void:
 	var action := str(current_direction.get("action", ""))
+	if not _actor_render.is_empty():
+		if Motion.kind(current_direction) == "drum": return
+		if bool(_actor_render.get("baked",false)): return
+		var body: Rect2 = _actor_render.rect
+		var sample: Dictionary = _actor_render.sample
+		var shoulder := body.position+body.size*Vector2(0.36,0.60)
+		if action == "wave":
+			Actor.arm(self,shoulder,body.position+body.size*Vector2(0.20,0.35)+Vector2(float(sample.hand)*14,0),-18,Color("193c47"),false)
+		elif action in ["raise","read","sign","type","poweroff","put_down"]:
+			var hand := body.position+body.size*Vector2(0.68,0.80)+Vector2(float(sample.stroke)*3,0)
+			Actor.arm(self,shoulder,shoulder.lerp(hand,float(sample.hand)),-16,Color("193c47"))
+			if action in ["read","type"]:
+				Actor.arm(self,body.position+body.size*Vector2(0.70,0.61),hand+Vector2(-44,4),18,Color("193c47"))
+		return
 	if action not in ["wave", "raise"]: return
 	var at := Vector2(r.size.x * 0.22, r.size.y * 0.36)
 	if not reduced_motion and _moment_age < 1.0: at.x += sin(_moment_age * 14) * 6

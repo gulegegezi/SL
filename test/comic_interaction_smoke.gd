@@ -56,6 +56,12 @@ func run() -> void:
 		panel.setup(panel.spec,null)
 		assert(panel.interaction_done,"completed discovery must survive reflow/resume")
 	assert(emissions == 4)
+	panel.setup({"caption":"你举起鼓槌。","ink":"lead_adult","stage_action":true,"interaction":{"kind":"tap","prop":"drum","hint":"敲鼓","reveal":"第一拍响了。"}},null)
+	panel.finish_reveal()
+	var drum_at: Vector2 = panel.position+Interaction.object_rect(panel.size,"drum").get_center()
+	await pointer(drum_at,true)
+	await pointer(drum_at,false)
+	assert(panel.interaction_done,"the visible drum must be the actual clickable area")
 	panel.queue_free()
 	await process_frame
 	preload("res://scripts/save_manager.gd").writes_enabled = false

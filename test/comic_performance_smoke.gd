@@ -22,6 +22,7 @@ func run() -> void:
 	assert(Plan.direction("老板点头，说下周来试试。").actor == "boss")
 	assert(Plan.direction("妈妈把水杯放到桌上。").actor == "parent")
 	assert(Plan.direction("你给妈妈打电话。").actor == "lead")
+	assert(Plan.direction("你走回家，放慢了脚步。").action == "walk")
 	assert(Plan.weather_for("你的雨衣挂在走廊。") == "")
 	assert(Plan.weather_for("车停了。") == "")
 	assert(Plan.weather_for("雨停了。") == "clear")

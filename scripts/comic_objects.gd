@@ -5,7 +5,7 @@ static func ellipse(canvas: CanvasItem, r: Rect2, color: Color) -> void:
 	var points := PackedVector2Array()
 	for i in range(32): points.append(r.get_center()+Vector2(cos(i*TAU/32),sin(i*TAU/32))*r.size*0.5)
 	canvas.draw_colored_polygon(points,color)
-static func draw_on(canvas: CanvasItem, kind: String, r: Rect2, progress: float = 0) -> void:
+static func draw_on(canvas: CanvasItem, kind: String, r: Rect2, progress: float = 0, decoration: bool = true) -> void:
 	var o := r.position
 	var s := r.size
 	match kind:
@@ -25,8 +25,8 @@ static func draw_on(canvas: CanvasItem, kind: String, r: Rect2, progress: float 
 			canvas.draw_rect(Rect2(o+s*Vector2(0.1,0.38),s*Vector2(0.8,0.43)),T.ACCENT)
 			ellipse(canvas,Rect2(o+s*Vector2(0.1,0.20),s*Vector2(0.8,0.36)),T.CREAM)
 			for x in [0.2,0.5,0.8]: canvas.draw_line(o+s*Vector2(x,0.48),o+s*Vector2(x,0.80),T.INK,2)
-			canvas.draw_line(o+s*Vector2(0.15,0.05),o+s*Vector2(0.55,0.18+progress*0.18),T.CREAM,5)
-			if progress > 0: canvas.draw_arc(o+s*Vector2(0.5,0.35),s.x*0.44,PI,TAU,12,T.CREAM,2)
+			if decoration: canvas.draw_line(o+s*Vector2(0.15,0.05),o+s*Vector2(0.55,0.18+progress*0.18),T.CREAM,5)
+			if decoration and progress > 0: canvas.draw_arc(o+s*Vector2(0.5,0.35),s.x*0.44,PI,TAU,12,T.CREAM,2)
 		"clock":
 			canvas.draw_circle(r.get_center(),s.x*0.38,T.CREAM)
 			canvas.draw_arc(r.get_center(),s.x*0.38,0,TAU,32,T.INK,3)
