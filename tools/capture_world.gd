@@ -19,5 +19,14 @@ func run() -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	assert(root.get_texture().get_image().save_png("res://docs/world-scenes/farewell-after.png") == OK)
+	for width in [320,479,480]:
+		root.size = Vector2i(width,900)
+		root.content_scale_size = Vector2i(width,900)
+		await process_frame
+		lab.select(3)
+		lab.sample_at(1.25)
+		await process_frame
+		await RenderingServer.frame_post_draw
+		assert(root.get_texture().get_image().save_png("res://docs/world-scenes/preview-%d.png" % width) == OK)
 	print("PASS: six ensemble storyboards and settled farewell captured")
 	quit()

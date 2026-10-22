@@ -30,14 +30,14 @@ func run() -> void:
 	for kind in ["tap","reveal","drag","hold"]:
 		panel.setup({"caption":"你伸手看看桌上的东西。","ink":"lead_adult","stage_action":true,"interaction":{"kind":kind,"prop":"toy","hint":"试试","reveal":"看到了藏着的小纸条。"}},null)
 		panel.finish_reveal()
-		var object_at: Vector2 = panel.position + Interaction.object_rect(panel.size).get_center()
+		var object_at: Vector2 = panel.position + panel.interaction_object_rect().get_center()
 		await pointer(object_at,true)
 		if kind == "drag":
 			await pointer(object_at,false)
 			assert(not panel.interaction_done,"a cancelled drag must remain retryable")
 			await pointer(object_at,true)
 			var motion := InputEventMouseMotion.new()
-			motion.position = panel.position+Interaction.target_rect(panel.size).get_center()
+			motion.position = panel.position+panel.interaction_target_rect().get_center()
 			root.push_input(motion,true)
 			await process_frame
 			await pointer(motion.position,false)
@@ -58,7 +58,7 @@ func run() -> void:
 	assert(emissions == 4)
 	panel.setup({"caption":"你举起鼓槌。","ink":"lead_adult","stage_action":true,"interaction":{"kind":"tap","prop":"drum","hint":"敲鼓","reveal":"第一拍响了。"}},null)
 	panel.finish_reveal()
-	var drum_at: Vector2 = panel.position+Interaction.object_rect(panel.size,"drum").get_center()
+	var drum_at: Vector2 = panel.position+panel.interaction_object_rect().get_center()
 	await pointer(drum_at,true)
 	await pointer(drum_at,false)
 	assert(panel.interaction_done,"the visible drum must be the actual clickable area")

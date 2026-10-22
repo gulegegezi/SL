@@ -7,6 +7,9 @@ var playing := true
 var selected := 0
 var panels: Array = []
 var title: Label
+var timeline: HSlider
+var selector: OptionButton
+var play_button: Button
 var stories := [
 	["深夜加班", "office", "lead_adult", "npc_boss", [
 		["你走进办公室，老板还在等今晚的报表。","walk","","work"],
@@ -40,16 +43,19 @@ func _ready() -> void:
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	var list := OptionButton.new()
+	selector = list
 	list.position = Vector2(14,12)
 	for story in stories: list.add_item(story[0])
 	list.item_selected.connect(select)
 	add_child(list)
 	var button := Button.new()
+	play_button = button
 	button.text = "播放 / 暂停"
 	button.position = Vector2(240,12)
 	button.pressed.connect(func(): playing = not playing)
 	add_child(button)
 	var slider := HSlider.new()
+	timeline = slider
 	slider.position = Vector2(14,54)
 	slider.size = Vector2(460,24)
 	slider.max_value = 2.4
@@ -63,9 +69,20 @@ func _ready() -> void:
 	title.text = "建立场景 → 动作发生 → 关系与环境回应"
 	add_child(title)
 	select(0)
+	resized.connect(_layout)
+	_layout()
+
+func _layout() -> void:
+	if timeline != null: timeline.size.x = maxf(80,size.x-28)
+	if selector != null: selector.size = Vector2(maxf(140,size.x-155),34)
+	if play_button != null:
+		play_button.position.x = maxf(180,size.x-130)
+		play_button.size = Vector2(116,34)
+	for panel in panels: panel.size.x = maxf(180,size.x-28)
 
 func select(index: int) -> void:
 	selected = index
+	if selector != null: selector.select(index)
 	clock = 0
 	for panel in panels: panel.queue_free()
 	panels.clear()
@@ -75,17 +92,26 @@ func select(index: int) -> void:
 		var panel := PanelView.new()
 		panel.position = Vector2(14,116+i*252)
 		panel.size = Vector2(492,240)
-		var spec := {"ink":story[2],"support":story[3],"scene":story[1],"caption":row[0],"action":row[1],"prop":row[2],"world_mode":row[3],"shot":"wide","shot_locked":true}
+		var spec := {"ink":story[2],"support":story[3],"scene":story[1],"caption":row[0],"action":row[1],"actor":"lead","prop":row[2],"world_mode":row[3],"shot":"wide","shot_locked":true}
+		if row[1] == "poweroff": spec.erase("action")
 		if i == 2 and row[1] == "walk": spec["caption"] = row[0]
 		panel.setup(spec,Art.portrait(story[2],0))
 		add_child(panel)
 		panels.append(panel)
 	sample_at(0)
+	_layout()
 
 func sample_at(value: float) -> void:
-	clock = value
+	clock = clampf(value,0,3.5)
+	if timeline != null: timeline.set_value_no_signal(minf(clock,2.4))
 	for panel in panels:
-		panel._moment_age = value
+		panel._moment_age = minf(clock,2.4)
+		if panel.moments.size() > 1:
+			# Keep authored compound actions in order instead of freezing the last
+			# clause for the whole preview (e.g. switch off, then walk out).
+			var index := mini(panel.moments.size()-1,int(clock/2.4*panel.moments.size()))
+			panel.current_direction = panel.moments[index].duplicate(true)
+			panel._moment_index = index
 		panel.set_process(false)
 		panel.queue_redraw()
 

@@ -50,7 +50,7 @@ static func draw_on(canvas: CanvasItem, kind: String, r: Rect2, progress: float 
 		"phone":
 			canvas.draw_rect(Rect2(o+s*Vector2(0.25,0),s*Vector2(0.50,1)),T.INK)
 			canvas.draw_rect(Rect2(o+s*Vector2(0.29,0.08),s*Vector2(0.42,0.72)),T.PAPER_DIM)
-			canvas.draw_circle(o+s*Vector2(0.5,0.90),3,T.CREAM)
+			canvas.draw_circle(o+s*Vector2(0.5,0.90),maxf(0.5,minf(s.x,s.y)*0.04),T.CREAM)
 		"meal":
 			ellipse(canvas,Rect2(o+s*Vector2(0.08,0.3),s*Vector2(0.84,0.44)),T.CREAM)
 			canvas.draw_circle(o+s*Vector2(0.5,0.5),s.x*0.2,Color("ddb665"))

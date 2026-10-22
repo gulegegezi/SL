@@ -160,13 +160,19 @@ func complete_interaction() -> void:
 	set_process(true)
 	queue_redraw()
 
+func interaction_object_rect() -> Rect2:
+	return World.interaction_rect(self) if World.enabled(spec) else Interaction.object_rect(size,str(spec.get("interaction",{}).get("prop","")))
+
+func interaction_target_rect() -> Rect2:
+	return World.interaction_rect(self,true) if World.enabled(spec) else Interaction.target_rect(size)
+
 func _gui_input(event: InputEvent) -> void:
 	# Consume the matching release even when press already completed a tap/hold.
 	# Otherwise a parent ScrollContainer receives an unmatched release.
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and _pointer_captured:
 		_pointer_captured = false
 		if interaction_dragging:
-			if Interaction.target_rect(size).grow(12).has_point(event.position): complete_interaction()
+			if interaction_target_rect().grow(12).has_point(event.position): complete_interaction()
 			else: interaction_offset = Vector2.ZERO; interaction_amount = 0
 		interaction_dragging = false
 		interaction_holding = false
@@ -176,7 +182,7 @@ func _gui_input(event: InputEvent) -> void:
 	if not interactions_enabled or interaction_done or not revealed or not spec.has("interaction"): return
 	var kind := str(spec.interaction.get("kind","tap"))
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed and Interaction.object_rect(size,str(spec.interaction.get("prop",""))).grow(14).has_point(event.position):
+		if event.pressed and interaction_object_rect().grow(14).has_point(event.position):
 			_pointer_captured = true
 			finish_reveal()
 			if kind in ["tap","reveal"]: complete_interaction()
@@ -185,7 +191,7 @@ func _gui_input(event: InputEvent) -> void:
 			accept_event()
 		elif not event.pressed:
 			if interaction_dragging:
-				if Interaction.target_rect(size).grow(12).has_point(event.position): complete_interaction()
+				if interaction_target_rect().grow(12).has_point(event.position): complete_interaction()
 				else: interaction_offset = Vector2.ZERO; interaction_amount = 0
 			interaction_dragging = false
 			interaction_holding = false
@@ -216,7 +222,7 @@ func _draw() -> void:
 
 	if revealed:
 		var background := Art.background(str(spec.get("scene", "")))
-		if background != null:
+		if background != null and not World.enabled(spec):
 			var region := Art.cover_region(background,r.size)
 			var camera := 1.0
 			if not reduced_motion:
@@ -229,7 +235,7 @@ func _draw() -> void:
 			var cropped := region.size/camera
 			region = Rect2(region.position+(region.size-cropped)*0.5,cropped)
 			draw_texture_rect_region(background,r,region,Color(0.25,0.8,0.85,0.42))
-		_draw_weather(r)
+		if not World.enabled(spec): _draw_weather(r)
 		if not World.enabled(spec) and str(spec.get("shot", "")) == "wide":
 			var supporting_key := str(spec.get("support", "")) if str(current_direction.get("actor", "lead")) == "lead" else _base_ink
 			var supporting := Art.portrait(supporting_key, 0)
@@ -468,13 +474,14 @@ func _draw_gesture(r: Rect2) -> void:
 # ----------------------------------------------------------
 func _draw_text(r: Rect2, dark: bool) -> void:
 	var cap := str(spec.get("caption", ""))
+	var caption_length := cap.length()
 	var bub := str(spec.get("bubble", ""))
 	var shown_cap := cap.substr(0, visible_characters)
 	if interaction_done and spec.has("interaction"):
 		var discovery := str(spec.interaction.get("reveal",""))
 		cap += "\n" + discovery
 		shown_cap += "\n" + discovery
-	var shown_bub := bub.substr(0, maxi(0, visible_characters - cap.length() - 1))
+	var shown_bub := bub.substr(0, maxi(0, visible_characters - caption_length - 1))
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))
 	var pad := 8.0
@@ -488,7 +495,7 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 
 	# 黑格里文字反白，所以旁白框改成「透明底 + 白字」
 	if not cap.is_empty():
-		if dark:
+		if dark and not World.enabled(spec):
 			_draw_caption_dark(r, shown_cap, pad, cap)
 		else:
 			# 旁白统一压在格子下沿：角色头部永远在格子上方，压上面必定盖脸

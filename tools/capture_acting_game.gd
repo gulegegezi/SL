@@ -31,7 +31,7 @@ func run() -> void:
 		var panel = page.panels[1]
 		main._scroll.scroll_vertical = int(panel.position.y-12)
 		await process_frame
-		var at: Vector2 = panel.global_position+Interaction.object_rect(panel.size,str(panel.spec.interaction.prop)).get_center()
+		var at: Vector2 = panel.global_position+panel.interaction_object_rect().get_center()
 		for pressed in [true,false]:
 			var mouse := InputEventMouseButton.new()
 			mouse.position = at

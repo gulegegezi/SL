@@ -4,6 +4,7 @@ const Art := preload("res://scripts/comic_art.gd")
 const Objects := preload("res://scripts/comic_objects.gd")
 const InkTheme := preload("res://scripts/comic_theme.gd")
 const Interaction := preload("res://scripts/comic_interaction.gd")
+const Motion := preload("res://scripts/comic_motion.gd")
 static var textures: Dictionary = {}
 
 static func pixel_texture(texture: Texture2D, height: int) -> Texture2D:
@@ -35,11 +36,12 @@ static func plan(spec: Dictionary) -> Dictionary:
 		for word in row[1]:
 			if text.contains(word): mode = row[0]; break
 	var support := str(spec.get("support", ""))
+	var explicit_support := not support.is_empty()
 	if support.is_empty():
 		support = {"office":"npc_boss", "classroom":"npc_teacher", "home":"npc_parent", "bedroom":"npc_partner", "hospital":"npc_mate", "grave":"npc_partner"}.get(scene,"npc_friend")
 	for row in [["npc_parent",["妈妈","母亲"]],["npc_mate",["爸爸","父亲"]],["npc_boss",["老板","上司"]],["npc_teacher",["老师"]],["npc_partner",["伴侣","爱人"]],["npc_friend",["朋友","同学"]]]:
 		for word in row[1]:
-			if text.contains(word): support = row[0]; break
+			if not explicit_support and text.contains(word): support = row[0]; break
 	return {"scene":scene,"mode":str(spec.get("world_mode",mode)),"support":support,
 		"prop":str(spec.get("interaction",{}).get("prop",spec.get("prop",{"study":"book","work":"computer","meal":"meal","care":"medicine","performance":"drum","gift":"toy"}.get(mode,""))))}
 
@@ -63,88 +65,100 @@ static func pose(action: String, time: float, settled: bool) -> Dictionary:
 	var frame := int(time*8)%count if moving else (2 if clip == "raise" else 0)
 	return {"clip":clip,"frame":frame,"progress":progress,"moving":moving}
 
-static func actor(c: CanvasItem, key: String, foot: Vector2, action: String, time: float, expression: String, flip: bool, settled: bool, scale: int = 2) -> Rect2:
+static func actor(c: CanvasItem, key: String, foot: Vector2, action: String, time: float, expression: String, flip: bool, settled: bool, scale: float = 2, canvas_scale: float = 1) -> Rect2:
 	var p := pose(action,time,settled)
-	var detailed := Art.walk_frame(key,int(p.frame) if action == "walk" else 1)
+	var detailed := Art.walk_frame(key,int(p.frame) if action == "walk" and p.moving else 1)
 	var tex: Texture2D
-	var npc := key.begins_with("npc_")
-	if key == "infant_infant": tex = pixel_texture(Art.portrait(key,0,expression),40)
+	if key == "infant_infant":
+		var infant := Art.portrait(key,0,expression)
+		tex = pixel_texture(infant,40) if infant != null else null
 	elif detailed != null: tex = pixel_texture(detailed,64)
-	elif npc:
-		var portrait := Art.portrait(key,0,expression)
-		tex = pixel_texture(portrait,28) if portrait != null else null
-	else: tex = sprite(key,p.clip,p.frame,expression)
+	else:
+		# Use authored full-body frames. Extending a bust with rectangles caused
+		# detached heads, square torsos and mismatched legs at different scales.
+		var full_body := sprite(key,p.clip,p.frame,expression)
+		tex = pixel_texture(full_body,64) if full_body != null else null
 	if tex == null: return Rect2()
 	var zoom := scale/2.0
 	var dimensions := (tex.get_size()*zoom).round()
-	var full_height := (64*zoom) if npc else dimensions.y
-	var top := foot-Vector2(dimensions.x/2,full_height)
-	if action == "sit": top.y += 9*float(p.progress)
-	if action == "wave" and not settled: top.y -= roundf(absf(sin(time*6))*2)
+	if action == "sit" and detailed != null: dimensions.y *= 1.0-0.12*float(p.progress)
 	var rect := Rect2((foot-Vector2(dimensions.x/2,dimensions.y)).round(),dimensions)
-	rect.position = top.round()
-	c.draw_rect(Rect2(foot.round()+Vector2(-12,-2),Vector2(24,4)),Color("101e2b99"))
-	if npc:
-		var coat := top+Vector2(dimensions.x*0.5-10,23*zoom)
-		var cloth := Color({"npc_parent":"765766","npc_friend":"2c5369","npc_boss":"233948","npc_teacher":"3d6765","npc_mate":"5b676d","npc_partner":"766153"}.get(key,"315968"))
-		c.draw_rect(Rect2(coat.round(),Vector2(20*zoom,21*zoom)),Color("142b39"))
-		c.draw_rect(Rect2((coat+Vector2(2,0)*zoom).round(),Vector2(16*zoom,20*zoom)),cloth)
-		c.draw_rect(Rect2((coat+Vector2(8,0)*zoom).round(),Vector2(4*zoom,10*zoom)),Color("acb4b1"))
-		for button in range(3): c.draw_rect(Rect2((coat+Vector2(10,11+button*3)*zoom).round(),Vector2.ONE*zoom),Color("98a9a4"))
-		for side in [-3,18]:
-			c.draw_rect(Rect2((coat+Vector2(side,2)*zoom).round(),Vector2(5*zoom,15*zoom)),cloth)
-			c.draw_rect(Rect2((coat+Vector2(side+1,17)*zoom).round(),Vector2(3*zoom,4*zoom)),Color("dabba4"))
-		var leg := top+Vector2(dimensions.x*0.5-8,44*zoom)
-		for x in [0,10]:
-			c.draw_rect(Rect2((leg+Vector2(x*zoom,0)).round(),Vector2(7*zoom,20*zoom)),Color("152539"))
-			c.draw_rect(Rect2((leg+Vector2((x+1)*zoom,0)).round(),Vector2(2*zoom,17*zoom)),Color("354457"))
-			c.draw_rect(Rect2((leg+Vector2(x*zoom-2,17*zoom)).round(),Vector2(10*zoom,4*zoom)),Color("0a1928"))
-	if detailed != null and not (action == "walk" and bool(p.moving)):
-		var cut := roundf(dimensions.y*0.73)
-		c.draw_texture_rect_region(tex,Rect2(rect.position,Vector2(dimensions.x,cut)),Rect2(Vector2.ZERO,Vector2(tex.get_width(),tex.get_height()*0.73)))
-		for side in [-6,2]:
-			var leg := (Vector2(foot.x+side*zoom,top.y+cut-1)).round()
-			c.draw_rect(Rect2(leg,Vector2(6*zoom,full_height-cut)),Color("24354a"))
-			c.draw_line(leg+Vector2(2,1),leg+Vector2(2,full_height-cut-3),Color("3f5163"),1)
-			c.draw_rect(Rect2(Vector2(leg.x-2,foot.y-3).round(),Vector2(9*zoom,3)),Color("0a1928"))
+	c.draw_rect(Rect2(Vector2(foot.x-dimensions.x*0.32,foot.y-2).round(),Vector2(dimensions.x*0.64,3)),Color("101e2b99"))
+	if flip:
+		# Draw transform is local to CanvasItem drawing, independent of node transform.
+		c.draw_set_transform(Vector2(foot.x*canvas_scale,0),0,Vector2(-canvas_scale,canvas_scale))
+		c.draw_texture_rect(tex,Rect2(Vector2(-dimensions.x/2,rect.position.y),dimensions),false)
+		c.draw_set_transform(Vector2.ZERO,0,Vector2.ONE*canvas_scale)
 	else: c.draw_texture_rect(tex,rect,false)
-	# Articulated pixel sleeves and palms show actions even on a standing full-body frame.
-	if action in ["raise","wave","phone","read","sign","draw","receive","offer","drum","type"]:
-		var shoulder := top+Vector2(dimensions.x*0.72,full_height*0.38)
-		var reach := 1.0 if settled else smoothstep(0.1,0.9,time)
-		var hand := shoulder+Vector2(12,-10 if action in ["phone","wave"] else 13)*reach
-		if action == "wave" and not settled: hand.x += roundf(sin(time*14)*4)
-		if action in ["drum","type","sign","draw"] and not settled: hand.y += roundf(sin(time*18)*4)
-		var elbow := shoulder.lerp(hand,0.55)+Vector2(3,4)
-		for segment in [[shoulder,elbow],[elbow,hand]]:
-			c.draw_line(segment[0].round(),segment[1].round(),Color("10283b"),5)
-			c.draw_line(segment[0].round(),segment[1].round(),Color("558c9c"),3)
-		c.draw_rect(Rect2(hand.round()-Vector2(2,2),Vector2(4,4)),Color("e6c4aa"))
 	return rect
+
+static func caption_height(spec: Dictionary, size: Vector2, completed: bool) -> float:
+	var caption := str(spec.get("caption",""))
+	if completed and spec.has("interaction"): caption += "\n"+str(spec.interaction.get("reveal",""))
+	if caption.is_empty(): return 12
+	var font_size := 15 if size.x >= 230 else (11 if size.x >= 165 else 10)
+	return InkTheme.font_body().get_multiline_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,maxf(30,size.x-46),font_size).y+39
+
+static func composition(spec: Dictionary, size: Vector2, completed: bool = false) -> Dictionary:
+	var top := 42.0 if spec.has("interaction") else 12.0
+	var bubble := str(spec.get("bubble",""))
+	if not bubble.is_empty():
+		top += InkTheme.font_body().get_multiline_string_size(bubble,HORIZONTAL_ALIGNMENT_LEFT,maxf(30,minf(size.x-44,192)),13).y+26
+	var bottom := minf(size.y-48,caption_height(spec,size,completed))
+	var area := Rect2(10,top,maxf(1,size.x-20),maxf(32,size.y-top-bottom))
+	var height := minf(area.size.y*0.83,area.size.x*0.43)
+	return {"area":area,"height":height,"foot_y":area.end.y-5,
+		"lead":Vector2(area.position.x+area.size.x*0.37,area.end.y-5),
+		"support":Vector2(area.position.x+area.size.x*0.77,area.end.y-9)}
+
+static func interaction_rect(panel: Control, target: bool = false) -> Rect2:
+	var layout := composition(panel.spec,panel.size,panel.interaction_done)
+	var prop := str(panel.spec.get("interaction",{}).get("prop","letter"))
+	var dimensions := Vector2(32,32)
+	if prop == "phone": dimensions = Vector2(20,32)
+	if prop == "drum": dimensions = Vector2(54,43)
+	var center: Vector2 = layout.lead+Vector2(20,-float(layout.height)*0.25)
+	if not target and panel.spec.get("interaction",{}).get("kind","") == "drag": center = layout.support+Vector2(-18,-float(layout.height)*0.35)
+	var rect := Rect2((center-dimensions/2).round(),dimensions)
+	rect.position.x = clampf(rect.position.x,12,maxf(12,panel.size.x-dimensions.x-12))
+	rect.position.y = clampf(rect.position.y,float(layout.area.position.y),maxf(float(layout.area.position.y),float(layout.area.end.y)-dimensions.y))
+	return rect
+
+static func settled_object_rect(panel: Control, body: Rect2, prop: String) -> Rect2:
+	var destination := Rect2(body.position+body.size*Vector2(0.75,0.54),Vector2(28,32))
+	if prop == "phone": destination = Rect2(body.position+body.size*Vector2(0.82,0.60),Vector2(12,21))
+	if prop == "drum": destination = Rect2(body.position+body.size*Vector2(0.68,0.70),Vector2(64,51))
+	var area: Rect2 = composition(panel.spec,panel.size,panel.interaction_done).area
+	destination.size = destination.size.min(area.size)
+	destination.position.x = clampf(destination.position.x,area.position.x,area.end.x-destination.size.x)
+	destination.position.y = clampf(destination.position.y,area.position.y,area.end.y-destination.size.y)
+	return destination
 
 static func draw_scene(panel: Control, r: Rect2) -> void:
 	var config := plan(panel.spec)
 	var direction: Dictionary = panel.current_direction
 	var action := str(direction.get("action","idle"))
 	var speaking := str(direction.get("actor","lead"))
+	if speaking != "lead": config.support = "npc_"+speaking
 	var directed_action := action
 	if speaking != "lead": action = "idle"
 	var time: float = panel._moment_age
 	var settled: bool = panel.reduced_motion or panel._moment_age >= 2.4
 	var interactive: bool = panel.spec.has("interaction")
 	if interactive:
-		action = str(panel.spec.interaction.get("action", {"phone":"phone","book":"read","drum":"drum","letter":"sign","contract":"sign"}.get(config.prop,"raise")))
-		time = Interaction.action_time(panel)
-		settled = panel.reduced_motion and panel.interaction_done
+		action = Motion.interaction_kind(panel.spec.interaction)
+		time = minf(2.4,Interaction.action_time(panel))
+		settled = panel.interaction_done and (panel.reduced_motion or time >= 2.4)
 	# Integer enlargement of an actual low resolution stage keeps visible square pixels.
-	var pixel := maxi(1,int(r.size.x/240))
+	var pixel := 2
 	var s := r.size/float(pixel)
+	var layout := composition(panel.spec,r.size,panel.interaction_done)
 	# Drawing is performed by the panel; no viewport texture or extra scene tree per frame.
 	panel.draw_set_transform(Vector2.ZERO,0,Vector2.ONE*pixel)
 	backdrop(panel,s,config.scene,time,settled)
-	var floor_y := s.y*0.72
-	var lead_x := s.x*0.39
-	var support_x := s.x*0.76
+	var floor_y := float(layout.foot_y)/pixel
+	var lead_x := float(layout.lead.x)/pixel
+	var support_x := float(layout.support.x)/pixel
 	var travel := float(pose(action,time,settled).progress)
 	if action == "walk":
 		lead_x = lerpf(s.x*0.12,s.x*0.51,travel)
@@ -157,17 +171,17 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 	if config.mode == "work": support_x -= travel*s.x*0.10
 	if speaking != "lead": support_action = directed_action
 	var support_expr := str(direction.get("expr","normal")) if speaking != "lead" else "normal"
-	var actor_scale := maxi(1,roundi(s.y/64*0.52*2))
+	var actor_scale := float(layout.height)/64
 	if action == "phone":
 		panel.draw_rect(Rect2(s.x*0.64,13,s.x*0.32,floor_y-10),Color("153244"))
 		panel.draw_line(Vector2(s.x*0.64,13),Vector2(s.x*0.60,floor_y),Color("70b4b6"),2)
 		panel.draw_string(InkTheme.font_body(),Vector2(s.x*0.68,25),"电话另一端",HORIZONTAL_ALIGNMENT_LEFT,-1,8,InkTheme.CREAM)
-	actor(panel,config.support,Vector2(support_x,floor_y-8),support_action,time+0.35,support_expr,true,settled,actor_scale)
+	actor(panel,config.support,Vector2(support_x,floor_y-4),support_action,time+0.35,support_expr,true,settled,actor_scale,pixel)
 	# Classmates / audience give public scenes a visible social context.
 	if config.scene == "classroom" or config.mode == "performance":
-		actor(panel,"npc_friend",Vector2(s.x*0.14,floor_y-15),"sit",time,"normal",false,settled,maxi(1,actor_scale-1))
-		actor(panel,"npc_mate",Vector2(s.x*0.90,floor_y-13),"wave" if config.mode == "performance" else "sit",time+0.2,"normal",true,settled,maxi(1,actor_scale-1))
-	var body := actor(panel,str(panel.spec.ink),Vector2(lead_x,floor_y),action,time,str(direction.get("expr","normal")),false,settled,actor_scale)
+		actor(panel,"npc_friend",Vector2(s.x*0.14,floor_y-10),"sit",time,"normal",false,settled,actor_scale*0.62,pixel)
+		actor(panel,"npc_mate",Vector2(s.x*0.90,floor_y-10),"wave" if config.mode == "performance" else "sit",time+0.2,"normal",true,settled,actor_scale*0.62,pixel)
+	var body := actor(panel,str(panel.spec.ink),Vector2(lead_x,floor_y),action,time,str(direction.get("expr","normal")),false,settled,actor_scale,pixel)
 	panel._actor_render = {"rect":Rect2(body.position*pixel,body.size*pixel),"baked":true,"world":true}
 	var object := str(config.prop)
 	if not interactive and not str(direction.get("prop","")).is_empty(): object = str(direction.prop)
@@ -179,7 +193,8 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 		for x in [table.position.x+4,table.end.x-7]: panel.draw_rect(Rect2(x,table.end.y,3,15),Color("111e2a"))
 	if not object.is_empty() and not interactive:
 		var at := Vector2(lead_x+8,floor_y-23)
-		if object == "phone": at = body.position+body.size*Vector2(0.80,0.25)
+		if object in ["computer","drum"]: at.x = s.x*0.45
+		if object == "phone": at = body.position+body.size*Vector2(0.80,0.60)
 		elif config.mode == "gift": at.x = lerpf(support_x-15,lead_x+8,contact)
 		var object_size := Vector2(19,19)
 		if object == "phone": object_size = Vector2(8,13)
@@ -193,7 +208,13 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 			for i in range(3):
 				var rise := 3.0 if settled else fmod(time*6+i*3,9)
 				panel.draw_line((at+Vector2(5+i*4,2-rise)).round(),(at+Vector2(6+i*4,-2-rise)).round(),Color("c2cebd99"),1)
-		if config.mode == "work":
+		var powered_off := action == "poweroff" and contact >= 0.5
+		for i in range(mini(panel._moment_index+1,panel.moments.size())):
+			if str(panel.moments[i].action) == "poweroff": powered_off = i < panel._moment_index or contact >= 0.5
+			elif str(panel.moments[i].action) == "type": powered_off = false
+		if object == "computer" and powered_off:
+			panel.draw_rect(Rect2(at+object_size*Vector2(0.08,0.08),object_size*Vector2(0.84,0.54)),Color("12232c"))
+		if config.mode == "work" and action == "type":
 			for i in range(3): panel.draw_rect(Rect2(at+Vector2(5,4+i*3),Vector2(9*contact,1)),Color("48c1b4"))
 	if config.mode == "performance" and action in ["drum","wave"]:
 		for i in range(3):
@@ -202,7 +223,6 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 			panel.draw_line(at,at+Vector2(0,-7),Color("f1b564"),2)
 			panel.draw_rect(Rect2(at-Vector2(3,0),Vector2(4,3)),Color("f1b564"))
 	# Environmental outcome survives as a readable final tableau in the archive.
-	if config.mode == "work" and action == "poweroff": panel.draw_rect(Rect2(s.x*0.44,floor_y-32,23,15),Color("12232c"))
 	if config.mode == "work" and action in ["type","sign"]:
 		panel.draw_rect(Rect2(s.x*0.28,floor_y-23,10,9),Color("d8b498"))
 		for i in range(3): panel.draw_line(Vector2(s.x*0.62,floor_y-16-i*3),Vector2(s.x*0.68,floor_y-16-i*3),Color("d5d4bc"),2)
@@ -228,7 +248,8 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 			panel.draw_rect(inset.grow(3),InkTheme.ACCENT)
 			panel.draw_rect(inset,InkTheme.INK)
 			var pixel_portrait := pixel_texture(portrait,32)
-			panel.draw_texture_rect(pixel_portrait,Rect2(inset.position+Vector2(3,2),Vector2(54,62)),false)
+			var dimensions := pixel_portrait.get_size()*minf(54.0/pixel_portrait.get_width(),62.0/pixel_portrait.get_height())
+			panel.draw_texture_rect(pixel_portrait,Rect2(inset.get_center()-dimensions/2,dimensions),false)
 
 static func backdrop(c: CanvasItem, s: Vector2, room: String, time: float, settled: bool) -> void:
 	var background := Art.background(room)
@@ -267,21 +288,19 @@ static func backdrop(c: CanvasItem, s: Vector2, room: String, time: float, settl
 			c.draw_rect(Rect2(Vector2(18+i*7,31+i*5+shift).round(),Vector2.ONE),Color("d0c5a877"))
 
 static func draw_interactive(panel: Control, r: Rect2, prop: String, time: float) -> void:
-	var box := Interaction.object_rect(r.size,prop)
+	var box := interaction_rect(panel)
 	if panel.interaction_dragging: box.position += panel.interaction_offset
 	if panel.interaction_done:
 		var body: Rect2 = panel._actor_render.get("rect",Rect2())
-		var destination := Rect2(body.position+body.size*Vector2(0.75,0.54),Vector2(28,32))
-		if prop == "phone": destination = Rect2(body.position+body.size*Vector2(0.82,0.24),Vector2(12,21))
-		if prop == "drum": destination = Rect2(body.position+body.size*Vector2(0.68,0.70),Vector2(64,51))
+		var destination := settled_object_rect(panel,body,prop)
 		var reach := 1.0 if panel.reduced_motion else smoothstep(0.1,0.95,time)
 		box = Rect2(box.position.lerp(destination.position,reach),box.size.lerp(destination.size,reach))
 	Objects.draw_on(panel,prop,box,smoothstep(0,1.3,time))
 	if prop == "drum" and panel.interaction_done:
 		for i in range(2):
-			var beat := 0.0 if panel.reduced_motion else sin(time*18+i*PI)*7
+			var beat := 0.0 if panel.reduced_motion or time >= 2.4 else sin(time*18+i*PI)*7
 			panel.draw_line(box.position+Vector2(-8+i*24,-12+beat),box.position+Vector2(18+i*12,12),InkTheme.CREAM,3)
-	if panel.spec.interaction.get("kind","") == "drag" and not panel.interaction_done: panel.draw_rect(Interaction.target_rect(r.size),InkTheme.CREAM,false,2)
+	if panel.spec.interaction.get("kind","") == "drag" and not panel.interaction_done: panel.draw_rect(interaction_rect(panel,true),InkTheme.CREAM,false,2)
 	var text := "✓ 已完成 · 可继续选择" if panel.interaction_done else str(panel.spec.interaction.get("hint","点击道具"))+" · 可略过"
 	panel.draw_rect(Rect2(8,8,r.size.x-16,26),InkTheme.INK)
 	panel.draw_string(InkTheme.font_body(),Vector2(14,27),text,HORIZONTAL_ALIGNMENT_LEFT,r.size.x-25,13,InkTheme.CREAM)
