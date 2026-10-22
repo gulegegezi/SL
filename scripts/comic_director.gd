@@ -184,6 +184,8 @@ static func _is_quote(t: String) -> bool:
 
 ## 一页 = 一岁 = 一个事件
 static func build(s, ev: Dictionary, run: Dictionary, rng: RandomNumberGenerator, no: int) -> Dictionary:
+	if ev.has("comic"):
+		return preload("res://scripts/short_storyboard.gd").page(s, ev, ink_key(int(s.age)), no)
 	var n := panels_for(s, run, rng)
 	var slots := layout_for(n, rng)
 	var ink := ink_key(int(s.age))
@@ -352,6 +354,10 @@ static func reaction_panel(text: String, delta: int) -> Dictionary:
 
 ## 选择后的「结果页」：这一页专门画「你刚才做了什么」
 static func build_result(s, c: Dictionary, result_text: String, rng: RandomNumberGenerator, no: int) -> Dictionary:
+	if c.has("comic"):
+		var directed := c.duplicate(true)
+		directed["title"] = "▶ " + str(c.get("label", ""))
+		return preload("res://scripts/short_storyboard.gd").page(s, directed, ink_key(int(s.age)), no, true)
 	var eff: Dictionary = c.get("effects", {})
 	var delta := 0
 	for k in eff:

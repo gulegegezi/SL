@@ -27,6 +27,7 @@ const ACTIONS := [
 	["read", ["翻开书", "读书", "看书", "翻书"]],
 	["poweroff", ["关掉电脑", "关闭电脑", "合上电脑"]],
 	["type", ["敲键盘", "打字", "打开电脑", "加班"]],
+	["nod", ["点头", "点了点头"]],
 	["wave", ["挥手", "招手", "挥了挥", "告别"]],
 	["sit", ["坐下", "坐着", "蹲下", "趴在"]],
 	["raise", ["举起", "伸手", "抬起", "接过", "递给", "抓住"]],
@@ -75,7 +76,8 @@ static func analyse(text: String, fallback_actor: String = "lead") -> Dictionary
 	if hypothetical: emotion.value = "normal"; action.value = "idle"
 	var cue := mini(int(emotion.at) if emotion.mentioned else text.length(), int(action.at) if action.mentioned else text.length())
 	if cue >= text.length(): cue = 0
-	var actor := _subject(text, cue, fallback_actor)
+	var subject_at := cue if emotion.mentioned or action.mentioned else mini(text.length(),3)
+	var actor := _subject(text, subject_at, fallback_actor)
 	var intensity := 0 if str(emotion.value) == "normal" else 1
 	for word in STRONG:
 		var at := text.find(word)

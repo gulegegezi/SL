@@ -5,6 +5,8 @@
 
 2026-10-21：按用户要求，后续动画改动保存在本分支。已同步 master 的人生条漫阅读器，新增 `comic_performance.gd`、`comic_panel.gd`、`comic_art.gd` 及相关导演、主题模块和 `assets/comic_expressions`，均属于动画路线；详见 [文本驱动漫画演出](comic-performance.md)。`scenes/PerformanceLab.tscn` 可 F6 独立预览，不影响存档。共享主控与剧情数据仍按下述约定管理。
 
+2026-10-22：本次用户明确要求在动画分支缩短事件线、细化剧情并增加分镜互动，因此本次直接在 `animation` 调整 `main.gd`、控制器、状态与加载器，并新增独立短篇剧本。此授权覆盖下文共享文件的默认只读约定；不要求先合入 master。具体实现、旧档兼容与验证见 [人生短篇](short-life.md)。
+
 ## 只做这些
 
 动画路线负责「玩家看到什么、怎么动、怎么被演出来」：

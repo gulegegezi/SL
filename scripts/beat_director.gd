@@ -73,6 +73,7 @@ static func expression_for(text: String) -> String:
 static func action_for(text: String) -> String:
 	var action := str(Semantic.direction(text).action)
 	if action == "sleep": return "sit"
+	if action == "nod": return "idle"
 	if action == "put_down": return "idle"
 	if action in ["sign", "phone", "read", "type", "poweroff"]: return "raise"
 	return action

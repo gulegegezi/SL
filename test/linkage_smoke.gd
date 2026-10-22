@@ -112,21 +112,21 @@ func run() -> void:
 	fresh.add_relation("同桌", -99)
 	assert(fresh.get_relation("同桌") == -5)
 
-	# UI：不满足 requireRelations 时灰掉并显示 requireHint；羁绊条能显示正负值。
+	# 当前漫画 UI：关系条件通过控制器统一锁定，展示缺失的关系名称。
 	var main = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main)
 	await process_frame
 	var ui_state := State.new()
 	ui_state.relations = {"同桌": 0, "妈妈": 3}
-	var locked: Button = main._choice_btn({
+	main.gc.state = ui_state
+	var locked: Button = main._ink_choice_btn({
 		"label": "问他：你当年为什么走",
 		"requireRelations": {"同桌": 2},
 		"requireHint": "需要和同桌更熟",
 	}, ui_state)
 	assert(locked.disabled, "locked choice should be disabled")
-	assert(locked.text.contains("需要和同桌更熟"))
-	var bar: HBoxContainer = main._render_relations(ui_state)
-	assert(bar.get_child_count() >= 2, "relations bar should show mom + label")
+	assert(locked.text.contains("同桌"))
+	locked.free()
 	main.queue_free()
 	await process_frame
 

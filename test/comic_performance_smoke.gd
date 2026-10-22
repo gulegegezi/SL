@@ -19,6 +19,8 @@ func run() -> void:
 	assert(Plan.direction("妈妈对你挥手。").actor == "parent")
 	assert(Plan.direction("妈妈走进房间，笑了。").actor == "parent")
 	assert(Plan.direction("爸爸突然大哭。").actor == "mate", "father uses the existing older male rather than the mother")
+	assert(Plan.direction("老板点头，说下周来试试。").actor == "boss")
+	assert(Plan.direction("妈妈把水杯放到桌上。").actor == "parent")
 	assert(Plan.direction("你给妈妈打电话。").actor == "lead")
 	assert(Plan.weather_for("你的雨衣挂在走廊。") == "")
 	assert(Plan.weather_for("车停了。") == "")

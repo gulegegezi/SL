@@ -183,7 +183,8 @@ func render_title() -> void:
 		vb.add_child(_btn("%s · %d 岁的书签" % [resume_title, int(saved.state.get("age", 1))], C.cyan, true, resume_saved))
 	var books := ComicArchive.books()
 	if not books.is_empty(): vb.add_child(_btn("完结书架 · %d 本人生" % books.size(), C.dim, false, render_books))
-	vb.add_child(_btn("开 始 人 生", C.green, true, func(): gc.new_game()))
+	vb.add_child(_btn("开始短篇人生 · 约 14–20 次抉择", C.green, true, func(): gc.new_game()))
+	vb.add_child(_btn("原版长篇 · 保留完整随机事件池", C.dim, false, func(): gc.new_game(false)))
 	vb.add_child(_wrap_label("每一生有不同的留白。健康改变篇幅，选择留下性格。\n向下阅读，走过的年份将逐格成画。", C.dim, 12))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
@@ -344,6 +345,18 @@ func _add_blank() -> void:
 func _append_life_page(spec: Dictionary, h: float) -> Control:
 	if not _restoring: _history.append({"spec": spec.duplicate(true), "height": h})
 	var wrap := _comic_page_node(spec, h)
+	var page_view = wrap.get_child(0)
+	if not _restoring:
+		var record: Dictionary = _history[-1]
+		page_view.interaction_changed.connect(func(index, progress):
+			record.spec.panels[index]["interaction_progress"] = progress
+			_autosave())
+	else:
+		page_view.interactions_enabled = not _readonly_archive and not _after_choice and str(spec.get("event_id", "")) == str(current_event.get("id", ""))
+		if page_view.interactions_enabled:
+			page_view.interaction_changed.connect(func(index, progress):
+				spec.panels[index]["interaction_progress"] = progress
+				_autosave())
 	var idx := -1
 	if not _blanks.is_empty():
 		var b = _blanks.pop_front()
@@ -402,6 +415,7 @@ func _render_page(ev: Dictionary) -> void:
 	_append_life_page(spec, 540.0)
 	_set_action(_choice_column(ev))
 	_set_footer("第 %d 话 · 本话 %d 格 · 选一个，往下翻" % [_page_no, spec["panels"].size()])
+	if s.short_mode: _set_footer("关键抉择 · 画中物件可互动，也可直接选择")
 	_autosave()
 
 ## 提笔带过：不画过程，只留一格说明
@@ -444,7 +458,9 @@ func _render_result(ev: Dictionary, c: Dictionary) -> void:
 	var s := gc.state
 	_strip_begin()
 	_refresh_status()
-	var spec := ComicDirector.build_result(s, c, _last_result, gc.rng, _page_no)
+	var result_choice := c.duplicate(true)
+	if ev.has("scene"): result_choice["scene"] = ev.scene
+	var spec := ComicDirector.build_result(s, result_choice, _last_result, gc.rng, _page_no)
 	_append_life_page(spec, 520.0)
 	var btn := _ink_btn_text("▶ 继续", ComicTheme.ACCENT)
 	btn.pressed.connect(_advance_page)
@@ -463,6 +479,9 @@ func _on_comic_choice(c: Dictionary) -> void:
 	if _busy or _after_choice or not gc.choice_visible(c) or not gc.choice_lock_hint(c).is_empty():
 		return
 	_busy = true
+	for page_wrap in _strip_pages.get_children():
+		if page_wrap.get_child_count() > 0 and page_wrap.get_child(0).has_method("reveal_panels"):
+			page_wrap.get_child(0).interactions_enabled = false
 	for button in _action_box.find_children("*", "Button", true, false): button.disabled = true
 	gc.choose(c, current_event)
 	await get_tree().create_timer(0.10).timeout
@@ -643,7 +662,7 @@ func _ink_choice_btn(c: Dictionary, s: GameState) -> Button:
 	return b
 
 func _reader_input(event: InputEvent) -> void:
-	if event is InputEventPanGesture or event is InputEventScreenDrag or (event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]):
+	if event is InputEventPanGesture or event is InputEventScreenDrag or (event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]):
 		if _scroll_tween != null: _scroll_tween.kill()
 
 func _notification(what: int) -> void:

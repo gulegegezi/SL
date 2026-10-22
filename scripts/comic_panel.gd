@@ -5,6 +5,21 @@ extends Control
 const T := preload("res://scripts/comic_theme.gd")
 const Art := preload("res://scripts/comic_art.gd")
 const SemanticPlan := preload("res://scripts/comic_performance.gd")
+const Interaction := preload("res://scripts/comic_interaction.gd")
+signal interacted(progress: Dictionary)
+var interactions_enabled := true:
+	set(value):
+		interactions_enabled = value
+		if not value:
+			interaction_holding = false
+			interaction_dragging = false
+var interaction_done := false
+var interaction_amount := 0.0
+var interaction_dragging := false
+var interaction_holding := false
+var interaction_offset := Vector2.ZERO
+var _drag_start := Vector2.ZERO
+var _interaction_clock := 1.0
 
 var spec: Dictionary = {}
 var ink: Texture2D = null
@@ -37,6 +52,9 @@ func setup(p: Dictionary, ink_tex: Texture2D) -> void:
 	set_process(false)
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	interaction_done = bool(spec.get("interaction_progress",{}).get("completed",false))
+	interaction_amount = 1.0 if interaction_done else 0.0
+	if spec.has("interaction"): mouse_filter = Control.MOUSE_FILTER_PASS
 	queue_redraw()
 
 
@@ -78,6 +96,10 @@ func _activate(index: int, animated: bool = true) -> void:
 
 func _process(delta: float) -> void:
 	if not revealed: return
+	_interaction_clock += delta
+	if interaction_holding and interactions_enabled and not interaction_done:
+		interaction_amount = minf(1, interaction_amount + delta/0.8)
+		if interaction_amount >= 1: complete_interaction()
 	_age += delta
 	_moment_age += delta
 	_impact_left = maxf(0, _impact_left - delta)
@@ -94,9 +116,44 @@ func _process(delta: float) -> void:
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
 			_next_token += 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", "\n"] else 0.025)
-	if visible_characters >= _full_text.length() and _moment_age >= 1.0 and _impact_left <= 0:
+	if visible_characters >= _full_text.length() and _moment_age >= 1.0 and _impact_left <= 0 and not interaction_holding and _interaction_clock >= 0.9:
 		set_process(false)
 	queue_redraw()
+
+func complete_interaction() -> void:
+	if interaction_done or not interactions_enabled: return
+	interaction_done = true
+	interaction_amount = 1
+	_interaction_clock = 0
+	interaction_dragging = false
+	interaction_holding = false
+	spec["interaction_progress"] = {"completed":true}
+	interacted.emit(spec.interaction_progress.duplicate(true))
+	set_process(true)
+	queue_redraw()
+
+func _gui_input(event: InputEvent) -> void:
+	if not interactions_enabled or interaction_done or not revealed or not spec.has("interaction"): return
+	var kind := str(spec.interaction.get("kind","tap"))
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed and Interaction.object_rect(size).grow(14).has_point(event.position):
+			finish_reveal()
+			if kind in ["tap","reveal"]: complete_interaction()
+			elif kind == "drag": interaction_dragging = true; _drag_start = event.position
+			elif kind == "hold": interaction_holding = true; interaction_amount = 0; set_process(true)
+			accept_event()
+		elif not event.pressed:
+			if interaction_dragging:
+				if Interaction.target_rect(size).grow(12).has_point(event.position): complete_interaction()
+				else: interaction_offset = Vector2.ZERO; interaction_amount = 0
+			interaction_dragging = false
+			interaction_holding = false
+			queue_redraw()
+	elif event is InputEventMouseMotion and interaction_dragging:
+		interaction_offset = event.position - _drag_start
+		interaction_amount = clampf(interaction_offset.x / maxf(1,size.x*0.28),0,1)
+		queue_redraw()
+		accept_event()
 
 func finish_reveal() -> void:
 	visible_characters = _full_text.length()
@@ -125,10 +182,13 @@ func _draw() -> void:
 				var height := r.size.y * 0.73
 				var dimensions := supporting.get_size() * (height / supporting.get_height())
 				draw_texture_rect(supporting, Rect2(Vector2(r.size.x * 0.75 - dimensions.x * 0.5, r.end.y - dimensions.y), dimensions), false, Color(0.5, 0.8, 0.8))
-		_draw_ink(r, dark)
-		_draw_prop(r)
-		_draw_gesture(r)
-		_draw_impact(r)
+		if bool(spec.get("stage_action",false)):
+			Interaction.draw_scene(self,r)
+		else:
+			_draw_ink(r, dark)
+			_draw_prop(r)
+			_draw_gesture(r)
+			_draw_impact(r)
 
 	# 墨框（黑板格用纸色描边，否则黑框看不见）
 	var frame_col: Color = T.CREAM if dark else T.INK
@@ -203,6 +263,7 @@ func _draw_ink(r: Rect2, dark: bool) -> void:
 		if action == "walk":
 			dest.position.x += progress * r.size.x * 0.8 if bool(current_direction.get("exit", false)) else (progress - 1) * r.size.x * 0.55
 		elif action == "sit": dest.position.y += progress * 24
+		elif action == "nod": dest.position.y += sin(minf(_moment_age,1)*PI)*5
 		elif action in ["wave", "raise", "phone", "sign", "type"]:
 			dest.position.y -= sin(minf(_moment_age, 1) * PI) * 5
 		if _impact_left > 0: dest.position.x += sin(_age * 65) * 2 * (_impact_left / 0.5)
@@ -255,6 +316,8 @@ func _draw_prop(r: Rect2) -> void:
 		draw_set_transform(Vector2(r.size.x * 0.5, r.size.y * 0.43) - dimensions * zoom * 0.5, 0, Vector2.ONE * zoom)
 		at = Vector2.ZERO
 	match prop:
+		"toy", "eraser", "pencil", "drum", "clock", "medicine", "letter", "meal":
+			preload("res://scripts/comic_objects.gd").draw_on(self,prop,Rect2(at,Vector2(100,90)),minf(1,_moment_age))
 		"contract":
 			draw_rect(Rect2(at,Vector2(100,70)),T.CREAM)
 			for row in range(3): draw_line(at+Vector2(9,12+row*12),at+Vector2(86,12+row*12),T.INK_SOFT,1)
@@ -313,6 +376,10 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 	var cap := str(spec.get("caption", ""))
 	var bub := str(spec.get("bubble", ""))
 	var shown_cap := cap.substr(0, visible_characters)
+	if interaction_done and spec.has("interaction"):
+		var discovery := str(spec.interaction.get("reveal",""))
+		cap += "\n" + discovery
+		shown_cap += "\n" + discovery
 	var shown_bub := bub.substr(0, maxi(0, visible_characters - cap.length() - 1))
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))

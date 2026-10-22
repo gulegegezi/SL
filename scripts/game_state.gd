@@ -5,6 +5,9 @@ extends RefCounted
 
 # ---- 属性 ----
 var story_world: Dictionary = {}  # 单局持续存在的像素小镇与人生足迹
+var short_mode := false  # 旧档缺省保留原流程；新开局由控制器开启短篇。
+var short_previous_age := 0
+var short_target_age := -1
 
 var province: String = ""
 var region: String = ""

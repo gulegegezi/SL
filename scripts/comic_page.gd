@@ -1,6 +1,11 @@
 ## comic_page.gd — 一页漫画
 ## 页眉（第 N 话 / 年龄 / 全话数） + 不规则分格 + 页脚（格数统计）
 extends Control
+signal interaction_changed(index: int, progress: Dictionary)
+var interactions_enabled := true:
+	set(value):
+		interactions_enabled = value
+		for panel in panels: panel.interactions_enabled = value
 
 const T := preload("res://scripts/comic_theme.gd")
 const PanelScript := preload("res://scripts/comic_panel.gd")
@@ -67,6 +72,7 @@ func _webtoon_slots() -> Array:
 	for item in data:
 		var shot := str(item.get("shot", "medium"))
 		var base: float = {"wide": 275.0, "medium": 250.0, "close": 280.0, "extreme": 300.0, "detail": 150.0}.get(shot, 250.0)
+		if item.has("interaction"): base = 380.0
 		var text_length := str(item.get("caption", "")).length() + str(item.get("bubble", "")).length()
 		var columns := maxf(14, (maxf(size.x, 280) - 56) / 15)
 		var extra := maxf(0, ceilf(text_length / columns) - 2) * 21
@@ -109,9 +115,15 @@ func _build_panels() -> void:
 		p.pivot_offset = r.size * 0.5
 		var key := str(d.get("ink", ""))
 		p.setup(d, ink_tex(key, int(d.get("frame", 0))))
+		p.interactions_enabled = interactions_enabled
+		p.interacted.connect(_panel_interacted.bind(i))
 		if blank or _revealing: p.set_revealed(false)
 		add_child(p)
 		panels.append(p)
+
+func _panel_interacted(progress: Dictionary, index: int) -> void:
+	spec.panels[index]["interaction_progress"] = progress.duplicate(true)
+	interaction_changed.emit(index, progress)
 
 
 ## 逐格把画面「画上去」：新的一页先全是空白框，再一格一格填。
