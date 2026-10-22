@@ -2,12 +2,13 @@ extends SceneTree
 const Pace := preload("res://scripts/short_life.gd")
 const Interaction := preload("res://scripts/comic_interaction.gd")
 var main
+var capture_directory := "res://docs/world-scenes/" if "--world" in OS.get_cmdline_user_args() else "res://docs/acting/"
 func _initialize() -> void:
 	call_deferred("run")
 func shot(name: String) -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
-	assert(root.get_texture().get_image().save_png("res://docs/acting/"+name+".png") == OK)
+	assert(root.get_texture().get_image().save_png(capture_directory+name+".png") == OK)
 func run() -> void:
 	preload("res://scripts/save_manager.gd").writes_enabled = false
 	root.content_scale_size = Vector2i(520,900)

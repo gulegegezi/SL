@@ -1,5 +1,7 @@
 # 动画路线（animation）
 
+2026-10-22 场景演出扩展：主分镜改为全身像素人物、多人同场、道具与环境反馈，保留逐句导演、可选互动与旧档。`scenes/WorldLab.tscn` 提供六组连续场景预览，见 [像素剧情场景](comic-world-scenes.md)。
+
 > 分支：`animation`。集成分支：`master`。剧情路线：`story`。
 > 总览：[docs/two-routes.md](two-routes.md)。
 

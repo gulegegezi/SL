@@ -9,6 +9,16 @@ static func draw_on(canvas: CanvasItem, kind: String, r: Rect2, progress: float 
 	var o := r.position
 	var s := r.size
 	match kind:
+		"computer":
+			canvas.draw_rect(Rect2(o,s*Vector2(1,0.72)),T.INK)
+			canvas.draw_rect(Rect2(o+s*Vector2(0.08,0.08),s*Vector2(0.84,0.54)),Color("29637a"))
+			for i in range(3): canvas.draw_rect(Rect2(o+s*Vector2(0.14,0.17+i*0.12),s*Vector2(0.58*progress,0.04)),Color("8ed2cb"))
+			canvas.draw_rect(Rect2(o+s*Vector2(0.45,0.72),s*Vector2(0.10,0.16)),T.INK)
+			canvas.draw_rect(Rect2(o+s*Vector2(-0.08,0.90),s*Vector2(1.16,0.10)),T.PAPER_DIM)
+		"bed":
+			canvas.draw_rect(Rect2(o,s),Color("426d7e"))
+			canvas.draw_rect(Rect2(o+s*0.08,s*Vector2(0.28,0.84)),T.CREAM)
+			canvas.draw_rect(Rect2(o+s*Vector2(0.40,0.08),s*Vector2(0.56,0.84)),Color("699c9e"))
 		"toy":
 			canvas.draw_circle(o+s*Vector2(0.3,0.25),s.x*0.14,T.CREAM)
 			canvas.draw_circle(o+s*Vector2(0.7,0.25),s.x*0.14,T.CREAM)

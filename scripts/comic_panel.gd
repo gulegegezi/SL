@@ -8,6 +8,7 @@ const SemanticPlan := preload("res://scripts/comic_performance.gd")
 const Interaction := preload("res://scripts/comic_interaction.gd")
 const Motion := preload("res://scripts/comic_motion.gd")
 const Actor := preload("res://scripts/comic_actor.gd")
+const World := preload("res://scripts/comic_world.gd")
 signal interacted(progress: Dictionary)
 var interactions_enabled := true:
 	set(value):
@@ -44,6 +45,10 @@ var _full_text := ""
 var _base_ink := ""
 var _weather := ""
 
+func _ready() -> void:
+	# Godot enables an overridden _process when entering the tree. Respect the
+	# settled state prepared by setup() before add_child(), especially in archives.
+	set_process(revealed and (visible_characters < _full_text.length() or _interaction_clock < Motion.DURATION))
 
 func setup(p: Dictionary, ink_tex: Texture2D) -> void:
 	_moment_index = -1
@@ -225,14 +230,17 @@ func _draw() -> void:
 			region = Rect2(region.position+(region.size-cropped)*0.5,cropped)
 			draw_texture_rect_region(background,r,region,Color(0.25,0.8,0.85,0.42))
 		_draw_weather(r)
-		if str(spec.get("shot", "")) == "wide":
+		if not World.enabled(spec) and str(spec.get("shot", "")) == "wide":
 			var supporting_key := str(spec.get("support", "")) if str(current_direction.get("actor", "lead")) == "lead" else _base_ink
 			var supporting := Art.portrait(supporting_key, 0)
 			if supporting != null:
 				var height := r.size.y * 0.73
 				var dimensions := supporting.get_size() * (height / supporting.get_height())
 				draw_texture_rect(supporting, Rect2(Vector2(r.size.x * 0.75 - dimensions.x * 0.5, r.end.y - dimensions.y), dimensions), false, Color(0.5, 0.8, 0.8))
-		if bool(spec.get("stage_action",false)):
+		if World.enabled(spec):
+			World.draw_scene(self,r)
+			_draw_weather(r)
+		elif bool(spec.get("stage_action",false)):
 			Interaction.draw_scene(self,r)
 		else:
 			_draw_ink(r, dark)
