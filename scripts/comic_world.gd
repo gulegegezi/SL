@@ -5,6 +5,7 @@ const Objects := preload("res://scripts/comic_objects.gd")
 const InkTheme := preload("res://scripts/comic_theme.gd")
 const Interaction := preload("res://scripts/comic_interaction.gd")
 const Motion := preload("res://scripts/comic_motion.gd")
+const Gesture := preload("res://scripts/comic_gesture.gd")
 static var textures: Dictionary = {}
 
 static func pixel_texture(texture: Texture2D, height: int) -> Texture2D:
@@ -35,6 +36,7 @@ static func plan(spec: Dictionary) -> Dictionary:
 	for row in [["performance", ["鼓", "舞台", "演出"]], ["work", ["加班", "电脑", "键盘", "老板"]], ["study", ["书", "试卷", "考试", "作业"]], ["care", ["病", "医生", "药", "体检"]], ["meal", ["吃", "饭", "面", "厨房"]], ["farewell", ["告别", "离开", "走出", "车站"]], ["gift", ["递", "接过", "抓", "玩具"]]]:
 		for word in row[1]:
 			if text.contains(word): mode = row[0]; break
+		if mode != "conversation": break
 	var support := str(spec.get("support", ""))
 	var explicit_support := not support.is_empty()
 	if support.is_empty():
@@ -67,29 +69,33 @@ static func pose(action: String, time: float, settled: bool) -> Dictionary:
 
 static func actor(c: CanvasItem, key: String, foot: Vector2, action: String, time: float, expression: String, flip: bool, settled: bool, scale: float = 2, canvas_scale: float = 1) -> Rect2:
 	var p := pose(action,time,settled)
-	var detailed := Art.walk_frame(key,int(p.frame) if action == "walk" and p.moving else 1)
+	var gesture := Gesture.sample(action,time,settled)
+	if int(gesture.frame) == 3 and expression in ["angry","rage","sad","cry","hurt","panic","scared"]: gesture.frame = 2
+	var detailed := Art.walk_frame(key,int(p.frame)) if action == "walk" and p.moving else null
+	if detailed == null: detailed = Art.ensemble_frame(key,int(gesture.frame))
 	var tex: Texture2D
 	if key == "infant_infant":
 		var infant := Art.portrait(key,0,expression)
 		tex = pixel_texture(infant,40) if infant != null else null
 	elif detailed != null: tex = pixel_texture(detailed,64)
 	else:
-		# Use authored full-body frames. Extending a bust with rectangles caused
-		# detached heads, square torsos and mismatched legs at different scales.
 		var full_body := sprite(key,p.clip,p.frame,expression)
 		tex = pixel_texture(full_body,64) if full_body != null else null
 	if tex == null: return Rect2()
 	var zoom := scale/2.0
+	zoom *= float({"lead_child":0.74,"lead_teen":0.90,"infant_infant":0.56}.get(key,1.0))
 	var dimensions := (tex.get_size()*zoom).round()
-	if action == "sit" and detailed != null: dimensions.y *= 1.0-0.12*float(p.progress)
-	var rect := Rect2((foot-Vector2(dimensions.x/2,dimensions.y)).round(),dimensions)
+	var offset: Vector2 = Vector2(gesture.offset)*zoom
+	if flip: offset.x = -offset.x
+	var anchor := (foot+offset).round()
+	var local := Rect2(Vector2(-dimensions.x/2,-dimensions.y),dimensions)
+	var rect := Rect2(anchor+local.position,dimensions)
 	c.draw_rect(Rect2(Vector2(foot.x-dimensions.x*0.32,foot.y-2).round(),Vector2(dimensions.x*0.64,3)),Color("101e2b99"))
-	if flip:
-		# Draw transform is local to CanvasItem drawing, independent of node transform.
-		c.draw_set_transform(Vector2(foot.x*canvas_scale,0),0,Vector2(-canvas_scale,canvas_scale))
-		c.draw_texture_rect(tex,Rect2(Vector2(-dimensions.x/2,rect.position.y),dimensions),false)
-		c.draw_set_transform(Vector2.ZERO,0,Vector2.ONE*canvas_scale)
-	else: c.draw_texture_rect(tex,rect,false)
+	var angle := -float(gesture.angle) if flip else float(gesture.angle)
+	var stretch: Vector2 = gesture.scale
+	c.draw_set_transform(anchor*canvas_scale,angle,stretch*Vector2(-1 if flip else 1,1)*canvas_scale)
+	c.draw_texture_rect(tex,local,false)
+	c.draw_set_transform(Vector2.ZERO,0,Vector2.ONE*canvas_scale)
 	return rect
 
 static func caption_height(spec: Dictionary, size: Vector2, completed: bool) -> float:
@@ -125,8 +131,8 @@ static func interaction_rect(panel: Control, target: bool = false) -> Rect2:
 	return rect
 
 static func settled_object_rect(panel: Control, body: Rect2, prop: String) -> Rect2:
-	var destination := Rect2(body.position+body.size*Vector2(0.75,0.54),Vector2(28,32))
-	if prop == "phone": destination = Rect2(body.position+body.size*Vector2(0.82,0.60),Vector2(12,21))
+	var destination := Rect2(body.position+body.size*Vector2(0.80,0.42),Vector2(28,32))
+	if prop == "phone": destination = Rect2(body.position+body.size*Vector2(0.66,0.40),Vector2(12,21))
 	if prop == "drum": destination = Rect2(body.position+body.size*Vector2(0.68,0.70),Vector2(64,51))
 	var area: Rect2 = composition(panel.spec,panel.size,panel.interaction_done).area
 	destination.size = destination.size.min(area.size)
@@ -163,12 +169,9 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 	if action == "walk":
 		lead_x = lerpf(s.x*0.12,s.x*0.51,travel)
 		if bool(direction.get("exit",false)): lead_x = lerpf(s.x*0.40,s.x*1.12,travel)
-	var support_action := "idle"
-	if config.mode == "gift": support_action = "raise"
-	if config.mode == "farewell": support_action = "wave"
-	if config.mode == "performance": support_action = "wave" if time > 0.8 else "idle"
-	if config.mode == "care": support_x -= travel*s.x*0.12; support_action = "raise"
-	if config.mode == "work": support_x -= travel*s.x*0.10
+	var reaction := Gesture.response(config.mode,action,time)
+	var support_action := str(reaction.action)
+	var support_time := float(reaction.time)
 	if speaking != "lead": support_action = directed_action
 	var support_expr := str(direction.get("expr","normal")) if speaking != "lead" else "normal"
 	var actor_scale := float(layout.height)/64
@@ -176,13 +179,18 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 		panel.draw_rect(Rect2(s.x*0.64,13,s.x*0.32,floor_y-10),Color("153244"))
 		panel.draw_line(Vector2(s.x*0.64,13),Vector2(s.x*0.60,floor_y),Color("70b4b6"),2)
 		panel.draw_string(InkTheme.font_body(),Vector2(s.x*0.68,25),"电话另一端",HORIZONTAL_ALIGNMENT_LEFT,-1,8,InkTheme.CREAM)
-	actor(panel,config.support,Vector2(support_x,floor_y-4),support_action,time+0.35,support_expr,true,settled,actor_scale,pixel)
+	actor(panel,config.support,Vector2(support_x,floor_y-4),support_action,time if speaking != "lead" else support_time,support_expr,true,settled,actor_scale,pixel)
 	# Classmates / audience give public scenes a visible social context.
 	if config.scene == "classroom" or config.mode == "performance":
 		actor(panel,"npc_friend",Vector2(s.x*0.14,floor_y-10),"sit",time,"normal",false,settled,actor_scale*0.62,pixel)
-		actor(panel,"npc_mate",Vector2(s.x*0.90,floor_y-10),"wave" if config.mode == "performance" else "sit",time+0.2,"normal",true,settled,actor_scale*0.62,pixel)
+		actor(panel,"npc_partner" if config.scene == "classroom" else "npc_mate",Vector2(s.x*0.90,floor_y-10),"wave" if config.mode == "performance" else "sit",time+0.2,"normal",true,settled,actor_scale*0.62,pixel)
 	var body := actor(panel,str(panel.spec.ink),Vector2(lead_x,floor_y),action,time,str(direction.get("expr","normal")),false,settled,actor_scale,pixel)
 	panel._actor_render = {"rect":Rect2(body.position*pixel,body.size*pixel),"baked":true,"world":true}
+	# Contact marks and a brief trailing stroke support the action instead of
+	# running an unrelated full-screen effect over the dialogue.
+	if not settled and action in Gesture.ACTIVE and time >= 0.62 and time < 0.90:
+		var contact_at := body.position+body.size*Vector2(0.92,0.42)
+		for i in range(3): panel.draw_line(contact_at+Vector2(3+i*3,-4),contact_at+Vector2(6+i*4,-9),Color("dbbf98"),1)
 	var object := str(config.prop)
 	if not interactive and not str(direction.get("prop","")).is_empty(): object = str(direction.prop)
 	var contact := smoothstep(0.2,1.2,time) if not settled else 1.0
@@ -194,8 +202,9 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 	if not object.is_empty() and not interactive:
 		var at := Vector2(lead_x+8,floor_y-23)
 		if object in ["computer","drum"]: at.x = s.x*0.45
-		if object == "phone": at = body.position+body.size*Vector2(0.80,0.60)
-		elif config.mode == "gift": at.x = lerpf(support_x-15,lead_x+8,contact)
+		if object == "phone": at = body.position+body.size*Vector2(0.66,0.40)
+		elif config.mode == "gift": at = Vector2(lerpf(support_x-15,body.position.x+body.size.x*0.80,contact),body.position.y+body.size.y*0.42)
+		elif object in ["book","letter","contract","toy","pencil"]: at = body.position+body.size*Vector2(0.80,0.42)
 		var object_size := Vector2(19,19)
 		if object == "phone": object_size = Vector2(8,13)
 		if object == "computer": object_size = Vector2(30,24); at.y -= 13

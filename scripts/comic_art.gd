@@ -5,6 +5,21 @@ static var _cache: Dictionary = {}
 static var _expressions: Dictionary = {}
 static var _actions: Dictionary = {}
 static var _walking: Dictionary = {}
+static var _ensemble: Dictionary = {}
+
+static func ensemble_frame(key: String, index: int = 0) -> Texture2D:
+	if _ensemble.is_empty(): _ensemble = JSON.parse_string(FileAccess.get_file_as_string("res://assets/comic_ensemble/regions.json"))
+	if not _ensemble.has(key): return null
+	var id := "%s:ensemble:%d" % [key,clampi(index,0,3)]
+	if _cache.has(id): return _cache[id]
+	var entry: Dictionary = _ensemble[key]
+	var values: Array = entry.frames[clampi(index,0,3)]
+	var texture := AtlasTexture.new()
+	texture.atlas = load("res://assets/comic_ensemble/"+str(entry.file))
+	texture.region = Rect2(values[0],values[1],values[2],values[3])
+	texture.filter_clip = true
+	_cache[id] = texture
+	return texture
 
 static func walk_frame(key: String, index: int = 1) -> Texture2D:
 	if _walking.is_empty(): _walking = JSON.parse_string(FileAccess.get_file_as_string("res://assets/comic_actions/walk-regions.json"))

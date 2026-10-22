@@ -1,5 +1,7 @@
 # 动画路线（animation）
 
+2026-10-22 角色画风与演出统一：主角和 NPC 改用 48 个风格匹配的全身关键姿势，新增双方动作时序、重心过渡与回应，见 [统一人物演出](comic-ensemble.md)。`scenes/EnsembleLab.tscn` 可 F6 对比所有角色。
+
 2026-10-22 场景演出扩展：主分镜改为全身像素人物、多人同场、道具与环境反馈，保留逐句导演、可选互动与旧档。`scenes/WorldLab.tscn` 提供六组连续场景预览，见 [像素剧情场景](comic-world-scenes.md)。
 
 > 分支：`animation`。集成分支：`master`。剧情路线：`story`。
