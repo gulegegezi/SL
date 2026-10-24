@@ -183,6 +183,9 @@ func render_title() -> void:
 		vb.add_child(_btn("%s · %d 岁的书签" % [resume_title, int(saved.state.get("age", 1))], C.cyan, true, resume_saved))
 	var books := ComicArchive.books()
 	if not books.is_empty(): vb.add_child(_btn("完结书架 · %d 本人生" % books.size(), C.dim, false, render_books))
+	vb.add_child(_btn("折痕与歪楼 · 新剧情漫画人生", C.green, true, func(): _open_life_comic(false)))
+	if FileAccess.file_exists("user://life_comic_v1.save"):
+		vb.add_child(_btn("继续新剧情 · 上次的漫画书签", C.cyan, true, func(): _open_life_comic(true)))
 	vb.add_child(_btn("开始短篇人生 · 约 14–20 次抉择", C.green, true, func(): gc.new_game()))
 	vb.add_child(_btn("原版长篇 · 保留完整随机事件池", C.dim, false, func(): gc.new_game(false)))
 	vb.add_child(_wrap_label("每一生有不同的留白。健康改变篇幅，选择留下性格。\n向下阅读，走过的年份将逐格成画。", C.dim, 12))
@@ -194,6 +197,10 @@ func render_title() -> void:
 	row.add_child(_btn("成就 %d/%d" % [ach_n, DataLoader.achievements().size()], C.dim, false, render_ach))
 	vb.add_child(row)
 	screen.add_child(card)
+
+func _open_life_comic(resume_book: bool) -> void:
+	get_tree().set_meta("life_comic_resume",resume_book)
+	get_tree().change_scene_to_file("res://scenes/LifeComic.tscn")
 
 func _on_game_started(s: GameState) -> void:
 	_comic = ComicDirector.new_run(gc.rng)

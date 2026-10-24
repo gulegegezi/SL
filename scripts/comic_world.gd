@@ -179,9 +179,10 @@ static func draw_scene(panel: Control, r: Rect2) -> void:
 		panel.draw_rect(Rect2(s.x*0.64,13,s.x*0.32,floor_y-10),Color("153244"))
 		panel.draw_line(Vector2(s.x*0.64,13),Vector2(s.x*0.60,floor_y),Color("70b4b6"),2)
 		panel.draw_string(InkTheme.font_body(),Vector2(s.x*0.68,25),"电话另一端",HORIZONTAL_ALIGNMENT_LEFT,-1,8,InkTheme.CREAM)
-	actor(panel,config.support,Vector2(support_x,floor_y-4),support_action,time if speaking != "lead" else support_time,support_expr,true,settled,actor_scale,pixel)
+	if not bool(panel.spec.get("world_solo",false)):
+		actor(panel,config.support,Vector2(support_x,floor_y-4),support_action,time if speaking != "lead" else support_time,support_expr,true,settled,actor_scale,pixel)
 	# Classmates / audience give public scenes a visible social context.
-	if config.scene == "classroom" or config.mode == "performance":
+	if not bool(panel.spec.get("world_solo",false)) and (config.scene == "classroom" or config.mode == "performance"):
 		actor(panel,"npc_friend",Vector2(s.x*0.14,floor_y-10),"sit",time,"normal",false,settled,actor_scale*0.62,pixel)
 		actor(panel,"npc_partner" if config.scene == "classroom" else "npc_mate",Vector2(s.x*0.90,floor_y-10),"wave" if config.mode == "performance" else "sit",time+0.2,"normal",true,settled,actor_scale*0.62,pixel)
 	var body := actor(panel,str(panel.spec.ink),Vector2(lead_x,floor_y),action,time,str(direction.get("expr","normal")),false,settled,actor_scale,pixel)
