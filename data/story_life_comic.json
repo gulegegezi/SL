@@ -2,7 +2,7 @@
   "title": "人生条漫·折痕与歪楼",
   "rules": {
     "schema_version": 1,
-    "runtime_integration": "Godot native life_comic_run.gd + life_comic_reader.gd; scenes/LifeComic.tscn",
+    "runtime_integration": "authored_source_pack_not_loaded_by_current_main",
     "source_revision": "origin/story@590b375; story-bible/opening/links/cutscenes; animation short-life and comic reader consulted without merging",
     "attributes": {
       "physical": [
@@ -804,7 +804,13 @@
         "lead": "lead",
         "parent": "parent",
         "mate": "mate"
-      }
+      },
+      "narrator_asides": [
+        "玩家桑，此时按任何键都没有用，主角只认奶瓶，这是本作最强机制怪。",
+        "旁白不介入谈判，旁白只负责递奶瓶。奶蛙自告奋勇来帮忙，被自己的短手劝退了。",
+        "导演组安排了出生感言，主演用哭声毙掉剧本。行，哭声也是配音，情感分拉满。",
+        "宇宙の齿轮从此刻开始转动。别问，问就是命运の安排。"
+      ]
     },
     {
       "id": "LC02",
@@ -1369,7 +1375,13 @@
         "lead": "lead",
         "parent": "parent",
         "mate": "mate"
-      }
+      },
+      "narrator_asides": [
+        "拍照之前，先请勺子入镜，道具组加鸡腿。",
+        "全家福进度条卡在一柄餐具上，导演（妈妈）血压轻微上升。",
+        "摄影棚（客厅）就位，主演自带道具上台。奶蛙在镜头边缘探头，被后期P掉，但它确实在场。",
+        "多年后，修复软件会把勺子识别为家庭成员。它没有识别错，它甚至有户口。"
+      ]
     },
     {
       "id": "LC03",
@@ -1935,7 +1947,13 @@
         "lead": "lead",
         "parent": "parent",
         "mate": "mate"
-      }
+      },
+      "narrator_asides": [
+        "灯灭了，饭还热着，先干饭，别慌。",
+        "手电放在很显眼的地方——在爸爸的回忆里。这波属于是脑内检索失败。",
+        "本剧场临时改沉浸式话剧《找手电》，电力部门退退退。",
+        "太阳今晚调休，你们家的小型恒星由一堵墙和一只手客串，零经费，神演出。"
+      ]
     },
     {
       "id": "LC04",
@@ -2503,7 +2521,13 @@
         "lead": "lead",
         "friend": "friend",
         "teacher": "teacher"
-      }
+      },
+      "narrator_asides": [
+        "半块饼干，两个当事人，本法庭只开饭，不开庭。",
+        "口水请咽回去，法庭内禁止加餐，法官（老师）看着呢。",
+        "幼儿园最高法庭开庭，陪审团是两只咕咕叫的胃。",
+        "宇宙视角：所有战争都是分饼干。这一局，你们提前解锁了和平成就。"
+      ]
     },
     {
       "id": "LC05",
@@ -3052,7 +3076,13 @@
       "cast_bindings": {
         "lead": "lead",
         "parent": "parent"
-      }
+      },
+      "narrator_asides": [
+        "牙掉了，先收好，这是限定掉落物。",
+        "一位老员工离岗，单位（你的嘴）照常运转，这就是编制的含金量。",
+        "掉牙仪式由你亲自主持，接任者数月后到岗，期间发言自带风洞音效。",
+        "这颗牙曾咬过第一口世界，如今光荣退役，图鉴编号：童年·001。"
+      ]
     },
     {
       "id": "LC06",
@@ -3607,7 +3637,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "半块橡皮递过来了，零手续费，概率全公示，比抽卡池透明。",
+        "双方各持百分之五十，财务透明，建议全行业学习。",
+        "两座小岛之间，一座铅笔芯造的桥咔哒一声合拢了，DNA动了。",
+        "联合国总部此刻毫无动静，课桌上刚刚签署了一份更可靠的条约。"
+      ]
     },
     {
       "id": "LC07",
@@ -4176,7 +4212,13 @@
         "lead": "lead",
         "friend": "friend",
         "teacher": "teacher"
-      }
+      },
+      "narrator_asides": [
+        "先对账，再说话，证据没就位之前，全员闭嘴。",
+        "两块五引发的舆论风暴，精彩程度超过某些番的商战戏份。",
+        "侦探片开拍，嫌疑人是全班，证据在账本里，制作组没给我剧本。",
+        "这个下午，全班学会了比算术更重要的东西：别乱给人扣帽子。"
+      ]
     },
     {
       "id": "LC08",
@@ -4751,7 +4793,13 @@
         "lead": "lead",
         "parent": "parent",
         "teacher": "teacher"
-      }
+      },
+      "narrator_asides": [
+        "卷子先放书包，饭先上桌，先后手很关键。",
+        "分数已尘埃落定，米饭还热着——热饭党大胜利。",
+        "两个房间抢你：复盘还是开饭。别拉扯，先回城补给，饭堂集合。",
+        "银河系照常旋转，这张卷子不会。先去干饭，饭门。"
+      ]
     },
     {
       "id": "LC09",
@@ -5321,7 +5369,13 @@
         "lead": "lead",
         "friend": "friend",
         "teacher": "teacher"
-      }
+      },
+      "narrator_asides": [
+        "台上的人准备好了，台下的人假装看节目单。",
+        "门票零元，音响一般，但主唱和观众都是同一个班，圈地自萌的快乐。",
+        "灯光师（班主任）只会打全体光，C位不C位的，随缘。",
+        "事故也算节目单的话，今晚名场面管够。导播记得切回放。"
+      ]
     },
     {
       "id": "LC10",
@@ -5876,7 +5930,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "这一页写真的。系统提示：批量生成成功人士，查重率过高。",
+        "“前程似锦”写的人太多，建议改记欠下的那顿饭，二十年后凭页讨债。",
+        "编剧（你）将为每位同学撰写非模板台词，屑制作组只提供纸笔。",
+        "时间档案馆提示：此行字迹与谎言，二十年后均列为重要文物，概不退换。"
+      ]
     },
     {
       "id": "LC11",
@@ -6454,7 +6514,13 @@
         "lead": "lead",
         "parent": "parent",
         "mate": "mate"
-      }
+      },
+      "narrator_asides": [
+        "行李收好了，还能再说两句，台词不限时。",
+        "箱子重二十公斤，牵挂没有秤，超重了也没事。",
+        "月台戏开演，台词不多，够用二十年，记得存档。",
+        "你带着五公斤鸡蛋出发，相当于携带一枚小型故乡，安全抵达即可。"
+      ]
     },
     {
       "id": "LC12",
@@ -7025,7 +7091,13 @@
         "lead": "lead",
         "boss": "boss",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "工位上有一盆快蔫的植物，新手礼包隐藏款，无十连抽但保底出绿。",
+        "前任留的字条写着“对不起”，植物の遗言令人心碎。",
+        "公司欢迎仪式：一盆待抢救的绿植。企业文化，很绿，绿得发慌。",
+        "请按时浇水，就当给未来的自己续命，一日一功德。"
+      ]
     },
     {
       "id": "LC13",
@@ -7578,7 +7650,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "冰箱里的白菜得谈谈归属。这波合租开局逆风，先稳住，别浪。",
+        "酸奶已阵亡，史称合租第一次战役，双方损失惨重（主要是你）。",
+        "楚河汉界划定，有效期到有人买新白菜为止，边境总体可控。",
+        "冰箱一百八十升，一半装食物，一半装误解，比例刚刚好。"
+      ]
     },
     {
       "id": "LC14",
@@ -8135,7 +8213,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "先想自己能承担多少，余额即底线，刷爆了没有客服。",
+        "借钱不是友情测试卷，是道应用题，先算自己的水位。",
+        "救生圈只有两只，递一只出去之前，确认自己还踩着地。",
+        "宇宙账本记一笔：信任，利息是诚实，不催收，但永久记账。"
+      ]
     },
     {
       "id": "LC15",
@@ -8693,7 +8777,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "电话通了，先听听他说什么，别急着挂，话费不背锅。",
+        "来电无备注，心跳自动补完姓名，这就是老同学的含金量。",
+        "本次会面无KPI，不卡池不保底，纯情怀DLC，老板娘石柱级存在。",
+        "这个号码在“许久未联系”里沉睡多年，今天自带BGM醒了。"
+      ]
     },
     {
       "id": "LC16",
@@ -9251,7 +9341,13 @@
       "cast_bindings": {
         "lead": "lead",
         "partner": "partner"
-      }
+      },
+      "narrator_asides": [
+        "心意和账单都摆上桌了，先面对哪个，自选，不记时。",
+        "本幕实测：爱情能不能当电用？先缴费后浪漫，顺序反了GG。",
+        "烛光由电费单赞助，浪漫与现实双轨并行，缺一即脱轨。",
+        "我不反对玫瑰，但建议先缴费再浪漫。顺序反了，玫瑰也会蔫。"
+      ]
     },
     {
       "id": "LC17",
@@ -9807,7 +9903,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "面要趁热，决定可以慢点，筷子先拿起来。",
+        "两份离职申请和一碗面同时上桌，今晚的餐桌比会议室诚实一百倍。",
+        "本旁白只递筷子不劝人，最终解释权归你的胃所有。",
+        "重大决定请在饱腹状态下签收，空腹签约跟凌晨排位一样上头。"
+      ]
     },
     {
       "id": "LC18",
@@ -10362,7 +10464,13 @@
       "cast_bindings": {
         "lead": "lead",
         "mate": "clinician"
-      }
+      },
+      "narrator_asides": [
+        "报告一项一项看，医生一句一句听，本页旁白闭嘴，只负责拿外套。",
+        "搜索框给不了诊断，只会批发恐慌。听劝，把它关上。",
+        "悬念交给检查单，不交给想象。想象力请去画漫画，别来添乱。",
+        "未知最怕被具名。听清楚了，它就小了一半。正经时刻，打住。"
+      ]
     },
     {
       "id": "LC19",
@@ -10938,7 +11046,13 @@
         "lead": "lead",
         "parent": "parent",
         "mate": "mate"
-      }
+      },
+      "narrator_asides": [
+        "他们总说没事，听的时候，多待一会儿。",
+        "这通电话信号很好，画面请自行补帧。",
+        "两边都在当导演，把坏消息剪成了一句“挺好的”。",
+        "所有报喜不报忧，翻译过来都是同一句话：别担心我，去过你的人生。"
+      ]
     },
     {
       "id": "LC20",
@@ -11496,7 +11610,13 @@
       "cast_bindings": {
         "lead": "lead",
         "teacher": "hobby_admin"
-      }
+      },
+      "narrator_asides": [
+        "钥匙过期了，热爱没有门禁系统，锁孔不认人，认的是你还想不想进去。",
+        "我曾宣布青春返场，被现实要求出示证件。没事，证件可以后补。",
+        "旧舞台亮着灯，门票是一张愿意问出口的嘴。你的英雄没有被ban，随时能选。",
+        "时间收走钥匙，没收走调。进去唱，跑调也算演出的一部分。"
+      ]
     },
     {
       "id": "LC21",
@@ -12068,7 +12188,13 @@
         "lead": "lead",
         "boss": "boss",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "新岗位，从问第一个问题开始，FAQ由你亲自撰写。",
+        "工牌换了名字，说明书自备，版本说明：本版本支持从头学起。",
+        "中年新角色定妆照：一个敢举手的人。这很帅，不用谢。",
+        "不会就问，冷却为零，建议像打野抓人一样频繁使用。"
+      ]
     },
     {
       "id": "LC22",
@@ -12638,7 +12764,13 @@
         "lead": "lead",
         "teacher": "community_teacher",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "不会的那一步，先问出来，问出口就赢了一半。",
+        "本教室不设年龄门槛，只收好奇心，报名费为零。",
+        "进度表按兴趣排序，不按身份证排序。隐藏成就：现在开始都算早。",
+        "宇宙大学终身学籍，七十岁新生请举手——很好，手都很稳。"
+      ]
     },
     {
       "id": "LC23",
@@ -13191,7 +13323,13 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "friend"
-      }
+      },
+      "narrator_asides": [
+        "相册翻到哪页算哪页，支持随心中断，永不存档，永不回档。",
+        "记忆测验取消，开卷，允许笑场，允许留白，允许答不上来。",
+        "观众（你）正在翻阅一部无字幕老电影，画质模糊，演技全员在线。",
+        "有些像素模糊了，有些笑声还高清。回忆杀，杀的是时间，不是人。"
+      ]
     },
     {
       "id": "LC24",
@@ -13748,7 +13886,570 @@
       "cast_bindings": {
         "lead": "lead",
         "friend": "neighbor"
-      }
+      },
+      "narrator_asides": [
+        "长椅还有位置，坐不坐都行，风会等。",
+        "本集无任务、无倒计时、无体力条，只有风和一颗分给你的橘子，请查收。",
+        "我本想配一段结尾演说，但你们只是在长椅上坐着——这比演说好，真的好。",
+        "这一页不催人翻篇。宇宙很大，长椅刚好，坐多久都行。"
+      ]
+    },
+    {
+      "id": "LC25",
+      "title": "奶蛙同学",
+      "age_range": [
+        6,
+        95
+      ],
+      "stage": "school",
+      "scene": "classroom",
+      "actors": [
+        "lead",
+        "naiwa"
+      ],
+      "prop": "candy",
+      "facts": "社区活动室新来了一位“学员”：一只黄色的胖青蛙。它不报名字，不领材料，只是坐在最后一排，魔性地笑着。",
+      "npc_dialogue": "奶蛙：（一言不发，只是笑。）",
+      "lenses": [
+        {
+          "tier": 0,
+          "narrator": "新同学很安静，笑得很有感染力。",
+          "inner": "它是来上课的吗？",
+          "dialogue": "你好？",
+          "result_tail": "它什么也没说，但教室里的气氛松了一些。"
+        },
+        {
+          "tier": 1,
+          "narrator": "全班都装作没在看它，其实都在用余光看它。",
+          "inner": "这笑也太魔性了，再看一眼，就一眼。",
+          "dialogue": "你也是来上课的啊。",
+          "result_tail": "没有人承认在看它，但大家都记住了它。"
+        },
+        {
+          "tier": 2,
+          "narrator": "在你的想象里，最后一排坐着一位插班明星，全班都在等它开口。",
+          "inner": "它一开口，大概就是名台词。",
+          "dialogue": "（等待它的第一句台词）",
+          "result_tail": "想象中的明星学员今天也没开口，但它一直在。"
+        },
+        {
+          "tier": 3,
+          "narrator": "脑内新闻台插播：神秘黄蛙空降社区课堂，身份成谜，笑果拉满。",
+          "inner": "本台将持续蹲守，直到它开口。",
+          "dialogue": "请全世界安静，它要笑了。",
+          "result_tail": "新闻播完了，奶蛙还在笑，这大概就是它的全部发言。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "给它也搬一张椅子",
+          "intent": "seat",
+          "effects": {
+            "mental": 2
+          },
+          "lines": [
+            "给你搬。",
+            "坐这儿吧。",
+            "最后一排加座！",
+            "欢迎入学，奶蛙同学。"
+          ],
+          "memory": "_奶蛙_椅子",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "它稳稳坐了一整节课，是班里坐得最直的学员。",
+              "visual": "sit_upright",
+              "effects": {
+                "mental": 1
+              },
+              "memory": "奶蛙坐直了一整节课",
+              "id": "LC25.C1.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "它稳稳坐了一整节课，是班里坐得最直的学员。 它什么也没说，但教室里的气氛松了一些。",
+                  "inner": "它是来上课的吗？",
+                  "dialogue": "给你搬。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "它稳稳坐了一整节课，是班里坐得最直的学员。 没有人承认在看它，但大家都记住了它。",
+                  "inner": "这笑也太魔性了，再看一眼，就一眼。",
+                  "dialogue": "坐这儿吧。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "它稳稳坐了一整节课，是班里坐得最直的学员。 想象中的明星学员今天也没开口，但它一直在。",
+                  "inner": "它一开口，大概就是名台词。",
+                  "dialogue": "最后一排加座！"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "它稳稳坐了一整节课，是班里坐得最直的学员。 新闻播完了，奶蛙还在笑，这大概就是它的全部发言。",
+                  "inner": "本台将持续蹲守，直到它开口。",
+                  "dialogue": "欢迎入学，奶蛙同学。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "seat",
+                  "prop": "candy",
+                  "caption": "给它也搬一张椅子"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "sit_upright",
+                  "prop": "candy",
+                  "caption": "它稳稳坐了一整节课，是班里坐得最直的学员。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "candy",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "它坐下的瞬间全班笑场，连老师都没绷住。",
+              "visual": "class_laugh",
+              "effects": {
+                "mental": 1
+              },
+              "memory": "奶蛙坐下时全班笑场",
+              "id": "LC25.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "它坐下的瞬间全班笑场，连老师都没绷住。 它什么也没说，但教室里的气氛松了一些。",
+                  "inner": "它是来上课的吗？",
+                  "dialogue": "给你搬。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "它坐下的瞬间全班笑场，连老师都没绷住。 没有人承认在看它，但大家都记住了它。",
+                  "inner": "这笑也太魔性了，再看一眼，就一眼。",
+                  "dialogue": "坐这儿吧。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "它坐下的瞬间全班笑场，连老师都没绷住。 想象中的明星学员今天也没开口，但它一直在。",
+                  "inner": "它一开口，大概就是名台词。",
+                  "dialogue": "最后一排加座！"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "它坐下的瞬间全班笑场，连老师都没绷住。 新闻播完了，奶蛙还在笑，这大概就是它的全部发言。",
+                  "inner": "本台将持续蹲守，直到它开口。",
+                  "dialogue": "欢迎入学，奶蛙同学。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "seat",
+                  "prop": "candy",
+                  "caption": "给它也搬一张椅子"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "class_laugh",
+                  "prop": "candy",
+                  "caption": "它坐下的瞬间全班笑场，连老师都没绷住。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "candy",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ],
+          "id": "LC25.C1"
+        },
+        {
+          "label": "问它是不是走错了教室",
+          "intent": "ask",
+          "effects": {
+            "charm": 1,
+            "abstract": 1
+          },
+          "lines": [
+            "走错了？",
+            "你也是来上课的？",
+            "请问你是哪个班的？",
+            "请出示入学申请，奶蛙同学。"
+          ],
+          "memory": "_奶蛙_问路",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "它不回答，只把笑咧得更大了。你莫名其妙也跟着笑了起来。",
+              "visual": "grin_wider",
+              "effects": {
+                "mental": 1
+              },
+              "memory": "你被奶蛙的笑传染了",
+              "id": "LC25.C2.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "它不回答，只把笑咧得更大了。你莫名其妙也跟着笑了起来。 它什么也没说，但教室里的气氛松了一些。",
+                  "inner": "它是来上课的吗？",
+                  "dialogue": "走错了？"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "它不回答，只把笑咧得更大了。你莫名其妙也跟着笑了起来。 没有人承认在看它，但大家都记住了它。",
+                  "inner": "这笑也太魔性了，再看一眼，就一眼。",
+                  "dialogue": "你也是来上课的？"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "它不回答，只把笑咧得更大了。你莫名其妙也跟着笑了起来。 想象中的明星学员今天也没开口，但它一直在。",
+                  "inner": "它一开口，大概就是名台词。",
+                  "dialogue": "请问你是哪个班的？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "它不回答，只把笑咧得更大了。你莫名其妙也跟着笑了起来。 新闻播完了，奶蛙还在笑，这大概就是它的全部发言。",
+                  "inner": "本台将持续蹲守，直到它开口。",
+                  "dialogue": "请出示入学申请，奶蛙同学。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "ask",
+                  "prop": "candy",
+                  "caption": "问它是不是走错了教室"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "grin_wider",
+                  "prop": "candy",
+                  "caption": "它不回答，只把笑咧得更大了。你莫名其妙也跟着笑了起来。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "candy",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "老师替它回答：它每节课都来，比你们到得都早。",
+              "visual": "teacher_replies",
+              "effects": {
+                "charm": 1
+              },
+              "memory": "老师说奶蛙每节课都来",
+              "id": "LC25.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "老师替它回答：它每节课都来，比你们到得都早。 它什么也没说，但教室里的气氛松了一些。",
+                  "inner": "它是来上课的吗？",
+                  "dialogue": "走错了？"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "老师替它回答：它每节课都来，比你们到得都早。 没有人承认在看它，但大家都记住了它。",
+                  "inner": "这笑也太魔性了，再看一眼，就一眼。",
+                  "dialogue": "你也是来上课的？"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "老师替它回答：它每节课都来，比你们到得都早。 想象中的明星学员今天也没开口，但它一直在。",
+                  "inner": "它一开口，大概就是名台词。",
+                  "dialogue": "请问你是哪个班的？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "老师替它回答：它每节课都来，比你们到得都早。 新闻播完了，奶蛙还在笑，这大概就是它的全部发言。",
+                  "inner": "本台将持续蹲守，直到它开口。",
+                  "dialogue": "请出示入学申请，奶蛙同学。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "ask",
+                  "prop": "candy",
+                  "caption": "问它是不是走错了教室"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "teacher_replies",
+                  "prop": "candy",
+                  "caption": "老师替它回答：它每节课都来，比你们到得都早。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "candy",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ],
+          "id": "LC25.C2"
+        },
+        {
+          "label": "假装没看见，继续听课",
+          "intent": "ignore",
+          "effects": {
+            "abstract": 2
+          },
+          "lines": [
+            "（记笔记）",
+            "看不见，看不见。",
+            "（余光全是它）",
+            "本学员选择无视这位神秘转校生。"
+          ],
+          "memory": "_奶蛙_偷看",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你一节课用余光瞟了它二十次，笔记本边角画满了小青蛙。",
+              "visual": "doodle_frogs",
+              "effects": {
+                "abstract": 1
+              },
+              "memory": "你的笔记上画满了小青蛙",
+              "id": "LC25.C3.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你一节课用余光瞟了它二十次，笔记本边角画满了小青蛙。 它什么也没说，但教室里的气氛松了一些。",
+                  "inner": "它是来上课的吗？",
+                  "dialogue": "（记笔记）"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你一节课用余光瞟了它二十次，笔记本边角画满了小青蛙。 没有人承认在看它，但大家都记住了它。",
+                  "inner": "这笑也太魔性了，再看一眼，就一眼。",
+                  "dialogue": "看不见，看不见。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你一节课用余光瞟了它二十次，笔记本边角画满了小青蛙。 想象中的明星学员今天也没开口，但它一直在。",
+                  "inner": "它一开口，大概就是名台词。",
+                  "dialogue": "（余光全是它）"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你一节课用余光瞟了它二十次，笔记本边角画满了小青蛙。 新闻播完了，奶蛙还在笑，这大概就是它的全部发言。",
+                  "inner": "本台将持续蹲守，直到它开口。",
+                  "dialogue": "本学员选择无视这位神秘转校生。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "ignore",
+                  "prop": "candy",
+                  "caption": "假装没看见，继续听课"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "doodle_frogs",
+                  "prop": "candy",
+                  "caption": "你一节课用余光瞟了它二十次，笔记本边角画满了小青蛙。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "candy",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "下课时它的桌上多了一颗糖，没人承认是自己放的。",
+              "visual": "candy_on_desk",
+              "effects": {
+                "mental": 1
+              },
+              "memory": "有人在奶蛙桌上放了糖",
+              "id": "LC25.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "下课时它的桌上多了一颗糖，没人承认是自己放的。 它什么也没说，但教室里的气氛松了一些。",
+                  "inner": "它是来上课的吗？",
+                  "dialogue": "（记笔记）"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "下课时它的桌上多了一颗糖，没人承认是自己放的。 没有人承认在看它，但大家都记住了它。",
+                  "inner": "这笑也太魔性了，再看一眼，就一眼。",
+                  "dialogue": "看不见，看不见。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "下课时它的桌上多了一颗糖，没人承认是自己放的。 想象中的明星学员今天也没开口，但它一直在。",
+                  "inner": "它一开口，大概就是名台词。",
+                  "dialogue": "（余光全是它）"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "下课时它的桌上多了一颗糖，没人承认是自己放的。 新闻播完了，奶蛙还在笑，这大概就是它的全部发言。",
+                  "inner": "本台将持续蹲守，直到它开口。",
+                  "dialogue": "本学员选择无视这位神秘转校生。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "ignore",
+                  "prop": "candy",
+                  "caption": "假装没看见，继续听课"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "naiwa"
+                  ],
+                  "action": "candy_on_desk",
+                  "prop": "candy",
+                  "caption": "下课时它的桌上多了一颗糖，没人承认是自己放的。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "candy",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ],
+          "id": "LC25.C3"
+        }
+      ],
+      "requirements": {},
+      "callback": null,
+      "recurrence": {
+        "once": true,
+        "cooldown_years": 0
+      },
+      "panels": [
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "naiwa"
+          ],
+          "action": "establish",
+          "caption": "社区活动室新来了一位“学员”：一只黄色的胖青蛙。它不报名字，不领材料，只是坐在最后一排，魔性地笑着。"
+        },
+        {
+          "shot": "detail",
+          "actors": [
+            "lead",
+            "naiwa"
+          ],
+          "action": "look_at_prop",
+          "prop": "candy",
+          "caption": "奶蛙：（一言不发，只是笑。）"
+        },
+        {
+          "shot": "medium",
+          "actors": [
+            "lead"
+          ],
+          "action": "react",
+          "voice_ref": "lenses[tier]"
+        },
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "naiwa"
+          ],
+          "action": "choice_pause",
+          "prop": "candy"
+        }
+      ],
+      "cast_bindings": {
+        "lead": "lead",
+        "naiwa": "naiwa"
+      },
+      "narrator_asides": [
+        "新学员笑得很稳定，一节课零次掉线。",
+        "全班都在偷看它，演技一个比一个差，建议重考观察课。",
+        "插班明星的首次亮相：零台词，满堂彩，制作组捡到宝了。",
+        "本台持续蹲守奶蛙开口。据不可靠消息，它的第一句话将载入史册。"
+      ]
     }
   ],
   "rare_arcs": [

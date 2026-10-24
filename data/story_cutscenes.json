@@ -1,7 +1,7 @@
 {
-  "version": 2,
+  "version": 1,
   "title": "剧情过场时间轴",
-  "description": "按事件 id 匹配的 Undertale 式过场：bg 与人物使用 SL 库最新的 pixel_cast 图集（每角色 4 帧：静止/走/说话抬手）；beat 的 action 语义映射到 walk / 抬手 / 静止，expr 作为立绘提示；beats 是逐字对白，选项取自事件本身。",
+  "description": "按事件 id 匹配的 Undertale 式过场：bg 用 assets/scenes，cast 用 assets/chars 分件立绘；beats 是逐字对白，选项取自事件本身。",
   "cutscenes": {
     "OP01": {
       "bg": "hospital",
@@ -9,93 +9,34 @@
         {
           "role": "parent",
           "x": 118,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         },
         {
           "role": "lead",
           "x": 52,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 76
         }
       ],
       "beats": [
         {
           "speaker": "旁白",
           "face": "lead",
-          "expr": "normal",
-          "text": "凌晨四点。雨刚停。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "产房的灯管嗡嗡响。"
+          "expr": "neutral",
+          "text": "凌晨四点，雨刚停。产房的灯管嗡嗡响，你被一双戴橡胶手套的手倒提着，拍了两下脚心。"
         },
         {
           "speaker": "你",
           "face": "lead",
-          "expr": "surprise",
+          "expr": "shock",
           "text": "……"
         },
         {
           "speaker": "妈妈",
           "face": "parent",
-          "expr": "happy",
-          "text": "看。是个健康的宝宝。"
+          "expr": "neutral",
+          "text": "看，是个健康的宝宝。"
         }
-      ],
-      "camera": {
-        "zoom": 1.25,
-        "x": 85,
-        "y": 48
-      },
-      "reactions": {
-        "放声大哭，把屋顶掀了": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "happy",
-            "text": "……这嗓门。随我。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你爸在走廊上又腿软了一次。"
-          }
-        ],
-        "安静地睁眼，先观察一下": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "他不哭。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你继续盯着天花板。大人们开始紧张。"
-          }
-        ],
-        "一把抓住护士的手指": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "surprise",
-            "text": "……别拽阿姨。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你没松手。"
-          }
-        ]
-      }
+      ]
     },
     "V03": {
       "bg": "park",
@@ -103,58 +44,40 @@
         {
           "role": "lead",
           "x": 60,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         },
         {
           "role": "friend",
           "x": 118,
-          "y": 62,
-          "from": [
-            152,
-            62
-          ],
-          "walk_time": 1.1,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         }
       ],
       "beats": [
         {
           "speaker": "旁白",
           "face": "lead",
-          "expr": "normal",
+          "expr": "neutral",
           "text": "手机响了三次，一个陌生号码。"
         },
         {
           "speaker": "你",
           "face": "lead",
-          "expr": "surprise",
+          "expr": "shock",
           "text": "喂？"
         },
         {
           "speaker": "老同学",
           "face": "friend",
-          "expr": "normal",
-          "action": "wave",
-          "target": "friend",
+          "expr": "neutral",
           "text": "是我。……我回来了，想见一面。"
         },
         {
           "speaker": "你",
           "face": "lead",
           "expr": "happy",
-          "action": "idle",
-          "target": "friend",
           "text": "你这些年，到底去哪儿了？"
         }
-      ],
-      "camera": {
-        "zoom": 1.15,
-        "x": 89,
-        "y": 46
-      }
+      ]
     },
     "V13": {
       "bg": "hospital",
@@ -162,733 +85,145 @@
         {
           "role": "lead",
           "x": 60,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 76
         },
         {
           "role": "parent",
           "x": 118,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         }
       ],
       "beats": [
         {
           "speaker": "旁白",
           "face": "lead",
-          "expr": "blink",
+          "expr": "neutral",
           "text": "凌晨两点，医院的走廊很亮，亮得人睡不着。"
         },
         {
           "speaker": "爸爸",
           "face": "parent",
-          "expr": "normal",
-          "action": "raise",
-          "target": "parent",
+          "expr": "neutral",
           "text": "没事，你回去睡吧。"
         },
         {
           "speaker": "你",
           "face": "lead",
           "expr": "sad",
-          "action": "idle",
-          "target": "parent",
           "text": "爸，你先回去吧，今晚我守着。"
         }
-      ],
-      "camera": {
-        "zoom": 1.18,
-        "x": 89,
-        "y": 46
-      }
+      ]
     },
-    "OP05": {
+    "V41": {
       "bg": "home",
       "cast": [
         {
-          "role": "parent",
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "teacher",
           "x": 118,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        },
-        {
-          "role": "lead",
-          "x": 52,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         }
       ],
       "beats": [
         {
           "speaker": "旁白",
           "face": "lead",
-          "expr": "normal",
-          "text": "满月酒摆了八桌。"
+          "expr": "neutral",
+          "text": "你把一兜零件放上柜台，发出哗啦一声轻响。柜台后的人抬起眼，放大镜还架在鼻梁上。"
         },
         {
-          "speaker": "旁白",
+          "speaker": "你",
           "face": "lead",
-          "expr": "normal",
-          "text": "你被轮流抱着，像一件刚到的快递。"
+          "expr": "shock",
+          "text": "爷爷，这个……还能装回去吗？"
         },
         {
-          "speaker": "妈妈",
-          "face": "parent",
-          "expr": "happy",
-          "text": "来。让二姨看看。"
+          "speaker": "钟爷爷",
+          "face": "teacher",
+          "expr": "neutral",
+          "text": "能。零件没多，是说明书画错了一个。"
         },
         {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "有人往你手里塞红包。有人往你嘴里塞筷子。"
+          "speaker": "钟爷爷",
+          "face": "teacher",
+          "expr": "neutral",
+          "text": "我拆过的闹钟，比你见过的都多。"
         }
-      ],
-      "camera": {
-        "zoom": 1.22,
-        "x": 85,
-        "y": 48
-      },
-      "reactions": {
-        "先抓筷子": [
-          {
-            "speaker": "二姨",
-            "face": "parent",
-            "expr": "happy",
-            "text": "这孩子以后不愁吃。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你爸默默把红烧肉端远了。"
-          }
-        ],
-        "在红包堆里睡着": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……睡着了。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你妈把湿掉的红包抽走了两个。"
-          }
-        ],
-        "对每个亲戚笑，一个都不漏": [
-          {
-            "speaker": "二姨",
-            "face": "parent",
-            "expr": "happy",
-            "text": "这孩子亲和。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你妈脸色缓和了一点。"
-          }
-        ]
-      }
+      ]
     },
-    "OP09": {
+    "V43": {
       "bg": "home",
       "cast": [
         {
-          "role": "parent",
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "teacher",
           "x": 118,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        },
-        {
-          "role": "lead",
-          "x": 52,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         }
       ],
       "beats": [
         {
           "speaker": "旁白",
           "face": "lead",
-          "expr": "normal",
-          "text": "十个月大。"
+          "expr": "neutral",
+          "text": "老街的灯次第亮起来。修表铺的灯还亮着，柜台后的人手在抖，针还是稳稳穿过了小孔。"
         },
         {
-          "speaker": "旁白",
+          "speaker": "你",
           "face": "lead",
-          "expr": "normal",
-          "text": "全家人围成一圈，屏住呼吸。"
+          "expr": "sad",
+          "text": "爷爷，这次换我来吧。"
         },
         {
-          "speaker": "妈妈",
-          "face": "parent",
+          "speaker": "钟爷爷",
+          "face": "teacher",
           "expr": "happy",
-          "text": "叫妈妈。"
-        },
-        {
-          "speaker": "爸爸",
-          "face": "parent",
-          "expr": "normal",
-          "text": "叫爸爸。",
-          "action": "raise",
-          "target": "parent"
+          "text": "先试三个月。不好，随时可以跑。"
         }
-      ],
-      "camera": {
-        "zoom": 1.22,
-        "x": 85,
-        "y": 48
-      },
-      "reactions": {
-        "妈妈": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "happy",
-            "text": "……"
-          },
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "normal",
-            "text": "那我呢？"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你看了他一眼，说：饭。"
-          }
-        ],
-        "爸爸": [
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "happy",
-            "text": "好儿子！"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "我天天喂奶……"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你爸把你举过头顶。"
-          }
-        ],
-        "不": [
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "全家人愣住。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……以后不好管。"
-          }
-        ],
-        "家人们": [
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你妈说：他刚才是不是说了家人们？"
-          },
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "normal",
-            "text": "别学我刷短视频。"
-          }
-        ]
-      }
+      ]
     },
-    "OP10": {
+    "V44": {
       "bg": "home",
       "cast": [
         {
-          "role": "parent",
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "friend",
           "x": 118,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        },
-        {
-          "role": "lead",
-          "x": 52,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
+          "y": 74
         }
       ],
       "beats": [
         {
           "speaker": "旁白",
           "face": "lead",
-          "expr": "normal",
-          "text": "一岁生日前。你扶着沙发站起来。"
+          "expr": "neutral",
+          "text": "打烊前的光最适合看表。年轻人把一块旧表推过柜台，表盖上磨出的痕迹，像一条走了很久的路。"
         },
         {
-          "speaker": "旁白",
+          "speaker": "年轻人",
+          "face": "friend",
+          "expr": "neutral",
+          "text": "听说这条街，您修得好。"
+        },
+        {
+          "speaker": "你",
           "face": "lead",
-          "expr": "normal",
-          "text": "所有人都停下了筷子。"
-        },
-        {
-          "speaker": "爸爸",
-          "face": "parent",
           "expr": "happy",
-          "text": "来。到爸爸这儿来。",
-          "action": "raise",
-          "target": "parent"
-        },
-        {
-          "speaker": "妈妈",
-          "face": "parent",
-          "expr": "happy",
-          "text": "看。玩具在这儿。",
-          "action": "wave",
-          "target": "parent"
+          "text": "表停了不要紧。记得上发条的人还在，就行。"
         }
-      ],
-      "camera": {
-        "zoom": 1.22,
-        "x": 85,
-        "y": 48
-      },
-      "reactions": {
-        "扑向爸爸": [
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "happy",
-            "text": "接住了。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "算你有良心。"
-          }
-        ],
-        "扑向妈妈": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "happy",
-            "text": "来。妈妈抱。"
-          },
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "normal",
-            "text": "那我呢？"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "没人理他。"
-          }
-        ],
-        "扶着墙，自己走到门口": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……他要走很远。"
-          },
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "normal",
-            "text": "先把门关上。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你回头看了他们一眼。"
-          }
-        ],
-        "原地蹲下，先不走了": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "他就是懒。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "亲戚们说：这孩子稳重。"
-          }
-        ]
-      }
-    },
-    "OP11": {
-      "bg": "home",
-      "cast": [
-        {
-          "role": "parent",
-          "x": 118,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        },
-        {
-          "role": "lead",
-          "x": 52,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        }
-      ],
-      "beats": [
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "一岁生日。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "桌上摆了一圈东西：算盘、毛笔、钞票、听诊器、拨浪鼓……还有一部亮着屏的旧手机。"
-        },
-        {
-          "speaker": "妈妈",
-          "face": "parent",
-          "expr": "happy",
-          "text": "抓一个。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "亲戚们围成一圈，比你还紧张。"
-        }
-      ],
-      "camera": {
-        "zoom": 1.22,
-        "x": 85,
-        "y": 48
-      },
-      "reactions": {
-        "抓毛笔": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……先洗嘴。"
-          },
-          {
-            "speaker": "二姨",
-            "face": "parent",
-            "expr": "happy",
-            "text": "文曲星！"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你嘴里都是墨。"
-          }
-        ],
-        "抓钞票": [
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "normal",
-            "text": "随我。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "算盘在哪？"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你把钱攥得很紧。"
-          }
-        ],
-        "抓听诊器": [
-          {
-            "speaker": "爸爸",
-            "face": "parent",
-            "expr": "happy",
-            "text": "以后家里看病有人了。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "先管管你爸的血压。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你听了听自己的心跳。"
-          }
-        ],
-        "抓拨浪鼓": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你奶奶当场扭了两步，被你爷爷拉住了。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你摇出了全场唯一的节奏。"
-          }
-        ],
-        "抓手机": [
-          {
-            "speaker": "二姨",
-            "face": "parent",
-            "expr": "normal",
-            "text": "这孩子以后能上网。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "先把手机还我。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你大拇指又划了一下。"
-          }
-        ],
-        "先抓桌上的桂花糕": [
-          {
-            "speaker": "二姨",
-            "face": "parent",
-            "expr": "happy",
-            "text": "活得明白。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……他连抓周都不忘吃。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你咬了一口。"
-          }
-        ]
-      }
-    },
-    "C33": {
-      "bg": "home",
-      "cast": [
-        {
-          "role": "lead",
-          "x": 80,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        }
-      ],
-      "beats": [
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "一岁半的午后。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "你在地板上爬来爬去。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "沙发底下有一个落满灰的乒乓球。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "离你只有半臂远。"
-        }
-      ],
-      "camera": {
-        "zoom": 1.35,
-        "x": 80,
-        "y": 50
-      },
-      "reactions": {
-        "伸手够出来": [
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你够到了。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "球滚出来的时候，你笑得像赢了一场战争。"
-          }
-        ],
-        "叫妈妈来帮忙": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……你刚才是不是想自己够？"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你点头。她把球递给你，又收了回去。"
-          }
-        ],
-        "继续往里爬": [
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你叼出一只失踪很久的袜子。"
-          },
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "这也能找到。"
-          }
-        ]
-      }
-    },
-    "C34": {
-      "bg": "home",
-      "cast": [
-        {
-          "role": "lead",
-          "x": 80,
-          "y": 62,
-          "action": "idle",
-          "face": "normal"
-        }
-      ],
-      "beats": [
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "两岁的雨。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "你趴在窗台上，看水珠赛跑。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "有一颗水珠跑得特别快。"
-        },
-        {
-          "speaker": "旁白",
-          "face": "lead",
-          "expr": "normal",
-          "text": "你伸手去按它。"
-        }
-      ],
-      "camera": {
-        "zoom": 1.35,
-        "x": 80,
-        "y": 50
-      },
-      "reactions": {
-        "数一数有几颗": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "……七颗也不错。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你坚持说：九颗。"
-          }
-        ],
-        "拍窗户，跟水珠打招呼": [
-          {
-            "speaker": "妈妈",
-            "face": "parent",
-            "expr": "normal",
-            "text": "它去别的地方下雨了。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你愣了一下，然后笑了。"
-          }
-        ],
-        "继续发呆": [
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "你看了很久。直到雨停。"
-          },
-          {
-            "speaker": "旁白",
-            "face": "lead",
-            "expr": "normal",
-            "text": "窗外的树亮晶晶的，像刚从水里捞出来。"
-          }
-        ]
-      }
+      ]
     }
   }
 }
