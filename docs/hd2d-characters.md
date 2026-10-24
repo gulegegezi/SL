@@ -16,6 +16,8 @@
 
 ## 查看
 
+首次导入、正确项目目录及技术接入链路见 [Godot 导入与技术说明](godot-hd2d-import.md)。
+
 Godot 的 `scenes/PixelStageLab.tscn` 按 F6 可预览；F5 后从首页进入「折痕与歪楼 · 新剧情漫画人生」。已有书签也使用新的二维人物，不需要重新开始。
 
 验证：`pixel_stage_smoke` 检查角色确实是 Sprite3D、没有体素身体、与相机平行、手部接物位置及离屏释放；`life_comic_ui_smoke` 检查实际选择、窄屏与恢复；`pixel_reader_smoke` 检查互动存档、镜头重播和窗口缩放。
