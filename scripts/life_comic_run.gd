@@ -27,7 +27,7 @@ func start(seed_value: int) -> void:
 	for role in ["parent", "mate", "friend", "teacher", "boss", "partner", "neighbor"]:
 		var offset: int = {"parent":r.randi_range(22,38), "mate":r.randi_range(22,40), "teacher":25,"boss":15}.get(role,0)
 		s.roles[role] = {"alive":true,"death_at":maxi(1,r.randi_range(68,108)-offset),"met":role in ["parent","mate"]}
-	for role in ["clinician","hobby_admin","community_teacher"]: s.roles[role] = {"alive":true,"death_at":999,"met":false}
+	for role in ["clinician","hobby_admin","community_teacher","naiwa"]: s.roles[role] = {"alive":true,"death_at":999,"met":false}
 	begin("LC01")
 
 func tier() -> int:
