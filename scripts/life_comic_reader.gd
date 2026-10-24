@@ -105,7 +105,9 @@ func add_blank() -> void:
 func append_page(spec: Dictionary, animate: bool = true) -> void:
 	var page := Page.new()
 	page.build(spec,800)
-	page.interactions_enabled = false
+	page.interactions_enabled = run.s.committed.is_empty() and run.s.terminal.is_empty() and spec.get("event_id","") == run.s.pending.get("id","") and int(spec.get("age",-1)) == run.s.age
+	page.interaction_changed.connect(func(_index, _progress): autosave(); refresh_exploration())
+	page.cinematic_changed.connect(func(_index): autosave())
 	strip.add_child(page)
 	if is_instance_valid(blank): strip.move_child(page,blank.get_index())
 	if animate:
@@ -129,8 +131,57 @@ func refresh() -> void:
 		button(actions,"继续往下读",advance)
 	else:
 		var options: Array = run.options()
-		for i in range(options.size()): button(actions,str(options[i]),select.bind(i))
+		for i in range(options.size()):
+			var choice_button := button(actions,str(options[i]),select.bind(i))
+			choice_button.name = "Choice_"+str(i)
+	var exploring := _find_stage_panel("pixel_interaction")
+	if exploring != null and run.s.committed.is_empty() and run.s.terminal.is_empty():
+		var explore_button := button(actions,"◇ "+str(exploring.spec.pixel_interaction.get("label","观察现场")),explore_scene)
+		explore_button.name = "ExploreScene"
+		explore_button.disabled = bool(exploring.spec.get("interaction_progress",{}).get("completed",false))
+	var cinema := _find_stage_panel("pixel_cg")
+	if cinema != null:
+		var row := HBoxContainer.new()
+		row.name = "CinemaTools"
+		actions.add_child(row)
+		button(row,"重播特别镜头",func():
+			var current := _find_stage_panel("pixel_cg")
+			if not is_instance_valid(current): return
+			scroll_to_page(current.get_parent())
+			if is_instance_valid(current.pixel_stage): current.pixel_stage.replay_cg())
+		button(row,"跳过镜头",func():
+			var current := _find_stage_panel("pixel_cg")
+			if is_instance_valid(current) and is_instance_valid(current.pixel_stage): current.pixel_stage.skip_cg())
+	for page in strip.get_children():
+		if page == blank: continue
+		page.interactions_enabled = run.s.committed.is_empty() and run.s.terminal.is_empty() and page.spec.get("event_id","") == run.s.pending.get("id","") and int(page.spec.get("age",-1)) == run.s.age
 	autosave()
+
+func _find_stage_panel(key: String) -> Control:
+	var children := strip.get_children()
+	children.reverse()
+	for page in children:
+		if page == blank or not page.get("spec") is Dictionary: continue
+		if str(page.spec.get("event_id","")) != str(run.s.pending.get("id","")) or int(page.spec.get("age",-1)) != run.s.age: continue
+		for p in page.panels:
+			if p.spec.has(key): return p
+	return null
+
+func explore_scene() -> void:
+	var p := _find_stage_panel("pixel_interaction")
+	if p == null: return
+	scroll_to_page(p.get_parent())
+	# Put the interaction panel itself on screen, not only the chapter header.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	p = _find_stage_panel("pixel_interaction")
+	if not is_instance_valid(p): return
+	scroll.scroll_vertical = int(p.get_parent().position.y+p.position.y)-8
+	if is_instance_valid(p.pixel_stage): p.pixel_stage.perform_interaction()
+
+func refresh_exploration() -> void:
+	var explore := actions.get_node_or_null("ExploreScene")
+	if explore != null: explore.disabled = true; explore.text = "✓ 已观察，可继续作出选择"
 
 func select(index: int) -> void:
 	if locked or not run.s.committed.is_empty(): return

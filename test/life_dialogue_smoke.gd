@@ -15,7 +15,7 @@ func text_of(spec: Dictionary) -> String:
 	return output
 func _initialize() -> void:
 	var run = Run.new()
-	check(Pages.book().size() == 24,"all events have original narrator scripts")
+	check(Pages.book().size() == run.events.size(),"all events have original narrator scripts")
 	for e in run.events.values():
 		for t in range(4):
 			for choice_index in range(3):
@@ -36,5 +36,5 @@ func _initialize() -> void:
 	check(restored.count("同一件事。") == 1 and restored.contains("后续。") and restored.contains("你：我说的话"),"old pages migrate without duplicate facts or lost dialogue")
 	check(legacy.panels[1].caption.contains("旧心声"),"migration does not mutate its input")
 	check(Pages.upgrade_legacy(converted) == converted,"migration is idempotent")
-	print("LIFE_DIALOGUE_SMOKE ","PASS" if failures == 0 else "FAIL"," · 24 events x 4 tiers x 3 choices / legacy presentation")
+	print("LIFE_DIALOGUE_SMOKE ","PASS" if failures == 0 else "FAIL"," · ",run.events.size()," events x 4 tiers x 3 choices / legacy presentation")
 	quit(0 if failures == 0 else 1)

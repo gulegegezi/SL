@@ -1,8 +1,9 @@
 extends RefCounted
 ## Adapter: authored camera/action vocabulary -> existing comic renderer.
 const Director := preload("res://scripts/comic_director.gd")
+const PixelDirection := preload("res://scripts/pixel_story_direction.gd")
 const ROLE_ART := {"clinician":"mate","hobby_admin":"teacher","community_teacher":"teacher","neighbor":"friend"}
-const PROPS := {"blanket":"blanket","photo":"photo","flashlight":"flashlight","biscuit":"biscuit","tooth":"tooth","eraser":"eraser","ledger":"book","exam":"contract","notebook":"book","eggs":"eggs","plant":"plant","fridge":"fridge","phone":"phone","bill":"contract","noodles":"meal","report":"contract","key":"key","badge":"badge","bench":""}
+const PROPS := {"blanket":"blanket","photo":"photo","flashlight":"flashlight","biscuit":"biscuit","tooth":"tooth","eraser":"eraser","ledger":"book","exam":"contract","notebook":"book","eggs":"eggs","plant":"plant","fridge":"fridge","phone":"phone","bill":"contract","noodles":"meal","report":"contract","key":"key","badge":"badge","bench":"bench","drum":"drum"}
 const ROLE_NAMES := {"parent":"妈妈","mate":"爸爸","friend":"老同学","teacher":"老师","boss":"同事","partner":"伴侣","neighbor":"邻居","clinician":"医生","hobby_admin":"排练室管理员","community_teacher":"培训班老师"}
 static var dialogue_book: Dictionary = {}
 
@@ -64,7 +65,7 @@ static func panel(run, e: Dictionary, original: Dictionary, caption: String, bub
 	var out := {"shot":original.get("shot","wide"),"shot_locked":true,"scene":e.get("scene","home"),
 		"ink":Director.ink_key(run.s.age),"age":run.s.age,"caption":caption,"bubble":bubble,
 		"support":support,"tone":"paper","prop":prop,"frame":0,
-		"action":action_for(original.get("action","")),"actor":speaker,"source_action":original.get("action","")}
+		"action":action_for(original.get("action","")),"actor":speaker,"source_action":original.get("action",""),"presentation":"pixel3d"}
 	if support == "none": out["world_solo"] = true
 	return out
 
@@ -111,11 +112,39 @@ static func make(run, result: bool = false) -> Dictionary:
 			if e.has("npc"): panels.append_array(npc_lines(run,rare_event,str(e.npc)))
 			panels.append(speak(run,rare_event,{"shot":"medium"},str(lens[0])))
 		if run.s.age < 16: panels.append(speak(run,rare_event,{"shot":"detail"},"照护者会帮忙安排。你只需先表达自己的需要。"))
+	var special: Dictionary = PixelDirection.cg(e.id,result)
+	for p in panels: p["pixel_variant"] = special.get("variant","quiet" if str(e.id).begins_with("RX") else "day")
+	if not special.is_empty(): panels[0]["pixel_cg"] = special
+	if not result:
+		var action: Dictionary = PixelDirection.interaction(e.id)
+		if not action.is_empty():
+			panels[-1]["pixel_interaction"] = action
+			panels[-1]["interaction_progress"] = {"completed":false}
+			if action.get("target","") == "npc" and panels[-1].get("world_solo",false):
+				panels[-1]["support"] = "npc_mate"
+				for earlier in panels:
+					if earlier.get("support","none") != "none": panels[-1]["support"] = earlier.support; break
+				panels[-1]["world_solo"] = false
 	return {"no":run.s.pages.size()+1,"age":run.s.age,"stage":run.pack.rules.tiers[t].name,"title":e.title,
 		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2}
 
 static func upgrade_legacy(spec: Dictionary) -> Dictionary:
-	if int(spec.get("dialogue_version",0)) >= 2: return spec
+	if int(spec.get("dialogue_version",0)) >= 2:
+		var staged := spec.duplicate(true)
+		for p in staged.get("panels",[]):
+			if not str(p.get("ink","")).is_empty(): p["presentation"] = "pixel3d"
+		if not staged.get("panels",[]).is_empty():
+			var id: String = staged.get("event_id","")
+			var special: Dictionary = PixelDirection.cg(id,bool(staged.get("result",false)))
+			if not special.is_empty() and not staged.panels[0].has("pixel_cg"):
+				staged.panels[0]["pixel_cg"] = special
+				staged.panels[0]["cg_progress"] = {"completed":true}
+			for p in staged.panels:
+				if not p.has("pixel_variant"): p["pixel_variant"] = special.get("variant","day")
+			var action: Dictionary = PixelDirection.interaction(id)
+			if not action.is_empty() and not bool(staged.get("result",false)) and not staged.panels[-1].has("pixel_interaction"):
+				staged.panels[-1]["pixel_interaction"] = action
+		return staged
 	var out := spec.duplicate(true)
 	var rebuilt: Array = []
 	var previous := ""
@@ -143,7 +172,7 @@ static func upgrade_legacy(spec: Dictionary) -> Dictionary:
 		if cap.is_empty() and bub.is_empty(): rebuilt.append(p)
 	out.panels = rebuilt
 	out["dialogue_version"] = 2
-	return out
+	return upgrade_legacy(out)
 
 static func ending(run) -> Dictionary:
 	var terminal: Dictionary = run.s.terminal

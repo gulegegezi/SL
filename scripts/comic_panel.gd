@@ -9,7 +9,10 @@ const Interaction := preload("res://scripts/comic_interaction.gd")
 const Motion := preload("res://scripts/comic_motion.gd")
 const Actor := preload("res://scripts/comic_actor.gd")
 const World := preload("res://scripts/comic_world.gd")
+const PixelStage := preload("res://scripts/pixel_stage_view.gd")
+var pixel_stage: Node
 signal interacted(progress: Dictionary)
+signal cinematic_finished
 var interactions_enabled := true:
 	set(value):
 		interactions_enabled = value
@@ -49,6 +52,14 @@ func _ready() -> void:
 	# Godot enables an overridden _process when entering the tree. Respect the
 	# settled state prepared by setup() before add_child(), especially in archives.
 	set_process(revealed and (visible_characters < _full_text.length() or _interaction_clock < Motion.DURATION))
+	if _uses_pixel():
+		pixel_stage = PixelStage.new()
+		add_child(pixel_stage)
+		pixel_stage.setup(self)
+		if spec.has("pixel_interaction"): mouse_filter = Control.MOUSE_FILTER_PASS
+
+func _uses_pixel() -> bool:
+	return spec.get("presentation","") == "pixel3d" and not str(spec.get("ink","")).is_empty()
 
 func setup(p: Dictionary, ink_tex: Texture2D) -> void:
 	_moment_index = -1
@@ -167,6 +178,9 @@ func interaction_target_rect() -> Rect2:
 	return World.interaction_rect(self,true) if World.enabled(spec) else Interaction.target_rect(size)
 
 func _gui_input(event: InputEvent) -> void:
+	if is_instance_valid(pixel_stage) and pixel_stage.handle_input(event):
+		accept_event()
+		return
 	# Consume the matching release even when press already completed a tap/hold.
 	# Otherwise a parent ScrollContainer receives an unmatched release.
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and _pointer_captured:
@@ -222,7 +236,7 @@ func _draw() -> void:
 
 	if revealed:
 		var background := Art.background(str(spec.get("scene", "")))
-		if background != null and not World.enabled(spec):
+		if background != null and not World.enabled(spec) and not _uses_pixel():
 			var region := Art.cover_region(background,r.size)
 			var camera := 1.0
 			if not reduced_motion:
@@ -235,15 +249,17 @@ func _draw() -> void:
 			var cropped := region.size/camera
 			region = Rect2(region.position+(region.size-cropped)*0.5,cropped)
 			draw_texture_rect_region(background,r,region,Color(0.25,0.8,0.85,0.42))
-		if not World.enabled(spec): _draw_weather(r)
-		if not World.enabled(spec) and str(spec.get("shot", "")) == "wide":
+		if not World.enabled(spec) and not _uses_pixel(): _draw_weather(r)
+		if not World.enabled(spec) and not _uses_pixel() and str(spec.get("shot", "")) == "wide":
 			var supporting_key := str(spec.get("support", "")) if str(current_direction.get("actor", "lead")) == "lead" else _base_ink
 			var supporting := Art.portrait(supporting_key, 0)
 			if supporting != null:
 				var height := r.size.y * 0.73
 				var dimensions := supporting.get_size() * (height / supporting.get_height())
 				draw_texture_rect(supporting, Rect2(Vector2(r.size.x * 0.75 - dimensions.x * 0.5, r.end.y - dimensions.y), dimensions), false, Color(0.5, 0.8, 0.8))
-		if World.enabled(spec):
+		if _uses_pixel():
+			if is_instance_valid(pixel_stage): pixel_stage.draw_on()
+		elif World.enabled(spec):
 			World.draw_scene(self,r)
 			_draw_weather(r)
 		elif bool(spec.get("stage_action",false)):
@@ -481,6 +497,10 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		var discovery := str(spec.interaction.get("reveal",""))
 		cap += "\n" + discovery
 		shown_cap += "\n" + discovery
+	if interaction_done and spec.has("pixel_interaction"):
+		var discovery := "发现："+str(spec.pixel_interaction.get("reveal",""))
+		cap += "\n"+discovery
+		shown_cap += "\n"+discovery
 	var shown_bub := bub.substr(0, maxi(0, visible_characters - caption_length - 1))
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))
@@ -503,6 +523,7 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 			var box_w: float = r.size.x - pad * 2 - 8
 			var measured: Vector2 = f.get_multiline_string_size(cap, HORIZONTAL_ALIGNMENT_LEFT, box_w - 14, cap_sz)
 			var y: float = r.end.y - measured.y - pad * 2 - 11
+			if spec.has("pixel_interaction"): y -= 34
 			T.caption_box(self, Vector2(r.position.x + pad, y), shown_cap, box_w, cap_sz, false, cap)
 
 	if not bub.is_empty():

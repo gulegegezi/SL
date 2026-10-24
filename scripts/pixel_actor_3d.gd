@@ -32,6 +32,7 @@ func setup(key: String, age: int, palette: Dictionary = {}) -> void:
 	_arms.clear(); _elbows.clear(); _legs.clear(); _knees.clear()
 	_eyes.clear(); _brows.clear(); _materials.clear()
 	character_key = key
+	_is_naiwa = false
 	is_newborn = age <= 1 and not key.begins_with("npc_")
 	if is_newborn:
 		_setup_newborn(palette)

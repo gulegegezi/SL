@@ -1,0 +1,957 @@
+{
+  "schema_version": 1,
+  "description": "原创像素立体舞台镜头。仅安排视听演出，不重抽结果，不代替玩家作选择。",
+  "coordinate_contract": {
+    "ground_y": 0,
+    "hero": [
+      -1.1,
+      0,
+      0.8
+    ],
+    "npc": [
+      1.15,
+      0,
+      0
+    ],
+    "back_wall_z": -2.8,
+    "restore_camera": [
+      6,
+      5,
+      8
+    ],
+    "camera_projection": "orthographic",
+    "shot_time_unit": "seconds",
+    "interpolation": "smoothstep between successive poses; hold last pose until duration",
+    "result_rule": "演员沿已提交结果演出；镜头不得推翻、补选或添加结果事实。"
+  },
+  "events": {
+    "LC01": {
+      "intro": {
+        "id": "LC01_birth_intro",
+        "title": "第一次握住世界",
+        "duration": 7.8,
+        "variant": "day",
+        "palette": "milk_amber",
+        "description": "从毯角开始，低机位见到等候的大人，再拉开新生儿与病房的尺度。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              0.2,
+              1.6,
+              4.2
+            ],
+            "look_at": [
+              -1.1,
+              0.65,
+              0.8
+            ],
+            "size": 2.4,
+            "action": "receive"
+          },
+          {
+            "at": 2.6,
+            "position": [
+              3.8,
+              1.9,
+              4.8
+            ],
+            "look_at": [
+              0.15,
+              1.0,
+              0.3
+            ],
+            "size": 3.5,
+            "action": "talk"
+          },
+          {
+            "at": 5.1,
+            "position": [
+              4.8,
+              4.6,
+              7.3
+            ],
+            "look_at": [
+              0.0,
+              0.65,
+              -0.2
+            ],
+            "size": 6.2,
+            "action": "idle"
+          }
+        ],
+        "theme": "birth",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC01_birth_result",
+        "title": "这间屋子学会了等待",
+        "duration": 6.8,
+        "variant": "day",
+        "palette": "milk_amber",
+        "description": "保留已发生的结果，镜头从大人的俯身移回孩子，窗光落在两人之间。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              3.6,
+              2.5,
+              4.9
+            ],
+            "look_at": [
+              0.7,
+              1.05,
+              0.15
+            ],
+            "size": 3.6,
+            "action": "idle"
+          },
+          {
+            "at": 2.3,
+            "position": [
+              1.9,
+              2.4,
+              4.2
+            ],
+            "look_at": [
+              -1.05,
+              0.75,
+              0.75
+            ],
+            "size": 2.8,
+            "action": "idle"
+          },
+          {
+            "at": 4.6,
+            "position": [
+              4.5,
+              4.3,
+              6.8
+            ],
+            "look_at": [
+              0.0,
+              0.65,
+              0.1
+            ],
+            "size": 5.2,
+            "action": "idle"
+          }
+        ],
+        "theme": "birth",
+        "preserve_result_action": true
+      }
+    },
+    "LC03": {
+      "intro": {
+        "id": "LC03_blackout_intro",
+        "title": "今晚，太阳轮班",
+        "duration": 8.4,
+        "variant": "night",
+        "palette": "ink_amber",
+        "description": "先给黑下来的屋子，随后贴近手电，再横移看见手影在背墙放大。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              6.0,
+              5.0,
+              8.0
+            ],
+            "look_at": [
+              0.0,
+              0.7,
+              -0.5
+            ],
+            "size": 7.0,
+            "action": "idle"
+          },
+          {
+            "at": 2.5,
+            "position": [
+              3.8,
+              2.2,
+              3.2
+            ],
+            "look_at": [
+              0.15,
+              0.85,
+              0.5
+            ],
+            "size": 3.5,
+            "action": "offer"
+          },
+          {
+            "at": 5.6,
+            "position": [
+              3.5,
+              2.7,
+              4.3
+            ],
+            "look_at": [
+              0.0,
+              1.3,
+              -1.8
+            ],
+            "size": 5.1,
+            "action": "offer"
+          }
+        ],
+        "theme": "blackout",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC03_blackout_result",
+        "title": "黑暗里有了形状",
+        "duration": 7.2,
+        "variant": "night",
+        "palette": "ink_amber",
+        "description": "墙面手影占满开场，滑到共同照亮的地面，再回到同一盏灯下的两人。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              1.8,
+              2.5,
+              2.8
+            ],
+            "look_at": [
+              0.0,
+              1.2,
+              -2.5
+            ],
+            "size": 4.3,
+            "action": "idle"
+          },
+          {
+            "at": 2.4,
+            "position": [
+              3.4,
+              4.8,
+              4.5
+            ],
+            "look_at": [
+              0.0,
+              0.05,
+              0.25
+            ],
+            "size": 3.8,
+            "action": "idle"
+          },
+          {
+            "at": 4.8,
+            "position": [
+              5.5,
+              3.2,
+              6.5
+            ],
+            "look_at": [
+              0.0,
+              0.85,
+              0.0
+            ],
+            "size": 5.7,
+            "action": "idle"
+          }
+        ],
+        "theme": "blackout",
+        "preserve_result_action": true
+      }
+    },
+    "LC09": {
+      "intro": {
+        "id": "LC09_stage_intro",
+        "title": "第一拍之前",
+        "duration": 8.2,
+        "variant": "stage",
+        "palette": "plum_gold",
+        "description": "高处俯看空舞台，沿鼓边落低，再给两个人隔着乐器的对视；演出尚未开始。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              0.2,
+              7.8,
+              7.5
+            ],
+            "look_at": [
+              0.0,
+              0.0,
+              -0.1
+            ],
+            "size": 7.0,
+            "action": "idle"
+          },
+          {
+            "at": 2.7,
+            "position": [
+              3.4,
+              1.6,
+              4.2
+            ],
+            "look_at": [
+              -0.3,
+              0.65,
+              0.5
+            ],
+            "size": 3.8,
+            "action": "read"
+          },
+          {
+            "at": 5.5,
+            "position": [
+              4.6,
+              2.5,
+              5.4
+            ],
+            "look_at": [
+              0.0,
+              1.0,
+              0.25
+            ],
+            "size": 4.9,
+            "action": "talk"
+          }
+        ],
+        "theme": "stage",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC09_stage_result",
+        "title": "灯还亮着",
+        "duration": 7.8,
+        "variant": "stage",
+        "palette": "plum_gold",
+        "description": "结果动作由分镜提供；镜头沿舞台横向移动，停在人物与留下的乐器之间，不强迫选择登台者才有结尾。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              5.0,
+              2.0,
+              5.5
+            ],
+            "look_at": [
+              -0.6,
+              0.9,
+              0.4
+            ],
+            "size": 4.8,
+            "action": "idle"
+          },
+          {
+            "at": 2.6,
+            "position": [
+              4.8,
+              2.3,
+              5.5
+            ],
+            "look_at": [
+              0.55,
+              0.95,
+              0.1
+            ],
+            "size": 4.8,
+            "action": "idle"
+          },
+          {
+            "at": 5.2,
+            "position": [
+              1.5,
+              5.9,
+              8.0
+            ],
+            "look_at": [
+              0.0,
+              0.5,
+              -0.1
+            ],
+            "size": 6.3,
+            "action": "idle"
+          }
+        ],
+        "theme": "stage",
+        "preserve_result_action": true
+      }
+    },
+    "LC11": {
+      "intro": {
+        "id": "LC11_departure_intro",
+        "title": "门内的重量",
+        "duration": 8.8,
+        "variant": "day",
+        "palette": "dawn_coral",
+        "description": "低处看待收拾的行李，上移到父母，再从门侧把家与门外的冷色放进同一画面。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              3.0,
+              1.1,
+              4.5
+            ],
+            "look_at": [
+              -0.55,
+              0.35,
+              0.8
+            ],
+            "size": 3.0,
+            "action": "read"
+          },
+          {
+            "at": 2.8,
+            "position": [
+              3.2,
+              2.6,
+              5.2
+            ],
+            "look_at": [
+              0.9,
+              1.2,
+              0.0
+            ],
+            "size": 3.6,
+            "action": "talk"
+          },
+          {
+            "at": 5.9,
+            "position": [
+              6.4,
+              3.9,
+              5.8
+            ],
+            "look_at": [
+              0.0,
+              0.8,
+              0.2
+            ],
+            "size": 6.0,
+            "action": "idle"
+          }
+        ],
+        "theme": "departure",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC11_departure_result",
+        "title": "带走一点家的颜色",
+        "duration": 8.0,
+        "variant": "day",
+        "palette": "dawn_coral",
+        "description": "先看主角的结果动作，再把对焦中心移给留下的人，最后退到门外。拿或未拿鸡蛋由原结果保持。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              3.4,
+              2.1,
+              4.6
+            ],
+            "look_at": [
+              -0.9,
+              0.9,
+              0.7
+            ],
+            "size": 3.6,
+            "action": "idle"
+          },
+          {
+            "at": 2.7,
+            "position": [
+              3.6,
+              2.3,
+              5.0
+            ],
+            "look_at": [
+              1.1,
+              1.0,
+              0.0
+            ],
+            "size": 3.9,
+            "action": "idle"
+          },
+          {
+            "at": 5.4,
+            "position": [
+              6.8,
+              3.4,
+              8.4
+            ],
+            "look_at": [
+              0.15,
+              0.7,
+              -0.2
+            ],
+            "size": 6.5,
+            "action": "idle"
+          }
+        ],
+        "theme": "departure",
+        "preserve_result_action": true
+      }
+    },
+    "LC18": {
+      "intro": {
+        "id": "LC18_checkup_intro",
+        "title": "红圈之外",
+        "duration": 7.5,
+        "variant": "quiet",
+        "palette": "sea_glass",
+        "description": "先看桌面报告，再从主角肩侧看医生，最后保持两人平视，避免把待复查误演成确诊。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              1.8,
+              5.6,
+              4.2
+            ],
+            "look_at": [
+              0.0,
+              0.7,
+              0.1
+            ],
+            "size": 3.6,
+            "action": "read"
+          },
+          {
+            "at": 2.5,
+            "position": [
+              3.4,
+              2.1,
+              5.0
+            ],
+            "look_at": [
+              1.0,
+              1.1,
+              0.0
+            ],
+            "size": 3.4,
+            "action": "talk"
+          },
+          {
+            "at": 5.0,
+            "position": [
+              0.4,
+              2.7,
+              6.8
+            ],
+            "look_at": [
+              0.0,
+              1.0,
+              0.3
+            ],
+            "size": 5.0,
+            "action": "idle"
+          }
+        ],
+        "theme": "checkup",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC18_checkup_result",
+        "title": "下一步，还有空白",
+        "duration": 6.9,
+        "variant": "quiet",
+        "palette": "sea_glass",
+        "description": "从人物反应移到桌上仍摊开的纸，再退回完整诊室；不加入任何新的疾病结论。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              2.8,
+              2.0,
+              4.2
+            ],
+            "look_at": [
+              -1.0,
+              1.0,
+              0.7
+            ],
+            "size": 3.2,
+            "action": "idle"
+          },
+          {
+            "at": 2.3,
+            "position": [
+              1.4,
+              4.8,
+              3.6
+            ],
+            "look_at": [
+              0.0,
+              0.65,
+              0.1
+            ],
+            "size": 3.8,
+            "action": "idle"
+          },
+          {
+            "at": 4.6,
+            "position": [
+              5.8,
+              4.6,
+              7.7
+            ],
+            "look_at": [
+              0.0,
+              0.75,
+              -0.2
+            ],
+            "size": 6.0,
+            "action": "idle"
+          }
+        ],
+        "theme": "checkup",
+        "preserve_result_action": true
+      }
+    },
+    "LC20": {
+      "intro": {
+        "id": "LC20_encore_intro",
+        "title": "旧钥匙，新房间",
+        "duration": 8.1,
+        "variant": "stage",
+        "palette": "plum_gold",
+        "description": "钥匙的近景抬起，朝管理员平移，再越过乐器看见空出来的一块地面。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              2.8,
+              2.1,
+              4.1
+            ],
+            "look_at": [
+              -0.8,
+              0.65,
+              0.6
+            ],
+            "size": 2.9,
+            "action": "read"
+          },
+          {
+            "at": 2.7,
+            "position": [
+              3.8,
+              2.8,
+              4.6
+            ],
+            "look_at": [
+              1.0,
+              1.05,
+              0.0
+            ],
+            "size": 3.9,
+            "action": "talk"
+          },
+          {
+            "at": 5.4,
+            "position": [
+              4.8,
+              5.3,
+              6.7
+            ],
+            "look_at": [
+              0.1,
+              0.4,
+              -0.8
+            ],
+            "size": 6.3,
+            "action": "idle"
+          }
+        ],
+        "theme": "encore",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC20_encore_result",
+        "title": "声音留下的房间",
+        "duration": 7.5,
+        "variant": "stage",
+        "palette": "plum_gold",
+        "description": "从墙上灯影扫到人物，再落在乐器旁的空地；保留答应、暂缓或告别的实际分支。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              2.2,
+              3.0,
+              4.2
+            ],
+            "look_at": [
+              0.0,
+              1.5,
+              -2.1
+            ],
+            "size": 4.2,
+            "action": "idle"
+          },
+          {
+            "at": 2.5,
+            "position": [
+              4.4,
+              2.3,
+              4.8
+            ],
+            "look_at": [
+              -0.9,
+              1.0,
+              0.65
+            ],
+            "size": 3.9,
+            "action": "idle"
+          },
+          {
+            "at": 5.0,
+            "position": [
+              1.2,
+              6.3,
+              7.1
+            ],
+            "look_at": [
+              0.0,
+              0.25,
+              -0.2
+            ],
+            "size": 6.1,
+            "action": "idle"
+          }
+        ],
+        "theme": "encore",
+        "preserve_result_action": true
+      }
+    },
+    "LC23": {
+      "intro": {
+        "id": "LC23_album_intro",
+        "title": "照片外面的人",
+        "duration": 8.4,
+        "variant": "day",
+        "palette": "paper_lilac",
+        "description": "俯拍相册，镜头绕到翻页者身侧，再退开让空白与现在的人同时入画。不把照片中的人召回现场。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              0.6,
+              6.1,
+              4.0
+            ],
+            "look_at": [
+              -0.55,
+              0.65,
+              0.6
+            ],
+            "size": 3.4,
+            "action": "read"
+          },
+          {
+            "at": 2.8,
+            "position": [
+              4.5,
+              2.7,
+              4.6
+            ],
+            "look_at": [
+              -0.95,
+              1.0,
+              0.7
+            ],
+            "size": 3.8,
+            "action": "read"
+          },
+          {
+            "at": 5.6,
+            "position": [
+              5.5,
+              4.3,
+              7.2
+            ],
+            "look_at": [
+              0.0,
+              0.8,
+              -0.1
+            ],
+            "size": 5.8,
+            "action": "idle"
+          }
+        ],
+        "theme": "album",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "LC23_album_result",
+        "title": "这一页也曾是今天",
+        "duration": 7.8,
+        "variant": "day",
+        "palette": "paper_lilac",
+        "description": "先看当下的表情，镜头降到相册高度，最后朝窗边暖光退远；写字与否服从已提交选择。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              2.8,
+              2.4,
+              4.7
+            ],
+            "look_at": [
+              -1.05,
+              1.15,
+              0.75
+            ],
+            "size": 3.1,
+            "action": "idle"
+          },
+          {
+            "at": 2.6,
+            "position": [
+              3.0,
+              1.3,
+              4.6
+            ],
+            "look_at": [
+              -0.5,
+              0.65,
+              0.6
+            ],
+            "size": 3.6,
+            "action": "idle"
+          },
+          {
+            "at": 5.2,
+            "position": [
+              5.1,
+              4.7,
+              7.4
+            ],
+            "look_at": [
+              -0.4,
+              0.8,
+              0.0
+            ],
+            "size": 6.0,
+            "action": "idle"
+          }
+        ],
+        "theme": "album",
+        "preserve_result_action": true
+      }
+    },
+    "RX02": {
+      "intro": {
+        "id": "RX02_diagnosis_intro",
+        "title": "请再说慢一点",
+        "duration": 9.6,
+        "variant": "quiet",
+        "palette": "sea_glass",
+        "description": "稳定双人远景开始，缓慢移向医生停下的笔，最后停在主角旁，留足静默；不闪红、不惊吓、不作死亡预告。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              0.4,
+              3.1,
+              7.0
+            ],
+            "look_at": [
+              0.0,
+              0.9,
+              0.2
+            ],
+            "size": 5.6,
+            "action": "idle"
+          },
+          {
+            "at": 3.2,
+            "position": [
+              3.5,
+              2.4,
+              4.9
+            ],
+            "look_at": [
+              0.9,
+              0.95,
+              0.0
+            ],
+            "size": 3.5,
+            "action": "talk"
+          },
+          {
+            "at": 6.4,
+            "position": [
+              3.3,
+              2.2,
+              4.8
+            ],
+            "look_at": [
+              -1.05,
+              1.0,
+              0.75
+            ],
+            "size": 3.4,
+            "action": "idle"
+          }
+        ],
+        "theme": "diagnosis",
+        "preserve_result_action": false
+      },
+      "result": {
+        "id": "RX02_diagnosis_result",
+        "title": "把下一步写下来",
+        "duration": 8.7,
+        "variant": "quiet",
+        "palette": "sea_glass",
+        "description": "先留在主角，移到两人之间摊开的纸，结尾拉开但不熄灯。确诊是事实，未来没有被这个镜头提前判定。",
+        "shots": [
+          {
+            "at": 0.0,
+            "position": [
+              3.3,
+              2.2,
+              4.8
+            ],
+            "look_at": [
+              -1.05,
+              1.0,
+              0.75
+            ],
+            "size": 3.4,
+            "action": "idle"
+          },
+          {
+            "at": 2.9,
+            "position": [
+              0.3,
+              4.5,
+              4.7
+            ],
+            "look_at": [
+              0.0,
+              0.65,
+              0.25
+            ],
+            "size": 4.0,
+            "action": "idle"
+          },
+          {
+            "at": 5.8,
+            "position": [
+              5.5,
+              4.0,
+              7.5
+            ],
+            "look_at": [
+              0.0,
+              0.8,
+              0.05
+            ],
+            "size": 5.9,
+            "action": "idle"
+          }
+        ],
+        "theme": "diagnosis",
+        "preserve_result_action": true
+      }
+    }
+  }
+}
