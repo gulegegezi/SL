@@ -108,6 +108,8 @@ python tools/story_life_reference.py --seed 42 --export docs/story-life-sample.j
 
 运行版已采用 [story_life_dialogue.json](../data/story_life_dialogue.json) 中的新旁白稿：24 个事件各有四档引导、三个选择的回应。人物原话保持独立，不再把内心、旁白和对白混在同格，也不重复播报随机后果。四档主角台词仍来自原剧情包；旁白补充稿作为独立来源，不由旧剧情生成器覆盖。
 
+v3 起每个事件追加两组可选扩写：`roast`（旁白解说吐槽，四条，与四档对应，参考《艾希》《传说之下》《三角符文》的叙述者口吻，直接对玩家说话）与 `npc`（人物对话，三条，来自当场的父母、老师、同桌、医生等）。两组均为新增字段，原 `guide`/`responses` 保持不变；旁白吐槽只说话，不改写画面事实。漫画剧情包同步在生成器 [build_story_life_comic.py](../tools/build_story_life_comic.py) 中为每个事件提供 `narrator_asides`（四条档位对应的旁白吐槽）。
+
 旁白的引导与回应参考 [ICEY 开发者对玩家自主行动的说明](https://blog.playstation.com/?p=193550)，全部台词为原创。涉及疾病、事故与离世时避免戏谑诊断或评价当事人的价值。
 
 Godot 接入与旧页面迁移位于 `animation` 分支的 `scripts/life_comic_pages.gd`，本文档所在的 `story` 分支保留剧情来源。

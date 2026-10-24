@@ -29,7 +29,7 @@ func run() -> void:
 	assert(arcs.has("events") and arcs.has("nodes"))
 	var events: Array = Data.arc_events()
 	var nodes: Dictionary = Data.arc_nodes()
-	assert(events.size() >= 16, "four arcs x four beats")
+	assert(events.size() >= 16, "five arcs x four beats")
 	assert(nodes.size() >= 9, "branch nodes for the linked arcs")
 
 	# 结构：每个选项都有 memory，所有 next 都能解析。

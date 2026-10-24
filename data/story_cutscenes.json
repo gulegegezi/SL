@@ -6,38 +6,223 @@
     "OP01": {
       "bg": "hospital",
       "cast": [
-        {"role": "parent", "x": 118, "y": 74},
-        {"role": "lead", "x": 52, "y": 76}
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        },
+        {
+          "role": "lead",
+          "x": 52,
+          "y": 76
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "neutral", "text": "凌晨四点，雨刚停。产房的灯管嗡嗡响，你被一双戴橡胶手套的手倒提着，拍了两下脚心。"},
-        {"speaker": "你", "face": "lead", "expr": "shock", "text": "……"},
-        {"speaker": "妈妈", "face": "parent", "expr": "neutral", "text": "看，是个健康的宝宝。"}
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "neutral",
+          "text": "凌晨四点，雨刚停。产房的灯管嗡嗡响，你被一双戴橡胶手套的手倒提着，拍了两下脚心。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "shock",
+          "text": "……"
+        },
+        {
+          "speaker": "妈妈",
+          "face": "parent",
+          "expr": "neutral",
+          "text": "看，是个健康的宝宝。"
+        }
       ]
     },
     "V03": {
       "bg": "park",
       "cast": [
-        {"role": "lead", "x": 60, "y": 74},
-        {"role": "friend", "x": 118, "y": 74}
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 74
+        },
+        {
+          "role": "friend",
+          "x": 118,
+          "y": 74
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "neutral", "text": "手机响了三次，一个陌生号码。"},
-        {"speaker": "你", "face": "lead", "expr": "shock", "text": "喂？"},
-        {"speaker": "老同学", "face": "friend", "expr": "neutral", "text": "是我。……我回来了，想见一面。"},
-        {"speaker": "你", "face": "lead", "expr": "happy", "text": "你这些年，到底去哪儿了？"}
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "neutral",
+          "text": "手机响了三次，一个陌生号码。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "shock",
+          "text": "喂？"
+        },
+        {
+          "speaker": "老同学",
+          "face": "friend",
+          "expr": "neutral",
+          "text": "是我。……我回来了，想见一面。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "happy",
+          "text": "你这些年，到底去哪儿了？"
+        }
       ]
     },
     "V13": {
       "bg": "hospital",
       "cast": [
-        {"role": "lead", "x": 60, "y": 76},
-        {"role": "parent", "x": 118, "y": 74}
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
       ],
       "beats": [
-        {"speaker": "旁白", "face": "lead", "expr": "neutral", "text": "凌晨两点，医院的走廊很亮，亮得人睡不着。"},
-        {"speaker": "爸爸", "face": "parent", "expr": "neutral", "text": "没事，你回去睡吧。"},
-        {"speaker": "你", "face": "lead", "expr": "sad", "text": "爸，你先回去吧，今晚我守着。"}
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "neutral",
+          "text": "凌晨两点，医院的走廊很亮，亮得人睡不着。"
+        },
+        {
+          "speaker": "爸爸",
+          "face": "parent",
+          "expr": "neutral",
+          "text": "没事，你回去睡吧。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "sad",
+          "text": "爸，你先回去吧，今晚我守着。"
+        }
+      ]
+    },
+    "V41": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "teacher",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "neutral",
+          "text": "你把一兜零件放上柜台，发出哗啦一声轻响。柜台后的人抬起眼，放大镜还架在鼻梁上。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "shock",
+          "text": "爷爷，这个……还能装回去吗？"
+        },
+        {
+          "speaker": "钟爷爷",
+          "face": "teacher",
+          "expr": "neutral",
+          "text": "能。零件没多，是说明书画错了一个。"
+        },
+        {
+          "speaker": "钟爷爷",
+          "face": "teacher",
+          "expr": "neutral",
+          "text": "我拆过的闹钟，比你见过的都多。"
+        }
+      ]
+    },
+    "V43": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "teacher",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "neutral",
+          "text": "老街的灯次第亮起来。修表铺的灯还亮着，柜台后的人手在抖，针还是稳稳穿过了小孔。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "sad",
+          "text": "爷爷，这次换我来吧。"
+        },
+        {
+          "speaker": "钟爷爷",
+          "face": "teacher",
+          "expr": "happy",
+          "text": "先试三个月。不好，随时可以跑。"
+        }
+      ]
+    },
+    "V44": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 60,
+          "y": 76
+        },
+        {
+          "role": "friend",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "neutral",
+          "text": "打烊前的光最适合看表。年轻人把一块旧表推过柜台，表盖上磨出的痕迹，像一条走了很久的路。"
+        },
+        {
+          "speaker": "年轻人",
+          "face": "friend",
+          "expr": "neutral",
+          "text": "听说这条街，您修得好。"
+        },
+        {
+          "speaker": "你",
+          "face": "lead",
+          "expr": "happy",
+          "text": "表停了不要紧。记得上发条的人还在，就行。"
+        }
       ]
     }
   }
