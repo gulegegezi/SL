@@ -4,7 +4,7 @@ extends RefCounted
 ## NPC 只有 base head，没有表情变体；场景 PNG 为 160x90。
 
 const LEAD_STAGES := ["child", "teen", "youth", "adult", "middle", "elder"]
-const NPC_ROLES := ["boss", "friend", "mate", "parent", "partner", "teacher"]
+const NPC_ROLES := ["boss", "friend", "mate", "parent", "partner", "teacher", "naiwa"]
 const EXPR_PARTS := {"neutral": "head", "happy": "head_happy", "sad": "head_sad", "shock": "head_shock"}
 
 static var _cache: Dictionary = {}

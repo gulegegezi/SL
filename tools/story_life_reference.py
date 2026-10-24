@@ -70,7 +70,7 @@ class Run:
             death_at = max(1,setup.randint(68,108)-offset)
             self.roles[role] = {'id':f'{seed}:{role}:1','alive':True,'death_at':death_at}
         # A clinician is a scene-local new adult, not the father sprite's identity.
-        for role in ['clinician','hobby_admin','community_teacher']:
+        for role in ['clinician','hobby_admin','community_teacher','naiwa']:
             self.roles[role] = {'id':f'{seed}:{role}:scene','alive':True,'death_at':999}
 
     def eligible(self, event):
