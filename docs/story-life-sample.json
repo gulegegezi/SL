@@ -1,0 +1,30 @@
+{
+  "seed": 42,
+  "terminal": {
+    "age": 0,
+    "cause": "accident",
+    "ending": "END_ACCIDENT",
+    "overlays": [
+      "END_EARLY"
+    ]
+  },
+  "pages": [
+    {
+      "event_id": "LC01",
+      "age": 0,
+      "opening_tier": 0,
+      "choice_index": 0,
+      "intent": "hold",
+      "outcome_id": "LC01.C1.O1",
+      "facts": "爸爸把自己的手指换到毯角旁。你改抓手指，他维持着这个姿势坐了很久。",
+      "result_tier": 0,
+      "voice": {
+        "tier": 0,
+        "narrator": "爸爸把自己的手指换到毯角旁。你改抓手指，他维持着这个姿势坐了很久。 爸爸把毯子重新盖好，手仍留在你够得到的地方。",
+        "inner": "松手以后，它还会回来吗？",
+        "dialogue": "呜。"
+      }
+    }
+  ],
+  "rare_arcs": []
+}

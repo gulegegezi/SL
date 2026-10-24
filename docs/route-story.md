@@ -1,5 +1,7 @@
 # 剧情路线（story）
 
+本次新增独立人生条漫内容包：24 个年龄窗口事件、72 个选择、144 个随机后续、四档主观视角、6 组突发/照护分镜与 6 类尾声。总设计与接入边界见 [story-life-comic.md](story-life-comic.md)，全文见 [story-life-events.md](story-life-events.md)。新包尚未接入共享主控，不改变现有运行模式。
+
 > 分支：`story`。集成分支：`master`。动画路线：`animation`。
 > 总览：[docs/two-routes.md](two-routes.md)。
 > 叙事总纲：[story-bible.md](story-bible.md)；序章全文：[story-opening.md](story-opening.md)；四条线：[story-links.md](story-links.md)；过场剧本：[story-cutscenes.md](story-cutscenes.md)。

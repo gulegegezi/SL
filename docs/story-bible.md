@@ -1,5 +1,7 @@
 # 人生模拟器 · 故事圣经
 
+> 新的人生条漫改编：[设计与规则](story-life-comic.md)、[完整分镜稿](story-life-events.md)。保留本总纲的物件与关系，新增年龄窗口、随机后续、四档主观叙事与非固定人生长度；事实层与想象层分开。
+
 > 这本册子回答的是「这个游戏在讲什么」，不是「怎么实现」。
 > 实现细节见 [story-opening.md](story-opening.md)、[story-links.md](story-links.md)、[story-cutscenes.md](story-cutscenes.md)。
 
