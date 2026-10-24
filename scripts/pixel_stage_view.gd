@@ -1,7 +1,7 @@
 extends Node
 ## Visible comic panels own small, real 3D worlds. Offscreen worlds are released.
 const EnvironmentKit := preload("res://scripts/pixel_environment_3d.gd")
-const ActorRig := preload("res://scripts/pixel_actor_3d.gd")
+const ActorRig := preload("res://scripts/pixel_billboard_actor.gd")
 const InkTheme := preload("res://scripts/comic_theme.gd")
 const Grade := preload("res://shaders/pixel_grade.gdshader")
 const PropKit := preload("res://scripts/pixel_prop_3d.gd")
@@ -287,6 +287,8 @@ func update_actors() -> void:
 		npc.rotation.y = lerp_angle(-0.45,-1.0,turn)
 		npc.set_expression(str(panel.current_direction.get("expr","normal")) if speaker != "lead" else "normal")
 		npc.pose(npc_action,clock if npc_action == "idle" else maxf(0,time-0.25),talking and speaker != "lead",panel.reduced_motion)
+	lead.face_camera(camera,false)
+	if is_instance_valid(npc): npc.face_camera(camera,true)
 	# Evaluate grips after posing; receiving moves toward the receiver, not away.
 	object.position = prop_rest
 	if object.visible and PropKit.handheld(prop_kind):
