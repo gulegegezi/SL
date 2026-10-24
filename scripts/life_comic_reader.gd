@@ -63,7 +63,9 @@ func _ready() -> void:
 			notice.text = "原存档已保留。返回首页后可重新开始一生。"
 			button(actions,"返回首页",leave)
 			return
-		for spec in run.s.pages: append_page(spec,false)
+		for i in range(run.s.pages.size()):
+			run.s.pages[i] = Pages.upgrade_legacy(run.s.pages[i])
+			append_page(run.s.pages[i],false)
 	else:
 		run.start(int(Time.get_unix_time_from_system()) ^ Time.get_ticks_usec())
 		add_current()
@@ -149,7 +151,7 @@ func advance() -> void:
 		locked = false
 		return
 	if run.s.age-age > 1:
-		var gap := {"no":run.s.pages.size()+1,"age":run.s.age,"stage":"提笔带过","slots":[],"panels":[{"ink":"","shot":"detail","tone":"black","caption":"%d—%d 岁：日常在画外继续。下一格，留给值得停下来的事。" % [age,run.s.age],"shot_locked":true}]}
+		var gap := {"no":run.s.pages.size()+1,"age":run.s.age,"stage":"提笔带过","slots":[],"panels":[{"ink":"","shot":"detail","tone":"black","caption":"旁白：%d—%d 岁，日常在画外继续。下一格，留给值得停下来的事。" % [age,run.s.age],"shot_locked":true}]}
 		run.s.pages.append(gap)
 		append_page(gap,false)
 	add_current()

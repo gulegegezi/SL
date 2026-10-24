@@ -516,6 +516,9 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		if shot == "close" or shot == "extreme":
 			bx = r.position.x + pad
 			by = r.position.y + pad
+		if str(spec.get("text_channel","")) == "dialogue":
+			# The protagonist stands on the left, the conversational partner on the right.
+			bx = r.position.x + pad if str(spec.get("actor","lead")) == "lead" else r.end.x - bw - pad - 8
 		T.bubble(self, Vector2(bx, by), shown_bub, bw, bub_sz, -1 if bx < r.get_center().x else 1, bub)
 
 	if not sfx_s.is_empty():

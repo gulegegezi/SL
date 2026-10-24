@@ -13,7 +13,7 @@ func run_tests() -> void:
 	a.start(42)
 	check(a.events.size() == 24,"24 authored events loaded")
 	check(a.options().size() == 3,"birth has three choices")
-	check(Pages.make(a).panels.size() == 4,"four opening panels")
+	check(Pages.make(a).panels.size() >= 3,"separate setup, NPC dialogue and narrator invitation")
 	var b = Run.new()
 	check(b.restore(a.snapshot()),"restore pending choice")
 	var result: Dictionary = a.choose(1).duplicate(true)

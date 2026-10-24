@@ -18,6 +18,10 @@ func run_test() -> void:
 	reader.actions.get_child(0).pressed.emit()
 	check(not reader.run.s.committed.is_empty(),"actual choice signal resolves")
 	check(reader.run.s.pages.size() == 2,"result appears once in strip")
+	if "--capture" in OS.get_cmdline_user_args():
+		await create_timer(2).timeout
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("D:/gamelife/life-dialogue-birth-preview.png")
 	reader.select(1)
 	check(reader.run.s.pages.size() == 2,"double click cannot append duplicate result")
 	reader.actions.get_child(0).pressed.emit()
