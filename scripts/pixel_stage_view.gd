@@ -183,6 +183,9 @@ func create_world() -> void:
 	grading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var grade_material := ShaderMaterial.new()
 	grade_material.shader = Grade
+	var preset: Dictionary = _grade_preset(str(panel.spec.get("scene","home")), str(panel.spec.get("pixel_variant","day")))
+	for uniform_name in preset:
+		grade_material.set_shader_parameter(uniform_name, preset[uniform_name])
 	grading.material = grade_material
 	grading_layer.add_child(grading)
 	update_size()
@@ -343,3 +346,50 @@ func draw_on() -> void:
 			panel.draw_arc(_target_rect.get_center(),17,0,TAU,20,Color("efc478"),1.5)
 	if cg_time >= 0:
 		panel.draw_string(InkTheme.font_body(),_screen_rect.position+Vector2(8,16),"特别镜头 · "+str(cg.get("title","")),HORIZONTAL_ALIGNMENT_LEFT,_screen_rect.size.x-16,12,Color("f3dda9"))
+
+
+## 每个场景一套后处理参数：办公室的冷、家里的暖、医院的白、公园的开阔。
+## 参考《八方旅人》的移轴景深、《风来之国》的暖灯冷影、《旅行青蛙》的低对比柔光。
+static func _grade_preset(scene: String, variant: String) -> Dictionary:
+	var night: bool = variant == "night"
+	var preset := {
+		"strength": 0.72,
+		"dof_strength": 0.58,
+		"focus_center": 0.56,
+		"focus_width": 0.22,
+		"bloom_strength": 0.30,
+		"bloom_threshold": 0.66,
+		"vignette": 0.24,
+		"warm_cast": 0.30,
+		"haze": 0.10,
+		"haze_color": Vector3(0.145, 0.247, 0.286),
+	}
+	match scene:
+		"office":
+			preset["warm_cast"] = -0.12          # 荧光灯下偏冷
+			preset["bloom_strength"] = 0.26
+			preset["focus_width"] = 0.20
+		"hospital":
+			preset["warm_cast"] = -0.28          # 病房的临床白
+			preset["vignette"] = 0.34
+			preset["bloom_strength"] = 0.22
+			preset["haze"] = 0.14
+		"park":
+			preset["dof_strength"] = 0.44        # 室外景深远一点，别把人糊掉
+			preset["focus_width"] = 0.30
+			preset["vignette"] = 0.22
+			preset["warm_cast"] = 0.34
+			preset["bloom_strength"] = 0.24
+			preset["haze"] = 0.16
+			preset["haze_color"] = Vector3(0.176, 0.286, 0.294)
+		"classroom":
+			preset["warm_cast"] = 0.20
+			preset["bloom_strength"] = 0.26
+		_:
+			preset["warm_cast"] = 0.38           # 家里最暖
+	if night:
+		preset["bloom_strength"] = float(preset["bloom_strength"]) + 0.16
+		preset["warm_cast"] = float(preset["warm_cast"]) + 0.10
+		preset["vignette"] = float(preset["vignette"]) + 0.06
+		preset["haze"] = float(preset["haze"]) + 0.04
+	return preset
