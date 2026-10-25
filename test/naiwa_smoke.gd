@@ -1,5 +1,5 @@
 extends SceneTree
-## 奶蛙 NPC 立绘回归：分件齐全、脸部可用（LC25 奶蛙同学的 cast 依赖）。
+## 奶蛙 NPC 立绘回归：分件齐全、脸部可用、世界模式整身 fallback 可加载。
 const SpriteKit := preload("res://scripts/sprite_kit.gd")
 
 func _initialize() -> void:
@@ -12,5 +12,7 @@ func run() -> void:
 	for t in parts:
 		assert(t != null, "naiwa part must load")
 	assert(SpriteKit.face("naiwa", "happy", true) != null, "naiwa face must load")
-	print("PASS: naiwa npc parts, face")
+	assert(load("res://assets/chars/npc_naiwa_idle_0_normal.png") != null,
+		"naiwa idle fallback texture must load")
+	print("PASS: naiwa npc parts, face, idle fallback")
 	quit()

@@ -106,5 +106,34 @@ func run() -> void:
 	locked.queue_free()
 	await process_frame
 
-	print("PASS: cutscene data, sprite kit, beats -> heart-cursor choices, locked-option skip")
+	# 剧情 beat 直接驱动逐帧动作：V03 老同学挥手，下一拍收回。
+	var v03_ev := {
+		"id": "V03",
+		"choices": [
+			{"label": "去见他", "result": ""},
+			{"label": "说最近很忙，改天", "result": ""},
+			{"label": "问他：你当年为什么走", "result": ""},
+		],
+	}
+	var wave := CutsceneStage.new()
+	wave.size = Vector2(520, 480)
+	root.add_child(wave)
+	await process_frame
+	wave.configure(v03_ev, Data.cutscene_for("V03"), _state(30), v03_ev["choices"])
+	wave.play()
+	for _i in range(4):
+		wave.advance()
+	assert(wave.beat_index == 2, "should reach the friend's line")
+	assert(str(wave.cast[1].get("action", "")) == "wave", "friend should wave on the line")
+	for _i in range(2):
+		wave.advance()
+	assert(wave.beat_index == 3)
+	assert(str(wave.cast[1].get("action", "")) == "idle", "friend should stop waving")
+	assert(wave.lead_expr == "happy", "lead expression should switch to happy")
+	wave.queue_free()
+	await process_frame
+	# 等音频服务器释放最后一次确认音的播放句柄。
+	await create_timer(0.15).timeout
+
+	print("PASS: cutscene data, sprite kit, beats -> heart choices, locked skip, beat-driven actions")
 	quit()

@@ -143,6 +143,8 @@ static func opening_start(line: String) -> String:
 
 ## 分支节点优先查序章与联动剧本，再查普通事件，这样随机事件也能 next 到后续节点。
 static func find_story_node(eid: String) -> Dictionary:
+	var short_node := preload("res://scripts/short_life.gd").node(eid)
+	if not short_node.is_empty(): return short_node
 	var nodes: Dictionary = opening_nodes()
 	if nodes.has(eid):
 		return nodes[eid]

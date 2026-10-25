@@ -5,6 +5,7 @@
 > 两者都存放在 GitHub 仓库 **SL**（`gulegegezi/SL`）中。
 > 序章之后的跨年龄段联动剧本见 [story-links.md](story-links.md)。
 > 叙事总纲、人物与写作规则见 [story-bible.md](story-bible.md)。
+> 可玩的三岁前试玩见 [story-demo-pre3.md](story-demo-pre3.md)。
 
 ![序章首屏：出生 · 第一声](story-opening-preview.png)
 

@@ -5,6 +5,7 @@ extends RefCounted
 const DataLoader := preload("res://scripts/data_loader.gd")
 const GameState := preload("res://scripts/game_state.gd")
 const SaveManager := preload("res://scripts/save_manager.gd")
+const ShortLife := preload("res://scripts/short_life.gd")
 
 signal game_started(s: GameState)
 signal event_picked(s: GameState, ev: Dictionary)
@@ -52,8 +53,9 @@ func wpick(items: Array, wf: Callable) -> Variant:
 # ==========================================================
 # 新游戏（掷骰出生）
 # ==========================================================
-func new_game() -> GameState:
+func new_game(short_run: bool = true) -> GameState:
 	state = GameState.new()
+	state.short_mode = short_run
 	var rkeys := DataLoader.region_keys()
 	var region_key: String = wpick(rkeys, func(k): return 4 if DataLoader.regions()[k].get("hard", false) else 10)
 	var region: Dictionary = DataLoader.regions()[region_key]
@@ -135,6 +137,9 @@ func new_game() -> GameState:
 ## 开局剧情入口：普通线 / 抽象线各自从 story_opening.json 的 start 节点开始。
 ## 序章节点通过 choice.next / event.next 串成分支树，播放期间不推进年龄。
 func begin_opening() -> bool:
+	if state != null and state.short_mode:
+		state.opening_done = true
+		return false
 	if state == null or state.opening_done or not state.story_queue.is_empty():
 		return false
 	var start := DataLoader.opening_start(state.line)
@@ -157,6 +162,12 @@ func pick_event() -> Dictionary:
 			var node: Dictionary = _fill_node(branch)
 			event_picked.emit(state, node)
 			return node
+	if s.short_mode:
+		var selected := ShortLife.pick(s, rng)
+		if selected.is_empty(): return {}
+		var short_event := _fill_node(selected)
+		if not short_event.is_empty(): event_picked.emit(s, short_event)
+		return short_event
 
 	# 特殊事件优先
 	var xhsd := DataLoader.xhsd_provinces()
@@ -277,6 +288,8 @@ func apply_effects(eff: Dictionary) -> void:
 
 func choose(c: Dictionary, ev: Dictionary) -> void:
 	var s := state
+	if s.short_mode and c.has("nextAge"):
+		s.short_target_age = int(c.nextAge)
 	var eff: Dictionary = c.get("effects", {})
 	# 标签
 	if c.has("tags"):
@@ -368,6 +381,7 @@ func _fill_node(node: Dictionary) -> Dictionary:
 	var out: Dictionary = node.duplicate(true)
 	out["title"] = _fill_text(str(out.get("title", "")))
 	out["text"] = _fill_text(str(out.get("text", "")))
+	for panel in out.get("comic", []): panel["caption"] = _fill_text(str(panel.get("caption", "")))
 	if out.has("altTitle"):
 		out["altTitle"] = _fill_text(str(out["altTitle"]))
 	if out.has("altText"):
@@ -381,6 +395,7 @@ func _fill_node(node: Dictionary) -> Dictionary:
 				continue
 			c["label"] = _fill_text(str(c.get("label", "")))
 			c["result"] = _fill_text(str(c.get("result", "")))
+			for panel in c.get("comic", []): panel["caption"] = _fill_text(str(panel.get("caption", "")))
 	return out
 
 ## 条件：tags / notTags / anyTags / line / min* / max* / relations /
@@ -447,6 +462,18 @@ func choice_available(c: Dictionary) -> bool:
 			return false
 	return true
 
+func choice_visible(c: Dictionary) -> bool:
+	return choice_available(c)
+
+func choice_lock_hint(c: Dictionary) -> String:
+	for key in c.get("require", {}):
+		if state.get_attr(str(key)) < int(c.require[key]): return "%s需 %d" % [key, c.require[key]]
+	for tag in c.get("requireTags", []):
+		if not state.has_tag(str(tag)): return "需要「%s」" % tag
+	for who in c.get("requireRelations", {}):
+		if state.get_relation(str(who)) < int(c.requireRelations[who]): return "需要与%s更亲近" % who
+	return ""
+
 # ==========================================================
 # 阶段推进
 # ==========================================================
@@ -455,6 +482,11 @@ func choice_available(c: Dictionary) -> bool:
 func _next_phase(age_gain: int = -1) -> void:
 	var s := state
 	var years := age_gain
+	var previous_age := int(s.age)
+	if s.short_mode:
+		years = maxi(0, ShortLife.next_age(s) - s.age)
+		s.short_previous_age = previous_age
+		s.short_target_age = -1
 	if years < 0:
 		years = 3 if s.abstract_val >= 86 else 2
 		if float(s.step) > float(s.max_step) * 0.66:
@@ -486,9 +518,14 @@ func _next_phase(age_gain: int = -1) -> void:
 		s.tags["债台高筑"] = true
 
 	# 自然衰退
-	if s.age > 30 and s.age % 5 == 0:
+	if s.short_mode:
+		# 压缩的是阅读时间：跨过的衰老阈值仍然结算，不能靠跳年保健。
+		var adult_decay := maxi(0, s.age - 30) / 10 - maxi(0, previous_age - 30) / 10
+		var elder_decay := maxi(0, s.age - 65) / 10 - maxi(0, previous_age - 65) / 10
+		s.health -= int(adult_decay) + int(elder_decay)
+	elif s.age > 30 and s.age % 5 == 0:
 		s.health -= 1
-	if s.age > 60 and s.age % 3 == 0:
+	if not s.short_mode and s.age > 60 and s.age % 3 == 0:
 		s.health -= 1
 		s.charm -= 1
 

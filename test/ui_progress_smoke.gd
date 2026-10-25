@@ -26,7 +26,8 @@ func run() -> void:
 	await process_frame
 	# 独立运行态，避免测试修改玩家的局数或结局存档。
 	main.gc.state = main.GameState.new()
-	main.gc.state.age = 1
+	# 4 岁：避开带过场的前三岁事件（C33/C34），本测试只验证按钮布局与继续按钮。
+	main.gc.state.age = 4
 	main.gc.state.health = 20
 	main.gc.state.line = "normal"
 	main.gc.state.family = {"name": "长文本回归", "desc": "这是一段用于测试滚动布局的童年故事。".repeat(12)}

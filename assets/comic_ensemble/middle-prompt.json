@@ -1,0 +1,7 @@
+{
+  "mode": "built-in image_gen",
+  "prompt": "Create ONE WIDE HORIZONTAL SPRITE STRIP with exactly FOUR isolated full-body poses of the SAME middle-aged man, matching the navy-cardigan gray-templed man in ROW FIVE of the attached reference. Natural anime proportions, detailed pixel art identical to reference, glasses, charcoal trousers, brown shoes, white shirt and ALWAYS NAVY BLUE CARDIGAN in ALL FOUR poses (never brown). Four equal columns, ONE row, full bodies with all shoes, head and fingers inside each cell; transparent background. A neutral standing feet together relaxed hands. B anticipation clenched hand at chest slight lean back. C energetic leaning FORWARD and open palm reaching to viewer-right. D friendly WAVE hand raised beside head, natural smile. All facing three-quarter viewer-right. Clear body and arm pose differences, same face identity and clothing every frame. Crisp dark teal ink and pixel shading, no gradients or blur, no text, no shadows outside figures, no grid lines. Use the largest practical horizontal canvas, four complete figures side by side only. Real transparent alpha.",
+  "reference": "lead-v1.png",
+  "selected": "middle-v1.png",
+  "note": "An attempted atlas recolor edit failed due to a connection error; this separate four-pose generation replaces the middle-aged row and keeps its cardigan navy throughout."
+}

@@ -1,0 +1,2997 @@
+{
+  "version": 1,
+  "ages": [
+    1,
+    4,
+    7,
+    12,
+    16,
+    18,
+    22,
+    27,
+    33,
+    40,
+    48,
+    56,
+    65,
+    74,
+    84,
+    94
+  ],
+  "events": [
+    {
+      "id": "SL01",
+      "age": 1,
+      "title": "抓周：预算只有一张桌子",
+      "text": "大人把书、玩具和一只旧算盘摆在桌上。你还不懂职业，只知道玩具离自己最远。妈妈把玩具推到桌沿。你伸手去够，围观的人比你还紧张。这次伸手，要抓住什么？",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "抱走玩具，先开心再说",
+          "result": "你抓住玩具笑了。大人讨论了半天，最终得出结论：这孩子会玩。",
+          "effects": {
+            "health": 1,
+            "charm": 1
+          },
+          "tags": [
+            "爱玩"
+          ],
+          "comic": [
+            {
+              "caption": "你抓住玩具笑了。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "toy",
+              "actor": "lead"
+            },
+            {
+              "caption": "大人讨论了半天，最终得出结论：这孩子会玩。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "翻开书，看看有没有吃的",
+          "result": "你翻开书认真看了三秒。然后咬住书角，完成了人生第一次知识摄入。",
+          "effects": {
+            "int": 2
+          },
+          "tags": [
+            "好奇"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开书认真看了三秒。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "然后咬住书角，完成了人生第一次知识摄入。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "伸手抓住妈妈的手指",
+          "result": "你抓住妈妈的手指不肯松开。她笑着说，这份工作暂时不需要简历。",
+          "effects": {
+            "health": 1
+          },
+          "tags": [
+            "恋家"
+          ],
+          "comic": [
+            {
+              "caption": "你抓住妈妈的手指不肯松开。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "她笑着说，这份工作暂时不需要简历。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "parent": 2
+          }
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "大人把书、玩具和一只旧算盘摆在桌上。你还不懂职业，只知道玩具离自己最远。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_parent"
+        },
+        {
+          "caption": "妈妈把玩具推到桌沿。你伸手去够，围观的人比你还紧张。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "drag",
+            "prop": "toy",
+            "hint": "把物件拖到右侧虚线框",
+            "reveal": "玩具底下压着一张小纸条：喜欢的东西，也值得认真。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "这次伸手，要抓住什么？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL04",
+      "age": 4,
+      "title": "墙上的第一届画展",
+      "text": "墙刚刷白，你的蜡笔就开始营业。太阳有八条腿，小人比房子还高。你举起画笔。门外响起钥匙声，妈妈要回来了。画展即将迎来唯一的赞助人。",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "承认是我画的，请她评个奖",
+          "result": "你举起画笔坦白。妈妈没有颁奖，却搬来一叠旧报纸给你继续画。",
+          "effects": {
+            "charm": 2
+          },
+          "tags": [
+            "坦率"
+          ],
+          "comic": [
+            {
+              "caption": "你举起画笔坦白。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "shy",
+              "action": "raise",
+              "prop": "pencil",
+              "actor": "lead"
+            },
+            {
+              "caption": "妈妈没有颁奖，却搬来一叠旧报纸给你继续画。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "parent": 1
+          }
+        },
+        {
+          "label": "把画描到纸上，保留作品",
+          "result": "你翻开本子，把八条腿的太阳重新画好。很多年后，第一张画还夹在里面。",
+          "effects": {
+            "int": 1,
+            "charm": 1
+          },
+          "tags": [
+            "画画"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开本子，把八条腿的太阳重新画好。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "很多年后，第一张画还夹在里面。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "next": "SL04B"
+        },
+        {
+          "label": "把拖把摆成策展人的姿势",
+          "result": "你把拖把递给妈妈，说这叫合作创作。她笑了，然后邀请你参与展后清洁。",
+          "effects": {
+            "health": 1,
+            "abstract": 3
+          },
+          "tags": [
+            "幽默"
+          ],
+          "comic": [
+            {
+              "caption": "你把拖把递给妈妈，说这叫合作创作。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "她笑了，然后邀请你参与展后清洁。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "墙刚刷白，你的蜡笔就开始营业。太阳有八条腿，小人比房子还高。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_parent"
+        },
+        {
+          "caption": "你举起画笔。门外响起钥匙声，妈妈要回来了。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "tap",
+            "prop": "pencil",
+            "hint": "点击画中物件",
+            "reveal": "门口贴着保洁提醒。墙纸后面，也许还有别的办法。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "画展即将迎来唯一的赞助人。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL07",
+      "age": 7,
+      "title": "同桌的半块橡皮",
+      "text": "开学第一天，老师让你写名字。你的铅笔刚落纸就断了，同桌把橡皮切成两半。同桌把半块橡皮推过来，又悄悄指了指窗外的操场。认识一个人，有时比写完一行字更难。",
+      "once": true,
+      "important": true,
+      "scene": "classroom",
+      "choices": [
+        {
+          "label": "把铅笔也掰成两份——算了，借他削笔刀",
+          "result": "你递过削笔刀，两人都笑了。放学时，他果然在校门口等你。",
+          "effects": {
+            "charm": 2
+          },
+          "tags": [
+            "老友"
+          ],
+          "comic": [
+            {
+              "caption": "你递过削笔刀，两人都笑了。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "eraser",
+              "actor": "lead"
+            },
+            {
+              "caption": "放学时，他果然在校门口等你。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 2
+          }
+        },
+        {
+          "label": "先道谢，约他一起写作业",
+          "result": "你翻开作业本，给同桌留了一半桌面。第一支学习小组只有两个人，效率暂时未知。",
+          "effects": {
+            "int": 2
+          },
+          "tags": [
+            "认真"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开作业本，给同桌留了一半桌面。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "第一支学习小组只有两个人，效率暂时未知。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "独自把名字写完，放学再打招呼",
+          "result": "你握紧铅笔把名字写好。没说出口的那句谢谢，被你写在了小纸条上。",
+          "effects": {
+            "int": 1,
+            "charm": 1
+          },
+          "tags": [
+            "观察者"
+          ],
+          "comic": [
+            {
+              "caption": "你握紧铅笔把名字写好。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "shy",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "没说出口的那句谢谢，被你写在了小纸条上。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "开学第一天，老师让你写名字。你的铅笔刚落纸就断了，同桌把橡皮切成两半。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "同桌把半块橡皮推过来，又悄悄指了指窗外的操场。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "drag",
+            "prop": "eraser",
+            "hint": "把物件拖到右侧虚线框",
+            "reveal": "橡皮背面歪歪扭扭地写着：放学一起走？",
+            "completed": false
+          }
+        },
+        {
+          "caption": "认识一个人，有时比写完一行字更难。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL12",
+      "age": 12,
+      "title": "成绩单会不会烫手",
+      "text": "期末成绩单折了三折，还是塞不进你假装轻松的口袋。老师把你叫到窗边。你翻开成绩单。老师先问：最近睡得好吗？红色分数之外，你愿意说点什么？",
+      "once": true,
+      "important": true,
+      "scene": "classroom",
+      "choices": [
+        {
+          "label": "承认不会的题，请她再讲一次",
+          "result": "你翻开错题本。老师画了三个小圈，原来最难的地方只差一步。",
+          "effects": {
+            "int": 2
+          },
+          "tags": [
+            "会求助"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开错题本。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "老师画了三个小圈，原来最难的地方只差一步。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "teacher": 1
+          }
+        },
+        {
+          "label": "保证下次第一，今晚开始熬夜",
+          "result": "你打开电脑，把计划排到凌晨。第一晚只完成了计划的标题。",
+          "effects": {
+            "int": 2,
+            "health": -1
+          },
+          "tags": [
+            "要强"
+          ],
+          "comic": [
+            {
+              "caption": "你打开电脑，把计划排到凌晨。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "type",
+              "prop": "computer",
+              "actor": "lead"
+            },
+            {
+              "caption": "第一晚只完成了计划的标题。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "先睡够，再慢慢补回来",
+          "result": "你收起成绩单，认真睡了一觉。第二天的题没有变简单，但眼睛终于看得清了。",
+          "effects": {
+            "health": 2,
+            "int": 1
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你收起成绩单，认真睡了一觉。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "sleep",
+              "action": "sleep",
+              "prop": "bed",
+              "actor": "lead"
+            },
+            {
+              "caption": "第二天的题没有变简单，但眼睛终于看得清了。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "期末成绩单折了三折，还是塞不进你假装轻松的口袋。老师把你叫到窗边。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_teacher"
+        },
+        {
+          "caption": "你翻开成绩单。老师先问：最近睡得好吗？",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "letter",
+            "hint": "点击翻开纸页",
+            "reveal": "评语栏写着：会问问题，比永远答对更重要。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "红色分数之外，你愿意说点什么？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL12X",
+      "age": 12,
+      "title": "班费失踪案，嫌疑人是风",
+      "text": "班费信封少了十元。所有人沉默，只有窗户在哐当作响，同桌举手要求先审问风。你翻开账本，末页夹着一张没找零的小卖部收据。侦探事务所今天只有一张课桌。",
+      "once": true,
+      "important": true,
+      "scene": "classroom",
+      "choices": [
+        {
+          "label": "先核对账本，不给任何人贴标签",
+          "result": "你翻开账本逐项核对。钱没丢，只是班长把借条夹进了语文书。",
+          "effects": {
+            "int": 2,
+            "charm": 1
+          },
+          "tags": [
+            "细心"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开账本逐项核对。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "钱没丢，只是班长把借条夹进了语文书。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "把风叫作证人，顺便缓和气氛",
+          "result": "你抬起账本，宣布风暂时无罪。大家笑出来以后，班长终于想起了借条。",
+          "effects": {
+            "charm": 2,
+            "abstract": 2
+          },
+          "tags": [
+            "幽默"
+          ],
+          "comic": [
+            {
+              "caption": "你抬起账本，宣布风暂时无罪。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "大家笑出来以后，班长终于想起了借条。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "陪被怀疑的同学一起找证据",
+          "result": "你走到同桌身边，替他留了座位。账终于对上时，他只说了一句谢谢。",
+          "effects": {
+            "charm": 1
+          },
+          "tags": [
+            "仗义"
+          ],
+          "comic": [
+            {
+              "caption": "你走到同桌身边，替他留了座位。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "walk",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "账终于对上时，他只说了一句谢谢。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 2
+          }
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "班费信封少了十元。所有人沉默，只有窗户在哐当作响，同桌举手要求先审问风。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你翻开账本，末页夹着一张没找零的小卖部收据。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "letter",
+            "hint": "点击翻开纸页",
+            "reveal": "收据背面写着：班长垫付十元，尚未归还。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "侦探事务所今天只有一张课桌。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ],
+      "need_tags": [
+        "幽默"
+      ]
+    },
+    {
+      "id": "SL16",
+      "age": 16,
+      "title": "社团招新：世界缺一个鼓手",
+      "text": "社团海报说零基础可报，面试却问你会什么。你说会按时吃饭，学长说乐队很需要稳定的人。你敲了敲桌上的练习鼓。隔壁读书社一起抬起了头。放学后的时间，要留给谁？",
+      "once": true,
+      "important": true,
+      "scene": "classroom",
+      "choices": [
+        {
+          "label": "加入乐队，先把节拍练稳",
+          "result": "你举起鼓槌，从四拍练起。首演只有三位观众，其中一位是来借教室的。",
+          "effects": {
+            "charm": 2,
+            "health": 1
+          },
+          "tags": [
+            "乐队"
+          ],
+          "comic": [
+            {
+              "caption": "你举起鼓槌，从四拍练起。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "drum",
+              "actor": "lead"
+            },
+            {
+              "caption": "首演只有三位观众，其中一位是来借教室的。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "next": "SL16B"
+        },
+        {
+          "label": "带着画本去做海报",
+          "result": "你翻开画本，把太阳改成四条腿。大家一致认为，这已经是成熟的设计。",
+          "effects": {
+            "int": 1,
+            "charm": 1
+          },
+          "tags": [
+            "画画"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开画本，把太阳改成四条腿。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "pencil",
+              "actor": "lead"
+            },
+            {
+              "caption": "大家一致认为，这已经是成熟的设计。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "不加社团，给自己留一段空白",
+          "result": "你合上报名表，慢慢走回家。黄昏没有记入履历，却让你很放松。",
+          "effects": {
+            "health": 2
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你合上报名表，慢慢走回家。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "walk",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "黄昏没有记入履历，却让你很放松。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "社团海报说零基础可报，面试却问你会什么。你说会按时吃饭，学长说乐队很需要稳定的人。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你敲了敲桌上的练习鼓。隔壁读书社一起抬起了头。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "tap",
+            "prop": "drum",
+            "hint": "点击画中物件",
+            "reveal": "海报背面还有一行小字：别把爱好也过成排名。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "放学后的时间，要留给谁？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL18",
+      "age": 18,
+      "title": "志愿表与不会回头的列车",
+      "text": "录取线出来的晚上，饭菜热了两次。父母把地图摊开，筷子指向他们没有去过的城市。你翻开志愿表，把想去的地方圈起来。妈妈把水杯推近。这次决定可以听建议，但签名是你的。",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "去外地读书，学着自己照顾自己",
+          "result": "你签下志愿表，拖着箱子走向车站。妈妈挥手到看不见你，才想起忘了叮嘱天气。",
+          "effects": {
+            "int": 2,
+            "money": -2
+          },
+          "tags": [
+            "远行"
+          ],
+          "comic": [
+            {
+              "caption": "你签下志愿表，拖着箱子走向车站。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "妈妈挥手到看不见你，才想起忘了叮嘱天气。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "parent": 1
+          }
+        },
+        {
+          "label": "留在本地，学一门想学的专业",
+          "result": "你签下志愿表，圈好通勤路线。新生活开始了，家里的拖鞋还在原来的地方。",
+          "effects": {
+            "int": 1,
+            "health": 1
+          },
+          "tags": [
+            "恋家"
+          ],
+          "comic": [
+            {
+              "caption": "你签下志愿表，圈好通勤路线。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "新生活开始了，家里的拖鞋还在原来的地方。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "先工作，学费和方向都慢慢攒",
+          "result": "你收起志愿表，走进第一家愿意收学徒的店。别人问梦想时，你说先学会修好眼前的东西。",
+          "effects": {
+            "money": 3,
+            "health": 1
+          },
+          "tags": [
+            "手艺人"
+          ],
+          "comic": [
+            {
+              "caption": "你收起志愿表，走进第一家愿意收学徒的店。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "walk",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "别人问梦想时，你说先学会修好眼前的东西。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "nextAge": 27
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "录取线出来的晚上，饭菜热了两次。父母把地图摊开，筷子指向他们没有去过的城市。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_parent"
+        },
+        {
+          "caption": "你翻开志愿表，把想去的地方圈起来。妈妈把水杯推近。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "hold",
+            "prop": "letter",
+            "hint": "按住画中物件片刻",
+            "reveal": "地图边缘写着车次，也写着家里的电话号码。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "这次决定可以听建议，但签名是你的。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL22",
+      "age": 22,
+      "title": "招聘启事：欢迎拥有三年经验的应届生",
+      "text": "面试官问你最大的缺点。你盯着空调遥控器，突然觉得不会撒谎也是一种缺点。你翻开作品集。老板终于从简历上抬起头来。要怎样开始你的第一份工作？",
+      "once": true,
+      "important": true,
+      "scene": "office",
+      "choices": [
+        {
+          "label": "讲一个做过的项目，不背标准答案",
+          "result": "你翻开作品集，把失败的步骤也讲清楚。老板点头，说下周来试试。",
+          "effects": {
+            "money": 3,
+            "int": 1
+          },
+          "tags": [
+            "务实"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开作品集，把失败的步骤也讲清楚。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "老板点头，说下周来试试。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "挑一份能准时下班的工作",
+          "result": "你签下合同，先问清楚休息时间。你的第一项职业技能是按时关机。",
+          "effects": {
+            "money": 1,
+            "health": 2
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你签下合同，先问清楚休息时间。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "poweroff",
+              "prop": "computer",
+              "actor": "lead"
+            },
+            {
+              "caption": "你的第一项职业技能是按时关机。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "和朋友试着开一间小工作室",
+          "result": "你给朋友打电话，约在便宜的咖啡店。创业计划先从两人平摊一杯咖啡开始。",
+          "effects": {
+            "money": -2,
+            "charm": 2
+          },
+          "tags": [
+            "合伙人"
+          ],
+          "comic": [
+            {
+              "caption": "你给朋友打电话，约在便宜的咖啡店。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "创业计划先从两人平摊一杯咖啡开始。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          },
+          "next": "SL22B"
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "面试官问你最大的缺点。你盯着空调遥控器，突然觉得不会撒谎也是一种缺点。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_boss"
+        },
+        {
+          "caption": "你翻开作品集。老板终于从简历上抬起头来。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "book",
+            "hint": "点击翻开纸页",
+            "reveal": "作品集最后一页，是你真正花时间解决过的问题。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "要怎样开始你的第一份工作？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL22X",
+      "age": 22,
+      "title": "你的作品，比你的简历先到了",
+      "text": "以前画的海报被人转发，客户问画手能不能明天交稿。你看了一眼钟，今天只剩十分钟。你拿起画笔，又翻开写满修改意见的合同。被看见之后，也要学会报价。",
+      "once": true,
+      "important": true,
+      "scene": "office",
+      "choices": [
+        {
+          "label": "说清范围，认真报一个价",
+          "result": "你签下合同，约定三轮修改。客户第一次回复好的，你反而有点不习惯。",
+          "effects": {
+            "money": 4,
+            "charm": 1
+          },
+          "tags": [
+            "务实"
+          ],
+          "comic": [
+            {
+              "caption": "你签下合同，约定三轮修改。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "客户第一次回复好的，你反而有点不习惯。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "先做样稿，看看是否真的合适",
+          "result": "你翻开画本，画出一个小样。被拒绝的方案后来成了自己的头像。",
+          "effects": {
+            "int": 2,
+            "money": 1
+          },
+          "tags": [
+            "画画"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开画本，画出一个小样。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "pencil",
+              "actor": "lead"
+            },
+            {
+              "caption": "被拒绝的方案后来成了自己的头像。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "暂时拒绝，先把身体养好",
+          "result": "你放下画笔，关掉电脑。第二天醒来，喜欢画画这件事还在。",
+          "effects": {
+            "health": 3
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你放下画笔，关掉电脑。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "sleep",
+              "action": "sleep",
+              "prop": "bed",
+              "actor": "lead"
+            },
+            {
+              "caption": "第二天醒来，喜欢画画这件事还在。",
+              "shot": "close",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "idle",
+              "prop": "",
+              "actor": "lead"
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "以前画的海报被人转发，客户问画手能不能明天交稿。你看了一眼钟，今天只剩十分钟。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你拿起画笔，又翻开写满修改意见的合同。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "hold",
+            "prop": "pencil",
+            "hint": "按住画中物件片刻",
+            "reveal": "合同边角写着：修改次数需要提前约定。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "被看见之后，也要学会报价。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ],
+      "need_tags": [
+        "画画"
+      ]
+    },
+    {
+      "id": "SL27",
+      "age": 27,
+      "title": "深夜的手机，没写完的消息",
+      "text": "聊天框亮了又暗。对方问周末能不能见面，你删掉三次精心编写的轻松回复。你拿起手机，看着那句简单的邀请。窗外下雨了。靠近一个人，或者诚实地保留距离？",
+      "once": true,
+      "important": true,
+      "scene": "bedroom",
+      "choices": [
+        {
+          "label": "直说想见面，约一个舒服的地方",
+          "result": "你给对方打电话，说自己有点紧张。电话另一头笑了，说那就一起紧张。",
+          "effects": {
+            "charm": 2,
+            "health": 1
+          },
+          "tags": [
+            "有伴"
+          ],
+          "comic": [
+            {
+              "caption": "你给对方打电话，说自己有点紧张。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "shy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "电话另一头笑了，说那就一起紧张。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "partner": 2
+          }
+        },
+        {
+          "label": "告诉对方最近太累，认真另约时间",
+          "result": "你拿起手机，发出一个具体的日期。等待不再像敷衍，因为约定有了落点。",
+          "effects": {
+            "health": 2
+          },
+          "tags": [
+            "坦率"
+          ],
+          "comic": [
+            {
+              "caption": "你拿起手机，发出一个具体的日期。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "等待不再像敷衍，因为约定有了落点。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "partner": 1
+          }
+        },
+        {
+          "label": "暂时不恋爱，给自己做一顿好饭",
+          "result": "你放下手机，走进厨房。煎蛋有点焦，你仍然把它端得像一道大菜。",
+          "effects": {
+            "health": 2,
+            "money": 1
+          },
+          "tags": [
+            "独行"
+          ],
+          "comic": [
+            {
+              "caption": "你放下手机，走进厨房。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "meal",
+              "actor": "lead"
+            },
+            {
+              "caption": "煎蛋有点焦，你仍然把它端得像一道大菜。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "聊天框亮了又暗。对方问周末能不能见面，你删掉三次精心编写的轻松回复。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_partner"
+        },
+        {
+          "caption": "你拿起手机，看着那句简单的邀请。窗外下雨了。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "tap",
+            "prop": "phone",
+            "hint": "点击画中物件",
+            "reveal": "对方又补了一句：没空也没关系，下次再约。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "靠近一个人，或者诚实地保留距离？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL33",
+      "age": 33,
+      "title": "房东说，这次真的只是聊聊",
+      "text": "续租合同上的数字长大了，房间却没有。你和房东隔着一张晃动的餐桌坐下。你翻开账本，把收入和开支摆到桌面。想要的生活，必须住进同一套房里吗？",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "搬小一点，换回更短的通勤",
+          "result": "你签下新合同，搬家箱只装了真正想留的东西。每天省出的时间，够你慢慢吃完早餐。",
+          "effects": {
+            "money": -1,
+            "health": 2
+          },
+          "tags": [
+            "轻装"
+          ],
+          "comic": [
+            {
+              "caption": "你签下新合同，搬家箱只装了真正想留的东西。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "每天省出的时间，够你慢慢吃完早餐。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "留下谈条件，先修好漏水的窗",
+          "result": "你举起维修照片，把要求一条条说清楚。房租只涨了一点，窗户终于不再陪你听雨。",
+          "effects": {
+            "charm": 1,
+            "money": 1
+          },
+          "tags": [
+            "务实"
+          ],
+          "comic": [
+            {
+              "caption": "你举起维修照片，把要求一条条说清楚。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "raise",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "房租只涨了一点，窗户终于不再陪你听雨。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "找朋友合住，把边界提前说好",
+          "result": "你给朋友打电话，先谈洗碗和安静时间。搬来第一晚，两人都认真洗了自己的杯子。",
+          "effects": {
+            "money": 2,
+            "charm": 1
+          },
+          "tags": [
+            "会协商"
+          ],
+          "comic": [
+            {
+              "caption": "你给朋友打电话，先谈洗碗和安静时间。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "搬来第一晚，两人都认真洗了自己的杯子。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "续租合同上的数字长大了，房间却没有。你和房东隔着一张晃动的餐桌坐下。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_mate"
+        },
+        {
+          "caption": "你翻开账本，把收入和开支摆到桌面。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "letter",
+            "hint": "点击翻开纸页",
+            "reveal": "账本里圈出了一笔长期被忽略的通勤费用。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "想要的生活，必须住进同一套房里吗？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL40",
+      "age": 40,
+      "title": "体检报告不接受已读不回",
+      "text": "排队时你还在回工作消息。医生把报告翻过来，问你一天究竟有几个夜晚。你放下手机，翻开那张折过的报告。身体的意见，这次要不要算一票？",
+      "once": true,
+      "important": true,
+      "scene": "hospital",
+      "choices": [
+        {
+          "label": "安排复查，把休息写进日程",
+          "result": "你给医院打电话，预约好时间。忙碌终于第一次为身体让出了一格。",
+          "effects": {
+            "health": 3,
+            "money": -1
+          },
+          "tags": [
+            "照顾自己"
+          ],
+          "comic": [
+            {
+              "caption": "你给医院打电话，预约好时间。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "忙碌终于第一次为身体让出了一格。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "next": "SL40B"
+        },
+        {
+          "label": "先减少加班，和同事重新分工",
+          "result": "你关掉电脑，把工作交接写清楚。办公室的灯少亮了一盏，项目并没有因此塌下来。",
+          "effects": {
+            "health": 2,
+            "charm": 1
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你关掉电脑，把工作交接写清楚。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "poweroff",
+              "prop": "computer",
+              "actor": "lead"
+            },
+            {
+              "caption": "办公室的灯少亮了一盏，项目并没有因此塌下来。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "暂时硬撑，先把这笔奖金拿到",
+          "result": "你打开电脑，报告被压在键盘下面。奖金到账那天，你在会议中途睡着了。",
+          "effects": {
+            "money": 4,
+            "health": -3,
+            "lifespan": -4
+          },
+          "tags": [
+            "硬撑"
+          ],
+          "comic": [
+            {
+              "caption": "你打开电脑，报告被压在键盘下面。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "hurt",
+              "action": "type",
+              "prop": "computer",
+              "actor": "lead"
+            },
+            {
+              "caption": "奖金到账那天，你在会议中途睡着了。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "排队时你还在回工作消息。医生把报告翻过来，问你一天究竟有几个夜晚。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_teacher"
+        },
+        {
+          "caption": "你放下手机，翻开那张折过的报告。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "letter",
+            "hint": "点击翻开纸页",
+            "reveal": "需要复查的项目被圈了出来。它是提醒，不是宣判。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "身体的意见，这次要不要算一票？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL40X",
+      "age": 40,
+      "title": "工作群里的深夜鼓点",
+      "text": "老乐队群突然复活，有人发来第一次演出的录音。鼓点错了两拍，笑声倒是整齐。你轻轻敲桌子，发现手指还记得节拍。四十岁的返场，要不要给自己留一张票？",
+      "once": true,
+      "important": true,
+      "scene": "office",
+      "choices": [
+        {
+          "label": "周末合奏，先练最简单的一首",
+          "result": "你举起鼓槌，和朋友从第一拍重新开始。大家都慢了一点，居然更容易合上。",
+          "effects": {
+            "health": 2,
+            "charm": 1
+          },
+          "tags": [
+            "乐队"
+          ],
+          "comic": [
+            {
+              "caption": "你举起鼓槌，和朋友从第一拍重新开始。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "drum",
+              "actor": "lead"
+            },
+            {
+              "caption": "大家都慢了一点，居然更容易合上。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "录一小段发过去，不追求完美",
+          "result": "你给朋友打电话，把录音放给他们听。最先收到的不是点评，是一串笑声。",
+          "effects": {
+            "charm": 2
+          },
+          "tags": [
+            "坦率"
+          ],
+          "comic": [
+            {
+              "caption": "你给朋友打电话，把录音放给他们听。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "最先收到的不是点评，是一串笑声。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "只去听，给老朋友买瓶水",
+          "result": "你走进排练室，坐到观众的位置。这次终于不必一边演奏一边担心有没有人听。",
+          "effects": {
+            "health": 1,
+            "charm": 1
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你走进排练室，坐到观众的位置。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sit",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "这次终于不必一边演奏一边担心有没有人听。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "老乐队群突然复活，有人发来第一次演出的录音。鼓点错了两拍，笑声倒是整齐。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你轻轻敲桌子，发现手指还记得节拍。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "tap",
+            "prop": "drum",
+            "hint": "点击画中物件",
+            "reveal": "群公告写着：不收费，不排名，音量不要吵到邻居。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "四十岁的返场，要不要给自己留一张票？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ],
+      "need_tags": [
+        "乐队"
+      ]
+    },
+    {
+      "id": "SL48",
+      "age": 48,
+      "title": "妈妈学会了撤回语音",
+      "text": "妈妈发来一条语音，撤回，又发来三条。内容都是问你周末有没有空，没有一条提她自己。你拿起手机，先把那条最长的语音听完。这一次，别只回一个收到。",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "约好回家，听她把同一件事讲完",
+          "result": "你给妈妈打电话，问她想吃什么。她笑了，说菜都准备好了。",
+          "effects": {
+            "health": 1,
+            "money": -1
+          },
+          "tags": [
+            "恋家"
+          ],
+          "comic": [
+            {
+              "caption": "你给妈妈打电话，问她想吃什么。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "她笑了，说菜都准备好了。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "parent": 2
+          }
+        },
+        {
+          "label": "把她常用的手机功能写成小卡片",
+          "result": "你翻开本子，把每一步画得很大。卡片最后多了一行：不会就打给我。",
+          "effects": {
+            "int": 1,
+            "charm": 1
+          },
+          "tags": [
+            "细心"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开本子，把每一步画得很大。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "卡片最后多了一行：不会就打给我。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "parent": 1
+          }
+        },
+        {
+          "label": "坦白这周走不开，约固定通话",
+          "result": "你给妈妈打电话，说清自己的日程。星期日的半小时，从临时抽空变成了约定。",
+          "effects": {
+            "health": 1
+          },
+          "tags": [
+            "会协商"
+          ],
+          "comic": [
+            {
+              "caption": "你给妈妈打电话，说清自己的日程。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "星期日的半小时，从临时抽空变成了约定。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "parent": 1
+          }
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "妈妈发来一条语音，撤回，又发来三条。内容都是问你周末有没有空，没有一条提她自己。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_parent"
+        },
+        {
+          "caption": "你拿起手机，先把那条最长的语音听完。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "hold",
+            "prop": "phone",
+            "hint": "按住画中物件片刻",
+            "reveal": "语音的最后，她小声说：没事，只是想让你尝尝新学的菜。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "这一次，别只回一个收到。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL56",
+      "age": 56,
+      "title": "衣柜里那只不肯退休的纸箱",
+      "text": "整理房间时，你发现一只写着以后再看看的纸箱。当年「{choice:SL04}」的记忆，藏在最底下。你翻开旧本子，纸页边缘留下了很多年前的笔迹。把过去留下，还是把位置腾给以后？",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "联系老友，约一次不谈工作的见面",
+          "result": "你给老朋友打电话，开头还是那句在忙吗。这次你们真的约好了地点。",
+          "effects": {
+            "charm": 2,
+            "health": 1
+          },
+          "tags": [
+            "老友"
+          ],
+          "comic": [
+            {
+              "caption": "你给老朋友打电话，开头还是那句在忙吗。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "这次你们真的约好了地点。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 2
+          }
+        },
+        {
+          "label": "把旧爱好捡回来，不要求成果",
+          "result": "你翻开本子，从第一页重新开始。没有人打分，反而让你坐了很久。",
+          "effects": {
+            "health": 2,
+            "int": 1
+          },
+          "tags": [
+            "重拾爱好"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开本子，从第一页重新开始。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "没有人打分，反而让你坐了很久。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "只留一件，其余送给需要的人",
+          "result": "你举起纸箱，认真挑出一件留下。房间空了一点，记忆并没有变少。",
+          "effects": {
+            "health": 1,
+            "charm": 1
+          },
+          "tags": [
+            "轻装"
+          ],
+          "comic": [
+            {
+              "caption": "你举起纸箱，认真挑出一件留下。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "raise",
+              "prop": "toy",
+              "actor": "lead"
+            },
+            {
+              "caption": "房间空了一点，记忆并没有变少。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "整理房间时，你发现一只写着以后再看看的纸箱。当年「{choice:SL04}」的记忆，藏在最底下。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你翻开旧本子，纸页边缘留下了很多年前的笔迹。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "book",
+            "hint": "点击翻开纸页",
+            "reveal": "本子里夹着一句话：等有空了，再做一次。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "把过去留下，还是把位置腾给以后？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL65",
+      "age": 65,
+      "title": "退休第一天，闹钟拒绝交接",
+      "text": "闹钟照常在六点响。你盯着天花板，第一次发现今天没有迟到这回事。你伸手关掉闹钟，又慢慢坐起来。空出来的时间，要怎样安排？",
+      "once": true,
+      "important": true,
+      "scene": "bedroom",
+      "choices": [
+        {
+          "label": "出门散步，认一认街角新开的店",
+          "result": "你走出家门，没有抄近路。老板记住了你的口味，你记住了街上的树。",
+          "effects": {
+            "health": 3
+          },
+          "tags": [
+            "散步"
+          ],
+          "comic": [
+            {
+              "caption": "你走出家门，没有抄近路。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "walk",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "老板记住了你的口味，你记住了街上的树。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "给社区孩子讲自己擅长的事",
+          "result": "你翻开本子，发现最有用的是那些犯过的错。孩子们认真听了五分钟，然后开始提问。",
+          "effects": {
+            "int": 1,
+            "charm": 2
+          },
+          "tags": [
+            "分享者"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开本子，发现最有用的是那些犯过的错。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "孩子们认真听了五分钟，然后开始提问。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "先睡个回笼觉，再考虑伟大计划",
+          "result": "你睡着了，阳光慢慢挪过枕头。醒来以后，伟大计划缩成了一顿热饭。",
+          "effects": {
+            "health": 2
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你睡着了，阳光慢慢挪过枕头。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "sleep",
+              "action": "sleep",
+              "prop": "bed",
+              "actor": "lead"
+            },
+            {
+              "caption": "醒来以后，伟大计划缩成了一顿热饭。",
+              "shot": "close",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "idle",
+              "prop": "",
+              "actor": "lead"
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "闹钟照常在六点响。你盯着天花板，第一次发现今天没有迟到这回事。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_partner"
+        },
+        {
+          "caption": "你伸手关掉闹钟，又慢慢坐起来。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "tap",
+            "prop": "clock",
+            "hint": "点击画中物件",
+            "reveal": "日历上没有红色截止日期，只有你自己写下的散步。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "空出来的时间，要怎样安排？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL65X",
+      "age": 65,
+      "title": "社区音乐节：平均年龄六十八",
+      "text": "朋友叫你参加社区音乐节。报名表让填监护人电话，你们一致决定填对方的号码。你敲响练习鼓，旁边下棋的大爷开始用脚打拍子。台下会有多少人，还是最重要的事吗？",
+      "once": true,
+      "important": true,
+      "scene": "park",
+      "choices": [
+        {
+          "label": "上台演一首，当作送给老朋友",
+          "result": "你举起鼓槌，笑着数了四拍。这次台下终于超过了三个人。",
+          "effects": {
+            "health": 2,
+            "charm": 2
+          },
+          "tags": [
+            "乐队"
+          ],
+          "comic": [
+            {
+              "caption": "你举起鼓槌，笑着数了四拍。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "drum",
+              "actor": "lead"
+            },
+            {
+              "caption": "这次台下终于超过了三个人。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "帮忙布场，让别人站到灯下",
+          "result": "你走到舞台旁，帮朋友摆好椅子。掌声响起时，你也在里面。",
+          "effects": {
+            "health": 1,
+            "charm": 2
+          },
+          "tags": [
+            "分享者"
+          ],
+          "comic": [
+            {
+              "caption": "你走到舞台旁，帮朋友摆好椅子。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "walk",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "掌声响起时，你也在里面。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "身体累了，带着录音回家听",
+          "result": "你给朋友打电话，说今天只负责鼓掌。录音里有人数错了拍，你笑了很久。",
+          "effects": {
+            "health": 3
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你给朋友打电话，说今天只负责鼓掌。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "录音里有人数错了拍，你笑了很久。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "朋友叫你参加社区音乐节。报名表让填监护人电话，你们一致决定填对方的号码。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你敲响练习鼓，旁边下棋的大爷开始用脚打拍子。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "tap",
+            "prop": "drum",
+            "hint": "点击画中物件",
+            "reveal": "节目单上印着：欢迎失误，禁止互相嫌弃。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "台下会有多少人，还是最重要的事吗？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ],
+      "need_tags": [
+        "乐队"
+      ]
+    },
+    {
+      "id": "SL74",
+      "age": 74,
+      "title": "药盒不是糖盒，今天也不是周五",
+      "text": "你把药盒分成七格，认真写了星期。邻居来串门，先夸你的新糖盒看起来很高级。你翻开用药记录，把今天这一格推到面前。承认需要帮助，会不会也是一种熟练？",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "按医嘱整理，给复诊设个提醒",
+          "result": "你拿起手机，把复诊时间写进日历。药盒各就各位，心里也不再那么乱。",
+          "effects": {
+            "health": 3
+          },
+          "tags": [
+            "细心"
+          ],
+          "comic": [
+            {
+              "caption": "你拿起手机，把复诊时间写进日历。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "药盒各就各位，心里也不再那么乱。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "请信任的人一起核对一次",
+          "result": "你给朋友打电话，请他帮忙看一眼记录。两个人对了三遍，顺便约了明早散步。",
+          "effects": {
+            "health": 2,
+            "charm": 1
+          },
+          "tags": [
+            "会求助"
+          ],
+          "comic": [
+            {
+              "caption": "你给朋友打电话，请他帮忙看一眼记录。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "两个人对了三遍，顺便约了明早散步。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "把邻居的玩笑写进日记",
+          "result": "你翻开日记，写下今天不是周五。写完发现，今天确实是周五。",
+          "effects": {
+            "health": 1,
+            "charm": 1,
+            "abstract": 2
+          },
+          "tags": [
+            "幽默"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开日记，写下今天不是周五。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "pencil",
+              "actor": "lead"
+            },
+            {
+              "caption": "写完发现，今天确实是周五。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "你把药盒分成七格，认真写了星期。邻居来串门，先夸你的新糖盒看起来很高级。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_mate"
+        },
+        {
+          "caption": "你翻开用药记录，把今天这一格推到面前。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "medicine",
+            "hint": "点击翻开纸页",
+            "reveal": "记录上还留着医生的复诊日期。按约定服用，不靠猜。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "承认需要帮助，会不会也是一种熟练？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL84",
+      "age": 84,
+      "title": "一封寄给未来的信",
+      "text": "有人想让你讲一件最重要的事。你想了半天，先问他们茶凉了没有。你拿起笔，把信纸拉到面前。不必交代整个人生，只写想留下的话。",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "写给年轻的自己：不必每次都赢",
+          "result": "你签下名字，把信折好。那些曾经难以启齿的失败，如今能平静地说给人听。",
+          "effects": {
+            "health": 1,
+            "charm": 1
+          },
+          "tags": [
+            "释然"
+          ],
+          "comic": [
+            {
+              "caption": "你签下名字，把信折好。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "那些曾经难以启齿的失败，如今能平静地说给人听。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "写给重要的人：谢谢你来过",
+          "result": "你翻开通讯录，把熟悉的名字慢慢念出声。有人接起电话，有人留在纸上。",
+          "effects": {
+            "charm": 2
+          },
+          "tags": [
+            "念旧"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开通讯录，把熟悉的名字慢慢念出声。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "sad",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "有人接起电话，有人留在纸上。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "画一幅画，给太阳再添几条腿",
+          "result": "你拿起画笔，画了八条腿的太阳。它跑得很快，像小时候一样。",
+          "effects": {
+            "health": 1,
+            "abstract": 2
+          },
+          "tags": [
+            "画画"
+          ],
+          "comic": [
+            {
+              "caption": "你拿起画笔，画了八条腿的太阳。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sign",
+              "prop": "pencil",
+              "actor": "lead"
+            },
+            {
+              "caption": "它跑得很快，像小时候一样。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "有人想让你讲一件最重要的事。你想了半天，先问他们茶凉了没有。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_partner"
+        },
+        {
+          "caption": "你拿起笔，把信纸拉到面前。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "hold",
+            "prop": "letter",
+            "hint": "按住画中物件片刻",
+            "reveal": "信封空着收件人。写给谁，都可以。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "不必交代整个人生，只写想留下的话。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    {
+      "id": "SL94",
+      "age": 94,
+      "title": "今天的云，长得像一顿午饭",
+      "text": "午后的长椅有点暖。你看着云，邻居说像一只猫，你说更像一碗还没拌开的面。你慢慢坐下，打开带来的旧相册。今天还想做点什么？",
+      "once": true,
+      "important": true,
+      "scene": "park",
+      "choices": [
+        {
+          "label": "再和朋友坐一会儿",
+          "result": "你放下相册，认真听朋友讲一件小事。太阳落下以前，你们谁也没有着急。",
+          "effects": {
+            "health": 1
+          },
+          "tags": [
+            "释然"
+          ],
+          "comic": [
+            {
+              "caption": "你放下相册，认真听朋友讲一件小事。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "sit",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "太阳落下以前，你们谁也没有着急。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "给晚辈讲一个不太可靠的笑话",
+          "result": "你举起相册，讲起那个八条腿的太阳。孩子笑了，未必因为听懂。",
+          "effects": {
+            "charm": 1
+          },
+          "tags": [
+            "幽默"
+          ],
+          "comic": [
+            {
+              "caption": "你举起相册，讲起那个八条腿的太阳。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "孩子笑了，未必因为听懂。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "回家，慢慢吃一碗面",
+          "result": "你走回家，给自己盛好一碗热面。今天不需要变成大事，也值得认真过。",
+          "effects": {
+            "health": 1
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你走回家，给自己盛好一碗热面。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "meal",
+              "actor": "lead"
+            },
+            {
+              "caption": "今天不需要变成大事，也值得认真过。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "午后的长椅有点暖。你看着云，邻居说像一只猫，你说更像一碗还没拌开的面。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_mate"
+        },
+        {
+          "caption": "你慢慢坐下，打开带来的旧相册。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "book",
+            "hint": "点击翻开纸页",
+            "reveal": "相册最后留着一张空白页。并不是所有空白都要填满。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "今天还想做点什么？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    }
+  ],
+  "nodes": {
+    "SL04B": {
+      "id": "SL04B",
+      "age": 0,
+      "title": "画展第二天：纸上的太阳",
+      "text": "妈妈把你的画夹到冰箱上。旁边的购物单突然显得很没有艺术追求。你翻开画本，发现太阳旁边多了一个小小的笑脸。要给这张画取个名字吗？",
+      "once": true,
+      "important": true,
+      "scene": "home",
+      "choices": [
+        {
+          "label": "叫太阳放假，给妈妈也放半天",
+          "result": "你抬起画本宣布放假。妈妈笑着同意了，家务明天再说。",
+          "effects": {
+            "charm": 1
+          },
+          "tags": [
+            "共情"
+          ],
+          "comic": [
+            {
+              "caption": "你抬起画本宣布放假。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "妈妈笑着同意了，家务明天再说。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "写上日期，以后回来看看",
+          "result": "你签下日期，认真画了一条线。未来第一次有了能回看的坐标。",
+          "effects": {
+            "int": 1
+          },
+          "tags": [
+            "细心"
+          ],
+          "comic": [
+            {
+              "caption": "你签下日期，认真画了一条线。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "sign",
+              "prop": "pencil",
+              "actor": "lead"
+            },
+            {
+              "caption": "未来第一次有了能回看的坐标。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "不取名字，让它自由发挥",
+          "result": "你放下画笔，给太阳留了一点空白。艺术家的工作暂时结束，零食时间开始。",
+          "effects": {
+            "health": 1
+          },
+          "tags": [
+            "爱玩"
+          ],
+          "comic": [
+            {
+              "caption": "你放下画笔，给太阳留了一点空白。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "put_down",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "艺术家的工作暂时结束，零食时间开始。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "妈妈把你的画夹到冰箱上。旁边的购物单突然显得很没有艺术追求。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_parent"
+        },
+        {
+          "caption": "你翻开画本，发现太阳旁边多了一个小小的笑脸。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "book",
+            "hint": "点击翻开纸页",
+            "reveal": "这一幕会随你刚才的决定发生，不会被跳年略过。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "要给这张画取个名字吗？",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    "SL16B": {
+      "id": "SL16B",
+      "age": 0,
+      "title": "首演：灯光师还在写作业",
+      "text": "演出前三分钟，音箱突然没声。朋友蹲下来检查插头，发现插座里只有卷笔刀。你伸手接过鼓槌，大家等你数拍。首演也可以从不完美开始。",
+      "once": true,
+      "important": true,
+      "scene": "classroom",
+      "choices": [
+        {
+          "label": "改成不插电，一起把歌唱完",
+          "result": "你举起鼓槌，轻轻数出四拍。没有音箱，反而听清了每个人的声音。",
+          "effects": {
+            "charm": 2
+          },
+          "tags": [
+            "会应变"
+          ],
+          "comic": [
+            {
+              "caption": "你举起鼓槌，轻轻数出四拍。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "raise",
+              "prop": "drum",
+              "actor": "lead"
+            },
+            {
+              "caption": "没有音箱，反而听清了每个人的声音。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "告诉观众故障，请大家等一下",
+          "result": "你抬起手解释状况。台下有人把自己的小音箱递了过来。",
+          "effects": {
+            "charm": 1
+          },
+          "tags": [
+            "坦率"
+          ],
+          "comic": [
+            {
+              "caption": "你抬起手解释状况。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "shy",
+              "action": "wave",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "台下有人把自己的小音箱递了过来。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "先邀请全场拍手，等设备修好",
+          "result": "你举起双手带大家拍节奏。后来录音最响的部分，是没有歌词的那半分钟。",
+          "effects": {
+            "health": 1,
+            "charm": 1
+          },
+          "tags": [
+            "幽默"
+          ],
+          "comic": [
+            {
+              "caption": "你举起双手带大家拍节奏。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "wave",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "后来录音最响的部分，是没有歌词的那半分钟。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "演出前三分钟，音箱突然没声。朋友蹲下来检查插头，发现插座里只有卷笔刀。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你伸手接过鼓槌，大家等你数拍。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "drum",
+            "hint": "点击翻开纸页",
+            "reveal": "这一幕会随你刚才的决定发生，不会被跳年略过。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "首演也可以从不完美开始。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    "SL22B": {
+      "id": "SL22B",
+      "age": 0,
+      "title": "合伙协议不能只写相信你",
+      "text": "咖啡喝完了，账本还是空的。朋友把纸推过来，说先写钱怎么分，吵架时就少一个理由。你拿起笔，看着第一张合伙协议。朋友和生意，都值得说清楚。",
+      "once": true,
+      "important": true,
+      "scene": "office",
+      "choices": [
+        {
+          "label": "把投入、分工和退出办法写清楚",
+          "result": "你签下协议，把难听的话提前说完。朋友松了口气，说这比拍胸脯可靠。",
+          "effects": {
+            "int": 1,
+            "money": 2
+          },
+          "tags": [
+            "会协商"
+          ],
+          "comic": [
+            {
+              "caption": "你签下协议，把难听的话提前说完。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "sign",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "朋友松了口气，说这比拍胸脯可靠。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "先做一个月的小项目，控制成本",
+          "result": "你翻开账本，把第一个目标改小。第一笔收入不多，够你们各买一杯咖啡。",
+          "effects": {
+            "money": 2,
+            "health": 1
+          },
+          "tags": [
+            "务实"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开账本，把第一个目标改小。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "happy",
+              "action": "read",
+              "prop": "book",
+              "actor": "lead"
+            },
+            {
+              "caption": "第一笔收入不多，够你们各买一杯咖啡。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "发现并不合适，保留朋友关系",
+          "result": "你放下笔，说自己暂时不想合伙。朋友点头，两人继续聊没看完的电影。",
+          "effects": {
+            "health": 2
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你放下笔，说自己暂时不想合伙。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "put_down",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "朋友点头，两人继续聊没看完的电影。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "咖啡喝完了，账本还是空的。朋友把纸推过来，说先写钱怎么分，吵架时就少一个理由。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你拿起笔，看着第一张合伙协议。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "letter",
+            "hint": "点击翻开纸页",
+            "reveal": "这一幕会随你刚才的决定发生，不会被跳年略过。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "朋友和生意，都值得说清楚。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    },
+    "SL40B": {
+      "id": "SL40B",
+      "age": 0,
+      "title": "复查那天，你真的来了",
+      "text": "叫号屏亮起，你没有再借口临时开会。朋友在候诊椅边给你留了个位子。你拿起报告，慢慢坐下。等待的时候，也可以不刷工作群。",
+      "once": true,
+      "important": true,
+      "scene": "hospital",
+      "choices": [
+        {
+          "label": "向医生问清楚下一步",
+          "result": "你翻开报告，把不明白的地方逐项问清。未来不是一句没事，而是一张能照着做的安排。",
+          "effects": {
+            "health": 2
+          },
+          "tags": [
+            "会求助"
+          ],
+          "comic": [
+            {
+              "caption": "你翻开报告，把不明白的地方逐项问清。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "determined",
+              "action": "read",
+              "prop": "letter",
+              "actor": "lead"
+            },
+            {
+              "caption": "未来不是一句没事，而是一张能照着做的安排。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        },
+        {
+          "label": "请朋友陪着听一遍注意事项",
+          "result": "你给朋友打电话，请他一起记重点。回家路上，两个人终于聊起检查以外的事。",
+          "effects": {
+            "health": 1,
+            "charm": 1
+          },
+          "tags": [
+            "老友"
+          ],
+          "comic": [
+            {
+              "caption": "你给朋友打电话，请他一起记重点。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "phone",
+              "prop": "phone",
+              "actor": "lead"
+            },
+            {
+              "caption": "回家路上，两个人终于聊起检查以外的事。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ],
+          "relations": {
+            "friend": 1
+          }
+        },
+        {
+          "label": "把工作消息设为免打扰",
+          "result": "你放下手机，抬头看了一会儿窗外。世界没有因为你晚回半小时而停止运转。",
+          "effects": {
+            "health": 2
+          },
+          "tags": [
+            "有分寸"
+          ],
+          "comic": [
+            {
+              "caption": "你放下手机，抬头看了一会儿窗外。",
+              "shot": "medium",
+              "shot_locked": true,
+              "expr": "normal",
+              "action": "put_down",
+              "prop": "",
+              "actor": "lead"
+            },
+            {
+              "caption": "世界没有因为你晚回半小时而停止运转。",
+              "shot": "close",
+              "shot_locked": true
+            }
+          ]
+        }
+      ],
+      "short": true,
+      "comic": [
+        {
+          "caption": "叫号屏亮起，你没有再借口临时开会。朋友在候诊椅边给你留了个位子。",
+          "shot": "wide",
+          "shot_locked": true,
+          "support": "npc_friend"
+        },
+        {
+          "caption": "你拿起报告，慢慢坐下。",
+          "shot": "medium",
+          "shot_locked": true,
+          "interaction": {
+            "kind": "reveal",
+            "prop": "letter",
+            "hint": "点击翻开纸页",
+            "reveal": "这一幕会随你刚才的决定发生，不会被跳年略过。",
+            "completed": false
+          }
+        },
+        {
+          "caption": "等待的时候，也可以不刷工作群。",
+          "shot": "close",
+          "shot_locked": true,
+          "action": "idle",
+          "expr": "normal",
+          "intensity": 0
+        }
+      ]
+    }
+  }
+}
