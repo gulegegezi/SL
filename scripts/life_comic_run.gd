@@ -4,13 +4,16 @@ const PACK_PATH := "res://data/story_life_comic.json"
 const SAVE_PATH := "user://life_comic_v1.save"
 var pack: Dictionary = {}
 var events: Dictionary = {}
+var event_list: Array = []
 var arcs: Dictionary = {}
 var streams: Dictionary = {}
 var s: Dictionary = {}
 
 func _init() -> void:
 	pack = JSON.parse_string(FileAccess.get_file_as_string(PACK_PATH))
-	for event in pack.events: events[event.id] = event
+	for event in pack.events:
+		events[event.id] = event
+		event_list.append(event)
 	for arc in pack.rare_arcs: arcs[arc.id] = arc
 
 func start(seed_value: int) -> void:
@@ -74,8 +77,10 @@ func effects(delta: Dictionary) -> void:
 		if key != "money": s.scores[key] = clampf(s.scores[key],0,100)
 
 func weighted(rows: Array, stream: String) -> Dictionary:
+	if rows.is_empty(): return {}
 	var total := 0.0
 	for row in rows: total += float(row.get("weight",1))
+	if total <= 0.0: return {}
 	var value: float = streams[stream].randf()*total
 	for row in rows:
 		value -= float(row.get("weight",1))
@@ -138,7 +143,7 @@ func finish() -> bool:
 			begin(item.id,item.get("context",{}))
 			break
 		if s.decisions >= s.budget: continue
-		var pool: Array = events.values().filter(eligible)
+		var pool: Array = event_list.filter(eligible)
 		if not pool.is_empty() and (s.age-previous_age >= 6 or s.age in [1,4,7,13,18,30,45,65] or streams.event.randf() < 0.35):
 			begin(pool[streams.event.randi_range(0,pool.size()-1)].id)
 			break

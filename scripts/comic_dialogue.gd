@@ -31,8 +31,12 @@ static func draw_chrome(c: CanvasItem, rect: Rect2, model: Dictionary, clock: fl
 	c.draw_rect(Rect2(tag.position,Vector2(3,tag.size.y)),T.ACCENT)
 	T.frame(c,tag,1.0,0.2,Color(T.CREAM,0.88))
 	c.draw_string(f,tag.position+Vector2(9,11.5),speaker,HORIZONTAL_ALIGNMENT_LEFT,tag.size.x-12,tag_size,T.CREAM)
+	draw_status(c,rect.position+Vector2(rect.size.x-22,13),model,clock,reduced_motion)
+
+
+static func draw_status(c: CanvasItem, baseline: Vector2, model: Dictionary, clock: float, reduced_motion: bool, font_size: int = 10) -> void:
 	var done := bool(model.get("done",false))
 	var status := "▼" if done else "···"
 	var alpha := 0.85
 	if not done and not reduced_motion: alpha = 0.55+sin(clock*7.0)*0.25
-	c.draw_string(f,rect.position+Vector2(rect.size.x-22,13),status,HORIZONTAL_ALIGNMENT_LEFT,16,10,Color(T.CREAM,alpha))
+	c.draw_string(T.font_body(),baseline,status,HORIZONTAL_ALIGNMENT_LEFT,16,font_size,Color(T.CREAM,alpha))

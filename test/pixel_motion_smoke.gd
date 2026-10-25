@@ -43,6 +43,11 @@ func run() -> void:
 	assert(max_step < 0.06, "每帧位移要被速度上限压住")
 	assert(node.position.distance_to(target) < 0.01, "最终要落到目标点")
 	assert(float(stage._phase["lead"]) == 0.0, "没走就不该有步态相位")
+	node.position = Vector3.ZERO
+	stage._vel["lead"] = Vector3.ZERO
+	stage._arrive(node,target,"lead",3.7)
+	assert(node.position.distance_to(target) < 0.01, "大时间步要细分积分并准确落点")
+	assert(node.position.x <= target.x, "大时间步不能冲过终点")
 
 	# 3) 演员：走路的起伏/前倾/坐下的下沉确实被用上
 	var actor = ActorRig.new()

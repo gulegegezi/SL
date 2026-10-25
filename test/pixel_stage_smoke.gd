@@ -37,6 +37,17 @@ func run_test() -> void:
 	verify(p.pixel_stage.viewport.size.x <= 320,"bounded pixel resolution")
 	var ratio: Vector2 = p.pixel_stage._screen_rect.size/Vector2(p.pixel_stage.viewport.size)
 	verify(is_equal_approx(ratio.x,roundf(ratio.x)) and is_equal_approx(ratio.x,ratio.y),"uniform integer pixel scaling")
+	var stage = p.pixel_stage
+	var walk_target: Vector3 = stage._safe_lead_target(Stage.LEAD_WALK_POS)
+	verify(Vector2(walk_target.x,walk_target.z).distance_to(Vector2(Stage.PROP_POS.x,Stage.PROP_POS.z)) >= Stage.PROP_CLEARANCE,"walk destination stays outside the central table")
+	var npc_target: Vector3 = stage._safe_lead_target(Stage.NPC_POS)
+	verify(Vector2(npc_target.x,npc_target.z).distance_to(Vector2(Stage.NPC_POS.x,Stage.NPC_POS.z)) >= Stage.ACTOR_CLEARANCE-0.0001,"lead cannot overlap the NPC while interacting")
+	for placement in [[Stage.FRIDGE_POS,1.0],[Stage.BENCH_POS,1.20]]:
+		var obstacle: Vector3 = placement[0]
+		var clearance: float = placement[1]
+		var safe: Vector3 = stage._push_out_xz(obstacle,obstacle,clearance)
+		verify(Vector2(safe.x,safe.z).distance_to(Vector2(obstacle.x,obstacle.z)) >= clearance-0.0001,"large furniture has a collision-free interaction lane")
+		verify(Vector2(obstacle.x,obstacle.z).distance_to(Vector2(Stage.NPC_POS.x,Stage.NPC_POS.z)) >= Stage.ACTOR_CLEARANCE,"large furniture does not spawn inside the NPC")
 	var before: Dictionary = life.snapshot()
 	verify(p.pixel_stage.perform_interaction(),"story exploration starts")
 	p.pixel_stage._process(3.7)
