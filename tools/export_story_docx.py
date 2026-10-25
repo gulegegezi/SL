@@ -24,6 +24,69 @@ INK = RGBColor(0x1B, 0x1B, 0x1B)
 ACCENT = RGBColor(0x8C, 0x1D, 0x18)
 MUTED = RGBColor(0x5A, 0x5A, 0x5A)
 
+def _dialogue_lines(e: dict) -> list[str]:
+    return [t.strip() for t in str(e.get("npc_dialogue", "")).splitlines() if t.strip()]
+
+
+def aside_count(e: dict) -> int:
+    if "aside_plan" in e:
+        return max(0, min(3, int(e["aside_plan"].get("count", 1))))
+    if "aside_count" in e:
+        return max(0, min(3, int(e["aside_count"])))
+    if e.get("text_only"):
+        return 0
+    if e.get("misread"):
+        return 2
+    if e.get("echo"):
+        return 1
+    return 2 if str(e.get("npc_dialogue", "")).count("：") >= 6 else 1
+
+
+def aside_positions(e: dict, want: int) -> list[int]:
+    if want <= 0:
+        return []
+    plan = e.get("aside_plan", {})
+    after = [int(v) for v in plan.get("after", [])]
+    if after:
+        return after[:want]
+    peaks = [i for i, line in enumerate(_dialogue_lines(e), 1)
+             if line.rstrip().endswith(("！", "？"))]
+    out = peaks[:want]
+    for fb in (2, 5, 3, 4):
+        if len(out) >= want:
+            break
+        if fb not in out:
+            out.append(fb)
+    return sorted(out)[:want]
+
+
+def aside_sample(e: dict, k: int) -> tuple[int, str]:
+    """返回 (示例档位, 旁白文本)。导出不知道玩家抽象度，用档位 1 作示例。"""
+    plan = e.get("aside_plan", {})
+    tiers = plan.get("tiers", [])
+    tier = int(tiers[k]) if k < len(tiers) else (1 + k * 2) % 4
+    asides = e.get("narrator_asides", [])
+    if not asides:
+        return tier, ""
+    return tier, str(asides[tier % len(asides)]).strip()
+
+
+def script_sequence(e: dict) -> list[tuple[str, str]]:
+    """把对白和旁白插拍排成一条：("line", 台词) / ("aside", 文本)。"""
+    lines = _dialogue_lines(e)
+    want = aside_count(e)
+    spots = set(aside_positions(e, want)) if lines else set()
+    out: list[tuple[str, str]] = []
+    k = 0
+    for i, line in enumerate(lines, 1):
+        out.append(("line", line))
+        if i in spots and k < want:
+            tier, text = aside_sample(e, k)
+            out.append(("aside", "插入(第 %d 句后 · T%d)：%s" % (i, tier, text)))
+            k += 1
+    return out
+
+
 BANDS = [(0, 9, "0–9 岁 · 从前有块毯子"),
          (10, 19, "10–19 岁 · 教室、停电和理想"),
          (20, 29, "20–29 岁 · 鸡蛋、绿植和电费"),
@@ -79,8 +142,11 @@ def build_md(events, book):
             lines.append(f"**开场旁白**：{e.get('facts','')}")
             if e.get("npc_dialogue"):
                 lines.append("**人物对白**：")
-                for turn in str(e["npc_dialogue"]).splitlines():
-                    lines.append(f"  - {turn.strip()}")
+                for kind, text in script_sequence(e):
+                    if kind == "aside":
+                        lines.append(f"  - ★ 旁白{text}")
+                    else:
+                        lines.append(f"  - {text}")
             lines.append("")
             lines.append("| 档位 | 旁白 | 内心 | 台词 | 收尾 |")
             lines.append("| --- | --- | --- | --- | --- |")
@@ -163,11 +229,14 @@ def build_docx(events, book, data):
                 p = doc.add_paragraph()
                 style_run(p.add_run("人物对白"), 9, True, ACCENT)
                 p.paragraph_format.space_after = Pt(2)
-                for turn in str(e["npc_dialogue"]).splitlines():
+                for kind, text in script_sequence(e):
                     line = doc.add_paragraph()
                     line.paragraph_format.left_indent = Cm(0.6)
                     line.paragraph_format.space_after = Pt(1)
-                    style_run(line.add_run(turn.strip()), 10)
+                    if kind == "aside":
+                        style_run(line.add_run("★ 旁白" + text), 9.5, False, ACCENT)
+                    else:
+                        style_run(line.add_run(text), 10)
 
             rows = e.get("lenses", [])
             table = doc.add_table(rows=1, cols=5)
