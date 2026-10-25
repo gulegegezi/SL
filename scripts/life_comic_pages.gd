@@ -160,6 +160,12 @@ static func make(run, result: bool = false) -> Dictionary:
 			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
+	# 电波系：把「此刻的误会」明摆出来（参考 GAMERS 的误会网）
+	var misread := str(e.get("misread", "")).strip_edges()
+	if not result and not misread.is_empty():
+		var note := speak(run, e, {"shot": "wide", "action": "settle"}, "误会：" + misread)
+		note["expr"] = "normal"
+		panels.append(note)
 	if not result:
 		var action: Dictionary = PixelDirection.interaction(e.id)
 		if not action.is_empty():

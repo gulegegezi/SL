@@ -92,6 +92,8 @@ def build_md(events, book):
                 r = resp[i] if i < len(resp) else ""
                 roast = c.get("roast", "")
                 lines.append(f"- **选项 {i+1}：{c.get('label','')}** → {r}" + (f"（旁白吐槽：{roast}）" if roast else ""))
+            if e.get("misread"):
+                lines.append(f"- 误会：{e['misread']}")
             if e.get("echo"):
                 lines.append(f"- 回响：{e['echo'].get('line','')}（来自 {e['echo'].get('from','')}）")
             lines.append("")
@@ -200,6 +202,9 @@ def build_docx(events, book, data):
                 if c.get("roast"):
                     style_run(line.add_run(f"（旁白：{c['roast']}）"), 9.5, False, ACCENT)
 
+            if e.get("misread"):
+                p = doc.add_paragraph()
+                style_run(p.add_run(f"误会：{e['misread']}"), 9.5, False, ACCENT)
             if e.get("echo"):
                 p = doc.add_paragraph()
                 style_run(p.add_run(f"回响：{e['echo'].get('line', '')}（来自 {e['echo'].get('from', '')}）"), 9, False, MUTED)
