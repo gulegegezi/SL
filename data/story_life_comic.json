@@ -11167,6 +11167,366 @@
       ]
     },
     {
+      "id": "LC34",
+      "title": "联机到十点，被邻居误会在相亲",
+      "age_range": [
+        23,
+        32
+      ],
+      "stage": "adult",
+      "scene": "home",
+      "actors": [
+        "lead",
+        "boss"
+      ],
+      "prop": "phone",
+      "facts": "周五晚上，你和同事联机打游戏，语音里喊“打他打他”。十点，邻居敲门送水果，往屋里看了一眼：一台电视、两个人、满地零食。她笑着说：年轻人，慢慢聊。门关上了，语音里同事问：刚才谁啊？",
+      "npc_dialogue": "同事：刚才谁啊？\n你：邻居，送水果。\n同事：她为什么笑得那么懂？\n你：可能误会了。\n同事：误会什么？\n你：误会我们在约会。",
+      "lenses": [
+        {
+          "narrator": "你第一次发现，解释也会被当成剧情推进。",
+          "inner": "我说的是游戏，她听到的是好事将近。",
+          "dialogue": "阿姨，我们在打游戏。",
+          "result_tail": "门关上以后，语音里同事笑到破音。"
+        },
+        {
+          "narrator": "邻里关系进入信息不对称阶段，水果是开场白。",
+          "inner": "她送的是苹果，收走的是我的清白。",
+          "dialogue": "这真是同事。",
+          "result_tail": "第二天，楼道里多了一个版本。"
+        },
+        {
+          "narrator": "脑内邻里群正在直播一档叫《年轻人》的节目。",
+          "inner": "我在自己家，成了别人剧里的角色。",
+          "dialogue": "不是你们想的那样。",
+          "result_tail": "群里的剧情比游戏精彩。"
+        },
+        {
+          "narrator": "想象中的社区广播站播报：本单元新增一段佳话。",
+          "inner": "我只是想安静地输一把。",
+          "dialogue": "请把音量调小。",
+          "result_tail": "广播没有停，游戏也输了。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "追出去解释清楚",
+          "intent": "explain",
+          "effects": {
+            "mental": 1,
+            "charm": 1
+          },
+          "lines": [
+            "阿姨，我们在打游戏。",
+            "真的是同事。",
+            "您别多想。",
+            "我解释十分钟了。"
+          ],
+          "memory": "_误会_解释",
+          "id": "LC34.C1",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。",
+              "visual": "talk",
+              "effects": {
+                "mental": 1,
+                "charm": 1
+              },
+              "memory": "_误会_解释",
+              "id": "LC34.C1.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。 门关上以后，语音里同事笑到破音。",
+                  "inner": "我说的是游戏，她听到的是好事将近。",
+                  "dialogue": "阿姨，我们在打游戏。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。 第二天，楼道里多了一个版本。",
+                  "inner": "她送的是苹果，收走的是我的清白。",
+                  "dialogue": "真的是同事。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。 群里的剧情比游戏精彩。",
+                  "inner": "我在自己家，成了别人剧里的角色。",
+                  "dialogue": "您别多想。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。 广播没有停，游戏也输了。",
+                  "inner": "我只是想安静地输一把。",
+                  "dialogue": "我解释十分钟了。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "追出去解释清楚"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "talk",
+                  "prop": "phone",
+                  "caption": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ],
+          "roast": "旁白：你解释了十分钟，误会从“约会”升级成“同居”。"
+        },
+        {
+          "label": "不解释，继续打",
+          "intent": "avoid",
+          "effects": {
+            "mental": 2
+          },
+          "lines": [
+            "算了。",
+            "继续。",
+            "先打排位。",
+            "解释打不赢。"
+          ],
+          "memory": "_误会_不解释",
+          "id": "LC34.C2",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？”",
+              "visual": "phone",
+              "effects": {
+                "mental": 2
+              },
+              "memory": "_误会_不解释",
+              "id": "LC34.C2.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？” 门关上以后，语音里同事笑到破音。",
+                  "inner": "我说的是游戏，她听到的是好事将近。",
+                  "dialogue": "算了。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？” 第二天，楼道里多了一个版本。",
+                  "inner": "她送的是苹果，收走的是我的清白。",
+                  "dialogue": "继续。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？” 群里的剧情比游戏精彩。",
+                  "inner": "我在自己家，成了别人剧里的角色。",
+                  "dialogue": "先打排位。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？” 广播没有停，游戏也输了。",
+                  "inner": "我只是想安静地输一把。",
+                  "dialogue": "解释打不赢。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "不解释，继续打"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "干脆请同事来家吃顿饭",
+          "intent": "lean_in",
+          "effects": {
+            "charm": 2,
+            "mental": 1,
+            "abstract": 1
+          },
+          "lines": [
+            "一起吃个饭吧。",
+            "把误会做实。",
+            "省得解释。",
+            "就当团建。"
+          ],
+          "memory": "_误会_做实",
+          "id": "LC34.C3",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。",
+              "visual": "offer",
+              "effects": {
+                "charm": 2,
+                "mental": 1,
+                "abstract": 1
+              },
+              "memory": "_误会_做实",
+              "id": "LC34.C3.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。 门关上以后，语音里同事笑到破音。",
+                  "inner": "我说的是游戏，她听到的是好事将近。",
+                  "dialogue": "一起吃个饭吧。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。 第二天，楼道里多了一个版本。",
+                  "inner": "她送的是苹果，收走的是我的清白。",
+                  "dialogue": "把误会做实。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。 群里的剧情比游戏精彩。",
+                  "inner": "我在自己家，成了别人剧里的角色。",
+                  "dialogue": "省得解释。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。 广播没有停，游戏也输了。",
+                  "inner": "我只是想安静地输一把。",
+                  "dialogue": "就当团建。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "干脆请同事来家吃顿饭"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "offer",
+                  "prop": "phone",
+                  "caption": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ],
+          "roast": "旁白：你用一个更大的误会，覆盖了上一个误会。"
+        }
+      ],
+      "requirements": {},
+      "callback": null,
+      "recurrence": {
+        "once": true,
+        "cooldown_years": 0
+      },
+      "panels": [
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "boss"
+          ],
+          "action": "establish",
+          "caption": "周五晚上，你和同事联机打游戏，语音里喊“打他打他”。十点，邻居敲门送水果，往屋里看了一眼：一台电视、两个人、满地零食。她笑着说：年轻人，慢慢聊。门关上了，语音里同事问：刚才谁啊？"
+        },
+        {
+          "shot": "detail",
+          "actors": [
+            "lead",
+            "boss"
+          ],
+          "action": "look_at_prop",
+          "prop": "phone",
+          "caption": "同事：刚才谁啊？\n你：邻居，送水果。\n同事：她为什么笑得那么懂？\n你：可能误会了。\n同事：误会什么？\n你：误会我们在约会。"
+        },
+        {
+          "shot": "medium",
+          "actors": [
+            "lead"
+          ],
+          "action": "react",
+          "voice_ref": "lenses[tier]"
+        },
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "boss"
+          ],
+          "action": "choice_pause",
+          "prop": "phone"
+        }
+      ],
+      "cast_bindings": {
+        "lead": "lead",
+        "boss": "boss"
+      },
+      "narrator_asides": [
+        "旁白提醒：水果不是证据，但在这里算。",
+        "楼道是本地最大的信息交易所。",
+        "脑内直播间标题：他到底有没有对象。",
+        "社区广播站不接受撤稿。"
+      ],
+      "misread": "邻居认定你在约会；同事以为你被邻居催婚；你以为自己只是打了个排位。"
+    },
+    {
       "id": "LC15",
       "title": "老同学来电，没有附项目书",
       "age_range": [
@@ -13213,7 +13573,8 @@
         "钱包的反应比肌肉快，这是生理常识。",
         "跑步机不需要你，它自己会转。",
         "自律之神收下供奉，回赠一张收据。"
-      ]
+      ],
+      "misread": "销售以为你会来，你以为自己会来。"
     },
     {
       "id": "LC33",
@@ -13571,7 +13932,8 @@
         "配乐已选好，情绪请自备。",
         "仓库里的自己，比相册里的旧一点。",
         "记忆管理局的申诉窗口，永远排着拿蛋糕照片的人。"
-      ]
+      ],
+      "misread": "算法以为那天是黄金时代，你记得的只有加班。"
     },
     {
       "id": "LC31",
@@ -13931,7 +14293,8 @@
         "接龙第十七位，和当年值日表上的名字差不多。",
         "教室没变，只是座位牌换成了职位。",
         "时间管理局收下了白卷。它也没写总结。"
-      ]
+      ],
+      "misread": "班长以为你嫌人多，其实你只是不想被问工资。"
     },
     {
       "id": "LC19",
