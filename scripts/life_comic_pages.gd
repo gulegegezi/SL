@@ -160,6 +160,23 @@ static func make(run, result: bool = false) -> Dictionary:
 			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
+	# 旁白插入：对白之间补一句 tier 对应的旁白，别让整页只剩对话
+	if not result and e.has("narrator_asides"):
+		var asides: Array = e.get("narrator_asides", [])
+		if not asides.is_empty():
+			var aside := str(asides[mini(t, asides.size() - 1)]).strip_edges()
+			if not aside.is_empty():
+				var at := panels.size()
+				var seen := 0
+				for i in range(panels.size()):
+					if str(panels[i].get("text_channel", "")) == "dialogue":
+						seen += 1
+						if seen == 2:
+							at = i + 1
+							break
+				var note := speak(run, e, {"shot": "detail", "action": "settle"}, aside)
+				note["expr"] = "normal"
+				panels.insert(at, note)
 	# 电波系：把「此刻的误会」明摆出来（参考 GAMERS 的误会网）
 	var misread := str(e.get("misread", "")).strip_edges()
 	if not result and not misread.is_empty():
