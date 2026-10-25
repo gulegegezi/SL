@@ -160,26 +160,25 @@ static func make(run, result: bool = false) -> Dictionary:
 			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
-	# 旁白插拍：按事件类型决定插几次，位置在第 2、第 5 句对白之后
+	# 旁白插拍：次数按事件类型，位置可数据指定，否则挑情绪峰值
 	if not result and e.has("narrator_asides"):
 		var asides: Array = e.get("narrator_asides", [])
-		if not asides.is_empty():
-			var want := aside_count_for(e)
+		var want := aside_count_for(e)
+		var plan: Dictionary = e.get("aside_plan", {})
+		if want > 0 and not asides.is_empty():
+			var after: Array = plan.get("after", [])
+			var ordinals := aside_positions(panels, want, after)
 			var spots: Array = []
 			var seen := 0
-			if want <= 0:
-				seen = -1
 			for i in range(panels.size()):
-				if seen < 0:
-					break
 				if str(panels[i].get("text_channel", "")) == "dialogue":
 					seen += 1
-					if seen in [2, 5]:
+					if seen in ordinals:
 						spots.append(i + 1)
-						if spots.size() >= want:
-							break
+			var tiers: Array = plan.get("tiers", [])
 			for k in range(spots.size() - 1, -1, -1):
-				var aside := str(asides[(t + k * 2) % asides.size()]).strip_edges()
+				var pick := int(tiers[k]) if k < tiers.size() else (t + k * 2) % asides.size()
+				var aside := str(asides[posmod(pick, asides.size())]).strip_edges()
 				if aside.is_empty():
 					continue
 				var note := speak(run, e, {"shot": "detail", "action": "settle"}, aside)
@@ -205,8 +204,44 @@ static func make(run, result: bool = false) -> Dictionary:
 		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2,
 		"text_only":bool(e.get("text_only", false))}
 
+## 旁白插哪：数据指定 after，否则挑「情绪峰值」（以 ！/？ 结尾的对白）
+static func aside_positions(panels: Array, want: int, after: Array = []) -> Array:
+	if want <= 0:
+		return []
+	if not after.is_empty():
+		var fixed: Array = []
+		for v in after:
+			fixed.append(int(v))
+			if fixed.size() >= want:
+				break
+		return fixed
+	var peaks: Array = []
+	var ordinal := 0
+	for p in panels:
+		if str(p.get("text_channel", "")) != "dialogue":
+			continue
+		ordinal += 1
+		var line := str(p.get("bubble", "")).strip_edges()
+		if line.ends_with("！") or line.ends_with("？"):
+			peaks.append(ordinal)
+	var out: Array = []
+	for v in peaks:
+		if out.size() >= want:
+			break
+		out.append(v)
+	for fallback in [2, 5, 3, 4]:
+		if out.size() >= want:
+			break
+		if not out.has(fallback):
+			out.append(fallback)
+	out.sort()
+	return out
+
+
 ## 旁白插几次：按事件类型决定，可用 aside_count 覆盖
 static func aside_count_for(e: Dictionary) -> int:
+	if e.has("aside_plan"):
+		return clampi(int(e.aside_plan.get("count", 1)), 0, 3)
 	if e.has("aside_count"):
 		return clampi(int(e.aside_count), 0, 3)
 	if bool(e.get("text_only", false)):
