@@ -23,6 +23,7 @@ func run() -> void:
 
 	var facts_hits := 0
 	var guide_hits := 0
+	var response_hits := 0
 	for e in data.events:
 		if int(e.age_range[0]) > 30:
 			continue
@@ -31,14 +32,18 @@ func run() -> void:
 		for line in dialogue.events.get(e.id, {}).get("guide", []):
 			if _hits(str(line)):
 				guide_hits += 1
+		for line in dialogue.events.get(e.id, {}).get("responses", []):
+			if _hits(str(line)):
+				response_hits += 1
 
 	assert(facts_hits >= 8, "前 30 岁的开场旁白里，抽象/元叙述标记太少：%d" % facts_hits)
 	assert(guide_hits >= 6, "选项前的旁白不够「自我意识」：%d" % guide_hits)
+	assert(response_hits >= 10, "选择后的旁白吐槽太少：%d" % response_hits)
 
 	# 不能因为玩梗把事实撑爆（面板换行有限）
 	for e in data.events:
 		var text := str(e.get("facts", ""))
 		assert(text.length() <= 120, "%s 的 facts 过长：%d" % [e.id, text.length()])
 
-	print("PASS: abstract/meta tone in first 30 years (facts %d, guide %d)" % [facts_hits, guide_hits])
+	print("PASS: abstract/meta tone in first 30 years (facts %d, guide %d, responses %d)" % [facts_hits, guide_hits, response_hits])
 	quit()
