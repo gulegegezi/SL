@@ -165,7 +165,7 @@ func _process(delta: float) -> void:
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
 			# 逐字音：标点与空白不出声，并做 55ms 节流，避免一页几十个音叠在一起
-			if _sfx_gate <= 0.0 and ch.strip_edges() != "" and ch not in ["。", "！", "？", "…", "，", "；"]:
+			if not bool(spec.get("hide_text", false)) and _sfx_gate <= 0.0 and ch.strip_edges() != "" and ch not in ["。", "！", "？", "…", "，", "；"]:
 				_sfx_gate = 0.055
 				AudioFX.speak(self, str(spec.get("actor", "lead")) != "lead")
 			_next_token += 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", "\n"] else 0.025)
@@ -507,6 +507,9 @@ func _draw_gesture(r: Rect2) -> void:
 
 # ----------------------------------------------------------
 func _draw_text(r: Rect2, dark: bool) -> void:
+	# 对话模式下文字改由 DialogueBox 承担，格子里只留画面
+	if bool(spec.get("hide_text", false)):
+		return
 	var cap := str(spec.get("caption", ""))
 	var caption_length := cap.length()
 	var bub := str(spec.get("bubble", ""))

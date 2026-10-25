@@ -3,10 +3,12 @@ extends Control
 signal finished(progress: Dictionary)
 const PixelPanel := preload("res://scripts/comic_panel.gd")
 const ThemeKit := preload("res://scripts/comic_theme.gd")
+const DialogueBox := preload("res://scripts/dialogue_box.gd")
 var lines: Array = []
 var index := 0
 var panel: Control
 var stage_area: Control
+var box: Control
 var heading: Label
 var next_button: Button
 var history: AcceptDialog
@@ -42,6 +44,13 @@ func _ready() -> void:
 	stage_area = Control.new()
 	stage_area.size_flags_vertical = SIZE_EXPAND_FILL
 	column.add_child(stage_area)
+	box = DialogueBox.new()
+	box.set_anchors_and_offsets_preset(PRESET_BOTTOM_WIDE)
+	box.offset_top = -156
+	box.offset_left = 6
+	box.offset_right = -6
+	box.offset_bottom = -6
+	stage_area.add_child(box)
 	next_button = add_button(column,"",advance)
 	var row := HBoxContainer.new(); column.add_child(row)
 	add_button(row,"对话记录",show_history)
@@ -83,6 +92,8 @@ func show_line() -> void:
 	# The reader keeps its illustrations; spoken sequences need a persistent stage.
 	if not str(spec.get("ink", "")).is_empty(): spec["presentation"] = "pixel3d"
 	spec["conversation_mode"] = true
+	# 文字交给屏幕上的对话框，格子里只留画面
+	spec["hide_text"] = true
 	# Keep the room and cast alive across utterances with the same staging.
 	if is_instance_valid(panel):
 		for field in ["scene","support","ink","prop"]:
@@ -99,6 +110,15 @@ func show_line() -> void:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 				advance(); panel.accept_event())
 	panel.interactions_enabled = false
+	# 文字交给对话框，格子里只留画面
+	if is_instance_valid(box):
+		box.move_to_front()
+		var spoken := str(spec.get("bubble", ""))
+		var narr := str(spec.get("caption", ""))
+		var line := spoken if spoken != "" else narr
+		var who := str(spec.get("speaker_label", ""))
+		if who == "旁白": who = ""
+		box.show_line(line, who)
 	_last_character = 0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.set_revealed(false); panel.set_revealed(true)
@@ -109,11 +129,13 @@ func _process(delta: float) -> void:
 	var typing: bool = panel.visible_characters < panel._full_text.length()
 	_sound_wait = maxf(0,_sound_wait-delta)
 	if panel.visible_characters > _last_character:
-		if typing and not muted and not history.visible and _sound_wait <= 0 and panel.spec.get("text_channel","") == "dialogue" and not panel._full_text.contains("一言不发"):
-			voice.pitch_scale = 0.82+float(posmod(str(panel.spec.get("actor","lead")).hash(),5))*0.10
-			voice.play()
+		if not muted and not history.visible and _sound_wait <= 0 and not panel._full_text.contains("一言不发"):
+			var pitch := 0.82+float(posmod(str(panel.spec.get("actor","lead")).hash(),5))*0.10
+			preload("res://scripts/audio_fx.gd").play(self, "blip", pitch, -4.0)
 			_sound_wait = 0.075
 		_last_character = panel.visible_characters
+	if is_instance_valid(box):
+		box.set_progress(panel.visible_characters)
 	next_button.text = "显示整句 · 点击画面 / 空格" if typing else ("下一句 ▾" if index < lines.size()-1 else "对话结束 · 返回漫画")
 
 func advance() -> void:
