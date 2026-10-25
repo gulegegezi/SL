@@ -92,6 +92,7 @@ func run_test() -> void:
 	await frames()
 	restored.queue_free()
 	await frames()
+	preload("res://scripts/audio_fx.gd").stop_music()
 	await create_timer(0.2).timeout
 	print("SCENE_CONVERSATION_SMOKE ","PASS" if failures == 0 else "FAIL")
 	quit(0 if failures == 0 else 1)

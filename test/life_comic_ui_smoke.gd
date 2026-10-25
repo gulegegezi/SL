@@ -67,5 +67,7 @@ func run_test() -> void:
 	check(found,"default project title exposes the new story mode")
 	title.queue_free()
 	await process_frame
+	preload("res://scripts/audio_fx.gd").stop_music()
+	await create_timer(.15).timeout
 	print("LIFE_COMIC_UI_SMOKE ","PASS" if failures == 0 else "FAIL")
 	quit(0 if failures == 0 else 1)

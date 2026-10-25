@@ -5,6 +5,7 @@ const Pages := preload("res://scripts/life_comic_pages.gd")
 const Page := preload("res://scripts/comic_page.gd")
 const ThemeKit := preload("res://scripts/comic_theme.gd")
 const Conversation := preload("res://scripts/scene_conversation.gd")
+const AudioFX := preload("res://scripts/audio_fx.gd")
 var conversation: Control
 var conversation_page: Dictionary = {}
 var run = Run.new()
@@ -20,6 +21,7 @@ var save_path := Run.SAVE_PATH
 var resume_on_open := false
 
 func _ready() -> void:
+	AudioFX.play_music(self, "story")
 	resume_on_open = resume_on_open or bool(get_tree().get_meta("life_comic_resume",false))
 	get_tree().remove_meta("life_comic_resume")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -39,6 +41,9 @@ func _ready() -> void:
 	var save_button := button(tools,"保存书签",func():
 		run.s["scroll"] = scroll.scroll_vertical
 		notice.text = "书签已保存" if run.save(save_path) else "保存失败，请检查磁盘空间")
+	var music_button := button(tools, "音乐：开" if AudioFX.music_enabled else "音乐：关", func():
+		AudioFX.set_music_enabled(not AudioFX.music_enabled))
+	music_button.pressed.connect(func(): music_button.text = "音乐：开" if AudioFX.music_enabled else "音乐：关")
 	status = label("")
 	column.add_child(status)
 	scroll = ScrollContainer.new()

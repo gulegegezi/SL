@@ -1,0 +1,3654 @@
+{
+  "title": "留白里的灯 / Paper Lantern",
+  "bpm": 80,
+  "meter": "4/4",
+  "key": "D major / B minor",
+  "sections": [
+    "0–24s: lantern",
+    "24–48s: memory",
+    "48–72s: companionship",
+    "72–96s: blank page"
+  ],
+  "events": [
+    {
+      "kind": "pluck",
+      "beat": 0,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 0.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 1.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 2,
+      "pitch": 76,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 2.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 3.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 0,
+      "pitch": 38,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 0,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 0,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 0,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 0,
+      "pitch": 78,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 1,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 1.75,
+      "pitch": 73,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 3,
+      "pitch": 74,
+      "length": 0.65,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 4,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 4.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 5.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 6,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 6.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 7.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 4,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 4,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 4,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 4,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 4.5,
+      "pitch": 71,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 6,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 6.75,
+      "pitch": 78,
+      "length": 0.9,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 8,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 8.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 9.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 10,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 10.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 11.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 8,
+      "pitch": 40,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 8,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 8,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 8,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 8,
+      "pitch": 76,
+      "length": 1.25,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 9.5,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 10.5,
+      "pitch": 71,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 12,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 12.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 13.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 14,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 14.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 15.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 12,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 12,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 12,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 12,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 12.25,
+      "pitch": 73,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 13,
+      "pitch": 69,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 14.5,
+      "pitch": 71,
+      "length": 0.4,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 15.25,
+      "pitch": 73,
+      "length": 0.55,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 16,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 16.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 17.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 18,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 18.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 19.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 16,
+      "pitch": 42,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 16,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 16,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 16,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 16,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 16.75,
+      "pitch": 78,
+      "length": 1.1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 18.5,
+      "pitch": 73,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 20,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 20.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 21.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 22,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 22.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 23.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 20,
+      "pitch": 35,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 20,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 20,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 20,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 20.5,
+      "pitch": 74,
+      "length": 1.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 22.5,
+      "pitch": 73,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 23.25,
+      "pitch": 69,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 24,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 24.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 25.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 26,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 26.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 27.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 24,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 24,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 24,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 24,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 24,
+      "pitch": 71,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 25.25,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 26,
+      "pitch": 78,
+      "length": 1.25,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 28,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 28.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 29.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 30,
+      "pitch": 73,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 30.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 31.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 28,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 28,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 28,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 28,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 28.5,
+      "pitch": 76,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 30,
+      "pitch": 73,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 31,
+      "pitch": 69,
+      "length": 0.6,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 32,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 32.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 33.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 34,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 34.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 35.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 32,
+      "pitch": 35,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 35,
+      "pitch": 42,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 32,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 32,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 32,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 32,
+      "pitch": 81,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 33.5,
+      "pitch": 78,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 34.5,
+      "pitch": 76,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 33,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 35,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 36,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 36.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 37.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 38,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 38.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 39.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 36,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 39,
+      "pitch": 50,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 36,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 36,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 36,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 36.25,
+      "pitch": 78,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 37,
+      "pitch": 74,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 38.75,
+      "pitch": 71,
+      "length": 0.8,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 37,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 39,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 40,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 40.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 41.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 42,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 42.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 43.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 40,
+      "pitch": 40,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 43,
+      "pitch": 47,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 40,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 40,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 40,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 40,
+      "pitch": 79,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 41,
+      "pitch": 78,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 42,
+      "pitch": 76,
+      "length": 1.4,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 41,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 43,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 44,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 44.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 45.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 46,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 46.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 47.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 44,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 47,
+      "pitch": 52,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 44,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 44,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 44,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 44.5,
+      "pitch": 73,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 46,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 47,
+      "pitch": 81,
+      "length": 0.7,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 45,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 47,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 48,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 48.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 49.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 50,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 50.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 51.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 48,
+      "pitch": 42,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 51,
+      "pitch": 49,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 48,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 48,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 48,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 48,
+      "pitch": 78,
+      "length": 1.25,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 49.75,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 50.75,
+      "pitch": 73,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 49,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 51,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 52,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 52.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 53.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 54,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 54.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 55.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 52,
+      "pitch": 35,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 55,
+      "pitch": 42,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 52,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 52,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 52,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 52.5,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 53.5,
+      "pitch": 78,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 54.75,
+      "pitch": 81,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 53,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 55,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 56,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 56.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 57.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 58,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 58.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 59.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 56,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 59,
+      "pitch": 50,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 56,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 56,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 56,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 56,
+      "pitch": 79,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 57.5,
+      "pitch": 78,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 58.5,
+      "pitch": 74,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 57,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 59,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 60,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 60.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 61.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 62,
+      "pitch": 73,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 62.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 63.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 60,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 63,
+      "pitch": 52,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 60,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 60,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 60,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 60.5,
+      "pitch": 76,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 62.25,
+      "pitch": 73,
+      "length": 1.25,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 61,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 63,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 64,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 64.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 65.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 66,
+      "pitch": 76,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 66.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 67.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 64,
+      "pitch": 38,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 67,
+      "pitch": 45,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 64,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 64,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 64,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 64,
+      "pitch": 78,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 65,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 65.75,
+      "pitch": 73,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 67,
+      "pitch": 74,
+      "length": 0.65,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 65,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 67,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 68,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 68.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 69.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 70,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 70.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 71.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 68,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 71,
+      "pitch": 50,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 68,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 68,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 68,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 68.5,
+      "pitch": 71,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 70,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 70.75,
+      "pitch": 78,
+      "length": 0.9,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 69,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 71,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "felt",
+      "beat": 71.5,
+      "pitch": 78,
+      "length": 0.35,
+      "gain": 0.08,
+      "pan": -0.2
+    },
+    {
+      "kind": "pluck",
+      "beat": 72,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 72.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 73.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 74,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 74.75,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 75.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 72,
+      "pitch": 40,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 75,
+      "pitch": 47,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 72,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 72,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 72,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 72,
+      "pitch": 76,
+      "length": 1.25,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 72.025,
+      "pitch": 88,
+      "length": 1.25,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "felt",
+      "beat": 73.5,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 73.525,
+      "pitch": 86,
+      "length": 0.5,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "felt",
+      "beat": 74.5,
+      "pitch": 71,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 74.525,
+      "pitch": 83,
+      "length": 1,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "brush",
+      "beat": 73,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 75,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 76,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 76.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 77.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 78,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 78.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 79.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 76,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 79,
+      "pitch": 52,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 76,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 76,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 76,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 76.25,
+      "pitch": 73,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 77,
+      "pitch": 69,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 78.5,
+      "pitch": 71,
+      "length": 0.4,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 79.25,
+      "pitch": 73,
+      "length": 0.55,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 77,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 79,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "felt",
+      "beat": 79.5,
+      "pitch": 76,
+      "length": 0.35,
+      "gain": 0.08,
+      "pan": -0.2
+    },
+    {
+      "kind": "pluck",
+      "beat": 80,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 80.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 81.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 82,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 82.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 83.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 80,
+      "pitch": 42,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 83,
+      "pitch": 49,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 80,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 80,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 80,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 80,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 80.025,
+      "pitch": 88,
+      "length": 0.5,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "felt",
+      "beat": 80.75,
+      "pitch": 78,
+      "length": 1.1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 80.775,
+      "pitch": 90,
+      "length": 1.1,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "felt",
+      "beat": 82.5,
+      "pitch": 73,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 82.525,
+      "pitch": 85,
+      "length": 1,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "brush",
+      "beat": 81,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 83,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 84,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 84.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 85.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 86,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 86.75,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 87.5,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 84,
+      "pitch": 35,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 87,
+      "pitch": 42,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 84,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 84,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 84,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 84.5,
+      "pitch": 74,
+      "length": 1.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 86.5,
+      "pitch": 73,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 87.25,
+      "pitch": 69,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 85,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 87,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "felt",
+      "beat": 87.5,
+      "pitch": 74,
+      "length": 0.35,
+      "gain": 0.08,
+      "pan": -0.2
+    },
+    {
+      "kind": "pluck",
+      "beat": 88,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 88.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 89.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 90,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 90.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 91.5,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 88,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 91,
+      "pitch": 50,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 88,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 88,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 88,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 88,
+      "pitch": 71,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 88.025,
+      "pitch": 83,
+      "length": 0.75,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "felt",
+      "beat": 89.25,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 89.275,
+      "pitch": 86,
+      "length": 0.5,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "felt",
+      "beat": 90,
+      "pitch": 78,
+      "length": 1.25,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 90.025,
+      "pitch": 90,
+      "length": 1.25,
+      "gain": 0.028,
+      "pan": -0.32
+    },
+    {
+      "kind": "brush",
+      "beat": 89,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 91,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 92,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 92.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 93.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 94,
+      "pitch": 73,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 94.75,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 95.5,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 92,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "bass",
+      "beat": 95,
+      "pitch": 52,
+      "length": 0.7,
+      "gain": 0.08,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 92,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 92,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 92,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.032,
+      "pan": 0.5
+    },
+    {
+      "kind": "felt",
+      "beat": 92.5,
+      "pitch": 76,
+      "length": 1,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 94,
+      "pitch": 73,
+      "length": 0.75,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "felt",
+      "beat": 95,
+      "pitch": 69,
+      "length": 0.6,
+      "gain": 0.2,
+      "pan": 0.08
+    },
+    {
+      "kind": "brush",
+      "beat": 93,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "brush",
+      "beat": 95,
+      "pitch": 42,
+      "length": 0.12,
+      "gain": 0.022,
+      "pan": -0.38
+    },
+    {
+      "kind": "pluck",
+      "beat": 96,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 97,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 98,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 99,
+      "pitch": 76,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 96,
+      "pitch": 38,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 96,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 96,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 96,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 96,
+      "pitch": 78,
+      "length": 0.75,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 97,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 100,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 101,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 102,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 103,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 100,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 100,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 100,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 100,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 100.5,
+      "pitch": 71,
+      "length": 1,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 102,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 104,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 105,
+      "pitch": 67,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 106,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 107,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 104,
+      "pitch": 40,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 104,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 104,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 104,
+      "pitch": 55,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 104,
+      "pitch": 76,
+      "length": 1.25,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 105.5,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 108,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 109,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 110,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 111,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 108,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 108,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 108,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 108,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 108.25,
+      "pitch": 73,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 109,
+      "pitch": 69,
+      "length": 0.75,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 112,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 113,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 114,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 115,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 112,
+      "pitch": 42,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 112,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 112,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 112,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 112,
+      "pitch": 76,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 112.75,
+      "pitch": 78,
+      "length": 1.1,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 116,
+      "pitch": 61,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 117,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 118,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 119,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 116,
+      "pitch": 35,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 116,
+      "pitch": 49,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 116,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 116,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 116.5,
+      "pitch": 74,
+      "length": 1.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 118.5,
+      "pitch": 73,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 120,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 121,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 122,
+      "pitch": 66,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 123,
+      "pitch": 71,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 120,
+      "pitch": 43,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 120,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 120,
+      "pitch": 54,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 120,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 120,
+      "pitch": 71,
+      "length": 0.75,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 121.25,
+      "pitch": 74,
+      "length": 0.5,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "pluck",
+      "beat": 124,
+      "pitch": 62,
+      "length": 0.7,
+      "gain": 0.11,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 125,
+      "pitch": 69,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "pluck",
+      "beat": 126,
+      "pitch": 64,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": -0.25
+    },
+    {
+      "kind": "pluck",
+      "beat": 127,
+      "pitch": 73,
+      "length": 0.7,
+      "gain": 0.075,
+      "pan": 0.22
+    },
+    {
+      "kind": "bass",
+      "beat": 124,
+      "pitch": 45,
+      "length": 2.7,
+      "gain": 0.17,
+      "pan": 0
+    },
+    {
+      "kind": "pad",
+      "beat": 124,
+      "pitch": 50,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": -0.5
+    },
+    {
+      "kind": "pad",
+      "beat": 124,
+      "pitch": 52,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.0
+    },
+    {
+      "kind": "pad",
+      "beat": 124,
+      "pitch": 57,
+      "length": 3.9,
+      "gain": 0.018,
+      "pan": 0.5
+    },
+    {
+      "kind": "bell",
+      "beat": 124.5,
+      "pitch": 76,
+      "length": 1,
+      "gain": 0.16,
+      "pan": 0.08
+    },
+    {
+      "kind": "bell",
+      "beat": 126,
+      "pitch": 73,
+      "length": 0.75,
+      "gain": 0.16,
+      "pan": 0.08
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "留白里的灯 / Paper Lantern",
+  "bpm": 80,
+  "bars": 32,
+  "seconds": 96.0,
+  "sample_rate": 32000,
+  "channels": 2,
+  "peak_dbfs": -2.0,
+  "rms_dbfs": -15.960485403067665,
+  "loop_boundary_step": 0.006348372870233328,
+  "max_adjacent_step": 0.1701972268499647,
+  "clipped_samples": 0,
+  "note_events": 455,
+  "seed": 251025
+}

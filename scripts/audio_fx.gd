@@ -164,6 +164,9 @@ static func speak(host: Node, low: bool = false, pitch: float = -1.0) -> void:
 const MUSIC_RATE := 22050
 static var _music_cache: Dictionary = {}
 static var _music_player: AudioStreamPlayer
+static var music_enabled := true
+static var _music_fade: Tween
+const PAPER_LANTERN := preload("res://assets/music/paper_lantern.wav")
 
 ## 轨道定义：bpm、根音(MIDI)、四段和弦（相对根音的半音）、琶音密度
 const TRACKS := {
@@ -192,6 +195,14 @@ static func _midi_hz(note: int) -> float:
 static func music(track: String) -> AudioStreamWAV:
 	if _music_cache.has(track):
 		return _music_cache[track]
+	if track in ["title", "story", "paper_lantern"]:
+		var original := PAPER_LANTERN.duplicate() as AudioStreamWAV
+		original.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		original.loop_begin = 0
+		original.loop_end = 3072000 # 32 bars, 80 BPM, 32 kHz stereo PCM.
+		for alias in ["title", "story", "paper_lantern"]:
+			_music_cache[alias] = original
+		return original
 	var spec: Dictionary = TRACKS.get(track, TRACKS["title"])
 	var bpm: float = float(spec["bpm"])
 	var beat: float = 60.0 / bpm
@@ -250,14 +261,25 @@ static func play_music(host: Node, track: String = "title", db: float = -14.0) -
 	if _music_player == null or not is_instance_valid(_music_player):
 		_music_player = AudioStreamPlayer.new()
 		_music_player.name = "__bgm"
-		host.add_child(_music_player)
+		# Keep music alive when Main is replaced with LifeComic.
+		host.get_tree().root.add_child(_music_player)
 	if _music_player.playing and _music_player.stream == music(track):
 		return
+	if is_instance_valid(_music_fade): _music_fade.kill()
 	_music_player.stream = music(track)
-	_music_player.volume_db = db
+	_music_player.volume_db = -60.0
 	_music_player.play()
+	_music_player.stream_paused = not music_enabled
+	_music_fade = _music_player.create_tween()
+	_music_fade.tween_property(_music_player, "volume_db", db, 0.7)
+
+
+static func set_music_enabled(value: bool) -> void:
+	music_enabled = value
+	if is_instance_valid(_music_player): _music_player.stream_paused = not value
 
 
 static func stop_music() -> void:
+	if is_instance_valid(_music_fade): _music_fade.kill()
 	if _music_player != null and is_instance_valid(_music_player):
 		_music_player.stop()
