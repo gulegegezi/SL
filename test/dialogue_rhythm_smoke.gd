@@ -24,5 +24,11 @@ func run() -> void:
 	var cut := ComicPanel.box_polygon(rect, 16.0)
 	assert(cut.size() == 5, "切角框应是五角")
 	assert(cut[2].y < rect.end.y and cut[3].x < rect.end.x, "切角位置不对")
+	# 标点停顿：破折号 > 省略号 > 逗号 > 普通字
+	assert(ComicPanel.char_delay("—") > ComicPanel.char_delay("…"), "破折号停顿应最长")
+	assert(ComicPanel.char_delay("…") > ComicPanel.char_delay("，"), "省略号应长于逗号")
+	assert(ComicPanel.char_delay("，") > ComicPanel.char_delay("字"), "逗号应长于普通字")
+	# 句内加速：ramp 越小越快
+	assert(ComicPanel.char_delay("字", 0.8) < ComicPanel.char_delay("字", 1.0), "加速后单字延迟应更短")
 	print("PASS: speaker cadence and interruption marker helpers")
 	quit()

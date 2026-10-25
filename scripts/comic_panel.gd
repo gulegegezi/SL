@@ -38,6 +38,8 @@ var revealed := true
 var current_direction: Dictionary = {}
 var moments: Array = []
 var visible_characters := 0
+## 句内变速：连续感叹/问句会越说越快，句号复位
+var _ramp := 1.0
 var impact_count := 0
 var reduced_motion := false
 var _moment_index := -1
@@ -96,6 +98,7 @@ func set_revealed(v: bool) -> void:
 	if v:
 		_hold = 0
 		visible_characters = 0
+		_ramp = 1.0
 		_moment_index = -1
 		_age = 0
 		_moment_age = 0
@@ -161,8 +164,11 @@ func _process(delta: float) -> void:
 			if _hold > 0: break
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
-			var base := 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", char(10)] else 0.025)
-			_next_token += base * cadence
+			if ch in ["！", "？"]:
+				_ramp = maxf(0.72, _ramp - 0.08)
+			elif ch == "。":
+				_ramp = 1.0
+			_next_token += char_delay(ch, _ramp, cadence)
 	if visible_characters >= _full_text.length() and _moment_age >= Motion.DURATION and _impact_left <= 0 and not interaction_holding and _interaction_clock >= Motion.DURATION:
 		set_process(false)
 	queue_redraw()
@@ -319,6 +325,24 @@ static func cadence_for(speaker: String, expr: String = "normal") -> float:
 		"sad": 1.3, "cry": 1.35, "tired": 1.35, "sleep": 1.4,
 	}
 	return float(table.get(speaker, 1.0)) * float(mood.get(expr, 1.0))
+
+
+## 逐字延迟：标点停顿 + 句内加速
+## 「……」和「——」会有明显的空白，连读时像迟疑或被打断
+static func char_delay(ch: String, ramp: float = 1.0, cadence: float = 1.0) -> float:
+	var base := 0.025
+	var extra := 0.0
+	if ch in ["。", "！", "？"]:
+		base = 0.22
+	elif ch in ["，", "、", "；"]:
+		base = 0.10
+	elif ch == "…":
+		base = 0.10
+		extra = 0.16
+	elif ch == "—":
+		base = 0.05
+		extra = 0.28
+	return base * cadence * ramp + extra
 
 
 ## 气泡切角：被打断时右下角斜切一刀
