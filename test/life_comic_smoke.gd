@@ -11,7 +11,7 @@ func _initialize() -> void:
 func run_tests() -> void:
 	var a = Run.new()
 	a.start(42)
-	check(a.events.size() == 25,"25 authored events including Naiwa loaded")
+	check(a.events.size() >= 25,"at least 25 authored events including Naiwa loaded")
 	check(a.options().size() == 3,"birth has three choices")
 	check(Pages.make(a).panels.size() >= 3,"separate setup, NPC dialogue and narrator invitation")
 	var b = Run.new()

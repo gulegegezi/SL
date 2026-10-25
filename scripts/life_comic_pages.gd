@@ -22,30 +22,63 @@ static func speak(run, e: Dictionary, original: Dictionary, text: String, name: 
 	return out
 
 static func npc_lines(run, e: Dictionary, text: String) -> Array:
+	# 支持「角色之间的多轮对话」：每行一个「名字：台词」，
+	# 没有名字的行接到上一句；「你」走主角立绘，其他名字映射到 NPC 立绘。
 	var output: Array = []
-	# One label per actual speaker, including the two parents on the departure page.
+	var default_role := "friend"
+	for slot in e.get("actors", []):
+		if slot != "lead":
+			default_role = e.get("cast_bindings", {}).get(slot, slot)
+			break
+	var name_to_role := {
+		"妈妈": "parent", "母亲": "parent",
+		"爸爸": "mate", "父亲": "mate",
+		"老师": "teacher", "班主任": "teacher", "医生": "clinician",
+		"同桌": "friend", "同学": "friend", "朋友": "friend", "老同学": "friend",
+		"室友": "friend", "熟人": "friend", "邻居": "neighbor",
+		"管理员": "hobby_admin", "同事": "boss", "老板": "boss",
+		"伴侣": "partner", "对方": "partner", "班长": "friend", "销售": "boss",
+	}
+	var turns: Array = []
 	var remaining := text
-	for marker in ["妈妈：","爸爸："]: remaining = remaining.replace(marker,"\n"+marker)
-	for line in remaining.split("\n",false):
+	for marker in ["妈妈：", "爸爸："]: remaining = remaining.replace(marker, "\n" + marker)
+	for raw in remaining.split(char(10), false):
+		var line := str(raw).strip_edges()
+		if line.is_empty():
+			continue
 		var at: int = line.find("：")
-		var name: String = line.left(at) if at >= 0 else "对方"
-		var words: String = line.substr(at+1) if at >= 0 else line
-		var role := "friend"
-		for slot in e.get("actors",[]):
-			if slot != "lead":
-				role = e.get("cast_bindings",{}).get(slot,slot)
-				break
-		# Literal character labels take precedence over the order of art slots.
-		if name == "爸爸": role = "mate"
-		elif name == "妈妈": role = "parent"
-		elif name == "医生": role = "clinician"
-		if not run.s.roles.get(role,{}).get("alive",false): role = "clinician"
-		var art_role: String = ROLE_ART.get(role,role)
-		var p := speak(run,e,{"shot":"medium","actors":["lead",role],"action":"talk"},words,name,art_role)
-		p["support"] = "npc_"+art_role
+		var name := ""
+		var words := line
+		if at > 0 and at <= 6:
+			name = line.left(at)
+			words = line.substr(at + 1).strip_edges()
+		if name.is_empty() and not turns.is_empty():
+			turns[turns.size() - 1][1] = str(turns[turns.size() - 1][1]) + " " + words
+		else:
+			turns.append([name, words])
+	for turn in turns:
+		var name := str(turn[0])
+		var words := str(turn[1])
+		if names_are_lead(name):
+			var me := speak(run, e, {"shot": "medium", "actors": ["lead"], "action": "talk"}, words, "你", "lead")
+			me["support"] = ""
+			me["world_solo"] = true
+			output.append(me)
+			continue
+		var role: String = name_to_role.get(name, default_role)
+		if not run.s.roles.get(role, {}).get("alive", false):
+			role = "clinician"
+		var art_role: String = ROLE_ART.get(role, role)
+		var p := speak(run, e, {"shot": "medium", "actors": ["lead", role], "action": "talk"}, words, name, art_role)
+		p["support"] = "npc_" + art_role
 		p["world_solo"] = false
 		output.append(p)
 	return output
+
+
+static func names_are_lead(name: String) -> bool:
+	return name in ["你", "我", "自己"]
+
 
 static func action_for(value: String) -> String:
 	# Related directions share an existing whole-body gesture, not a false bespoke clip.
@@ -130,6 +163,36 @@ static func make(run, result: bool = false) -> Dictionary:
 			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
+	# 旁白插拍：次数按事件类型，位置可数据指定，否则挑情绪峰值
+	if not result and e.has("narrator_asides"):
+		var asides: Array = e.get("narrator_asides", [])
+		var want := aside_count_for(e)
+		var plan: Dictionary = e.get("aside_plan", {})
+		if want > 0 and not asides.is_empty():
+			var after: Array = plan.get("after", [])
+			var ordinals := aside_positions(panels, want, after)
+			var spots: Array = []
+			var seen := 0
+			for i in range(panels.size()):
+				if str(panels[i].get("text_channel", "")) == "dialogue":
+					seen += 1
+					if seen in ordinals:
+						spots.append(i + 1)
+			var tiers: Array = plan.get("tiers", [])
+			for k in range(spots.size() - 1, -1, -1):
+				var pick := int(tiers[k]) if k < tiers.size() else (t + k * 2) % asides.size()
+				var aside := str(asides[posmod(pick, asides.size())]).strip_edges()
+				if aside.is_empty():
+					continue
+				var note := speak(run, e, {"shot": "detail", "action": "settle"}, aside)
+				note["expr"] = "normal"
+				panels.insert(int(spots[k]), note)
+	# 电波系：把「此刻的误会」明摆出来（参考 GAMERS 的误会网）
+	var misread := str(e.get("misread", "")).strip_edges()
+	if not result and not misread.is_empty():
+		var note := speak(run, e, {"shot": "wide", "action": "settle"}, "误会：" + misread)
+		note["expr"] = "normal"
+		panels.append(note)
 	if not result:
 		var action: Dictionary = PixelDirection.interaction(e.id)
 		if not action.is_empty():
@@ -143,6 +206,58 @@ static func make(run, result: bool = false) -> Dictionary:
 	return {"no":run.s.pages.size()+1,"age":run.s.age,"stage":run.pack.rules.tiers[t].name,"title":e.title,
 		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2,
 		"text_only":bool(e.get("text_only", false))}
+
+## 旁白插哪：数据指定 after，否则挑「情绪峰值」（以 ！/？ 结尾的对白）
+static func aside_positions(panels: Array, want: int, after: Array = []) -> Array:
+	if want <= 0:
+		return []
+	if not after.is_empty():
+		var fixed: Array = []
+		for v in after:
+			fixed.append(int(v))
+			if fixed.size() >= want:
+				break
+		return fixed
+	var peaks: Array = []
+	var ordinal := 0
+	for p in panels:
+		if str(p.get("text_channel", "")) != "dialogue":
+			continue
+		ordinal += 1
+		var line := str(p.get("bubble", "")).strip_edges()
+		if line.ends_with("！") or line.ends_with("？"):
+			peaks.append(ordinal)
+	var out: Array = []
+	for v in peaks:
+		if out.size() >= want:
+			break
+		out.append(v)
+	for fallback in [2, 5, 3, 4]:
+		if out.size() >= want:
+			break
+		if not out.has(fallback):
+			out.append(fallback)
+	out.sort()
+	return out
+
+
+## 旁白插几次：按事件类型决定，可用 aside_count 覆盖
+static func aside_count_for(e: Dictionary) -> int:
+	if e.has("aside_plan"):
+		return clampi(int(e.aside_plan.get("count", 1)), 0, 3)
+	if e.has("aside_count"):
+		return clampi(int(e.aside_count), 0, 3)
+	if bool(e.get("text_only", false)):
+		return 0          # 长文本页本身旁白已经很多
+	if e.has("misread"):
+		return 2          # 误会喜剧：旁白多嘴两次
+	if e.has("echo"):
+		return 1          # 回响页：一次就够
+	var turns := str(e.get("npc_dialogue", "")).count("：")
+	if turns >= 6:
+		return 2          # 对白密集：插两次
+	return 1
+
 
 ## 前半生里「动作演不出来」的页：改成双格漫画（旁白框 + 气泡 + 立绘）
 static func _apply_insert(run, panels: Array, e: Dictionary) -> void:

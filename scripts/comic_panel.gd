@@ -39,6 +39,8 @@ var revealed := true
 var current_direction: Dictionary = {}
 var moments: Array = []
 var visible_characters := 0
+## 句内变速：连续感叹/问句会越说越快，句号复位
+var _ramp := 1.0
 var impact_count := 0
 var reduced_motion := false
 var _moment_index := -1
@@ -104,6 +106,7 @@ func set_revealed(v: bool) -> void:
 	if v:
 		_hold = 0
 		visible_characters = 0
+		_ramp = 1.0
 		_moment_index = -1
 		_age = 0
 		_moment_age = 0
@@ -151,6 +154,11 @@ func _process(delta: float) -> void:
 	else:
 		_next_token -= delta
 		var guard := 0
+		var speaker := str(spec.get("speaker_label", ""))
+		var expr := str(spec.get("expr", "normal"))
+		if speaker == "你":
+			expr = str(current_direction.get("expr", "normal"))
+		var cadence := cadence_for(speaker, expr)
 		while _next_token <= 0 and visible_characters < _full_text.length() and guard < 256:
 			guard += 1
 			while _moment_index + 1 < moments.size() and visible_characters >= int(moments[_moment_index + 1].trigger):
@@ -166,10 +174,14 @@ func _process(delta: float) -> void:
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
 			# 逐字音：标点与空白不出声，并做 55ms 节流，避免一页几十个音叠在一起
-			if not bool(spec.get("hide_text", false)) and _sfx_gate <= 0.0 and ch.strip_edges() != "" and ch not in ["。", "！", "？", "…", "，", "；"]:
+			if not bool(spec.get("conversation_mode", false)) and not bool(spec.get("hide_text", false)) and _sfx_gate <= 0.0 and ch.strip_edges() != "" and ch not in ["。", "！", "？", "…", "，", "；"]:
 				_sfx_gate = 0.055
 				AudioFX.speak(self, str(spec.get("actor", "lead")) != "lead")
-			_next_token += 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", "\n"] else 0.025)
+			if ch in ["！", "？"]:
+				_ramp = maxf(0.72, _ramp - 0.08)
+			elif ch == "。":
+				_ramp = 1.0
+			_next_token += char_delay(ch, _ramp, cadence)
 	if visible_characters >= _full_text.length() and _moment_age >= Motion.DURATION and _impact_left <= 0 and not interaction_holding and _interaction_clock >= Motion.DURATION:
 		set_process(false)
 	queue_redraw()
@@ -309,6 +321,65 @@ func _draw() -> void:
 
 # ----------------------------------------------------------
 ## 纯文本叙事：大字号、宽行距、引文用红杠，不用 3D
+## 逐字速度：爸爸/班长这类慢，主角/同桌快；没有就 1.0
+static func cadence_for(speaker: String, expr: String = "normal") -> float:
+	var table := {
+		"你": 0.7, "我": 0.7,
+		"爸爸": 1.4, "父亲": 1.4,
+		"妈妈": 1.15, "母亲": 1.15,
+		"老师": 1.0, "班主任": 1.0, "医生": 1.25,
+		"同桌": 0.85, "同学": 0.85, "朋友": 0.9, "班长": 1.45,
+		"室友": 1.0, "同事": 1.05, "销售": 1.1,
+		"身边的人": 1.5, "熟人": 1.5, "邻居": 1.3, "对方": 1.1,
+	}
+	var mood := {
+		"angry": 0.75, "rage": 0.7, "panic": 0.7, "scared": 0.75, "shock": 0.8, "surprise": 0.85,
+		"happy": 0.9, "smile": 0.9, "smug": 0.95, "determined": 0.95,
+		"sad": 1.3, "cry": 1.35, "tired": 1.35, "sleep": 1.4,
+	}
+	return float(table.get(speaker, 1.0)) * float(mood.get(expr, 1.0))
+
+
+## 逐字延迟：标点停顿 + 句内加速
+## 「……」和「——」会有明显的空白，连读时像迟疑或被打断
+static func char_delay(ch: String, ramp: float = 1.0, cadence: float = 1.0) -> float:
+	var base := 0.025
+	var extra := 0.0
+	if ch in ["。", "！", "？"]:
+		base = 0.22
+	elif ch in ["，", "、", "；"]:
+		base = 0.10
+	elif ch == "…":
+		base = 0.10
+		extra = 0.16
+	elif ch == "—":
+		base = 0.05
+		extra = 0.28
+	return base * cadence * ramp + extra
+
+
+## 气泡切角：被打断时右下角斜切一刀
+static func box_polygon(rect: Rect2, cut: float) -> PackedVector2Array:
+	if cut <= 0.0:
+		return PackedVector2Array([rect.position, Vector2(rect.end.x, rect.position.y),
+			rect.end, Vector2(rect.position.x, rect.end.y)])
+	var c := minf(cut, rect.size.x * 0.25)
+	return PackedVector2Array([rect.position, Vector2(rect.end.x, rect.position.y),
+		Vector2(rect.end.x, rect.end.y - c), Vector2(rect.end.x - c, rect.end.y),
+		Vector2(rect.position.x, rect.end.y)])
+
+
+## 只有「打完字 + 句尾确实是破折号/省略号」才切角
+static func needs_cut(text: String, done: bool) -> bool:
+	return done and interrupted(text)
+
+
+## 抢话/被打断：句尾是破折号或省略号
+static func interrupted(text: String) -> bool:
+	var t := text.strip_edges()
+	return t.ends_with("——") or t.ends_with("……") or t.ends_with("…")
+
+
 ## 说话人 → 立绘 key。「妈妈」「爸爸」这类中文称谓按角色映射，
 ## 映射不到就用格子的 support / ink 兜底。
 static func speaker_key(speaker: String, spec: Dictionary) -> String:
@@ -333,6 +404,7 @@ static func speaker_key(speaker: String, spec: Dictionary) -> String:
 
 
 ## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
+<<<<<<< HEAD
 func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) -> void:
 	# 参照《传说之下》的规格：不透明黑底、3px 纯白直角框、正文以「* 」起行、
 	# 一页三行、打完右下角闪 ▼。长文分页，不再靠缩小字号硬塞进一屏。
@@ -376,6 +448,30 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 		body_shown += 1 + mini(visible_characters - cap_len - 1, spoken.strip_edges().length())
 	body_shown = clampi(body_shown, 0, body.length())
 
+=======
+func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: String, layout: String, done: bool = true) -> void:
+	var f := T.font_body()
+	var size: int = 16 if r.size.x >= 300 else 14
+	var pad := 12.0
+	var body := text
+	var speaker := speaker_label
+	if not bubble.is_empty():
+		var b := bubble
+		if not speaker.is_empty() and b.begins_with(speaker + "："):
+			b = b.substr((speaker + "：").length())
+		elif speaker.is_empty():
+			var at := b.find("：")
+			if at > 0 and at <= 6:
+				speaker = b.left(at)
+				b = b.substr(at + 1)
+		body = text + (char(10) if not text.is_empty() else "") + b
+	if not done:
+		# 还在逐字显示：行尾给一个光标，框会跟着字一起长
+		body = body + "▍"
+	elif interrupted(body):
+		body = body.rstrip("…—") + "▍"
+	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
+>>>>>>> origin/story
 	var portrait: Texture2D = null
 	if not speaker.is_empty():
 		var key := speaker_key(speaker, spec)
@@ -391,6 +487,7 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 	var text_w := box.size.x - (text_x - box.position.x) - pad - border
 	var face_w := 0.0
 	if portrait != null:
+<<<<<<< HEAD
 		face_w = clampf(box_h - pad, 56.0, 110.0)
 		text_x += face_w + 10.0
 		text_w -= face_w + 10.0
@@ -420,6 +517,28 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 	draw_rect(box.grow(-border * 0.5), T.CREAM, false, border)
 
 	# 左侧立绘（可选）：方形，贴框内左下
+=======
+		face_h = clampf(r.size.y * 0.46, 96.0, 190.0)
+		var ts := portrait.get_size()
+		face_w = minf(face_h * (ts.x / maxf(1.0, ts.y)), r.size.x * 0.36)
+		face_h = minf(face_h, face_w * (ts.y / maxf(1.0, ts.x)))
+	var text_w: float = r.size.x - 16.0 - pad * 2 - (face_w + 12.0 if portrait != null else 0.0)
+	var lines := _wrap_lines_manual(body, text_w, size)
+	var line_h: float = size + 8.0
+	var text_h: float = lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0)
+	var h: float = minf(r.size.y * 0.72, maxf(text_h, face_h + pad * 2))
+	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - h, r.size.x - 16.0, h)
+	var cut := 16.0 if (done and interrupted(body)) else 0.0
+	var poly := box_polygon(box, cut)
+	draw_colored_polygon(poly, Color(T.INK, 0.90))
+	var outline := poly.duplicate()
+	outline.append(poly[0])
+	draw_polyline(outline, Color(T.CREAM, 0.85), 1.5)
+	if cut > 0.0:
+		draw_line(Vector2(box.end.x - 24.0, box.end.y - 8.0), Vector2(box.end.x - 10.0, box.end.y - 20.0),
+			Color(T.ACCENT, 0.9), 2.0)
+	var text_x: float = box.position.x + pad
+>>>>>>> origin/story
 	if portrait != null:
 		var ts := portrait.get_size()
 		var side := minf(face_w, box_h - pad * 2.0)
@@ -731,7 +850,8 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 	var dialogue := Dialogue.copy(bub,maxi(0,visible_characters-caption_length-1),str(spec.get("speaker_label","")))
 	var shown_bub := str(dialogue.shown)
 	if str(spec.get("box", "")) == "dialogue" or (str(spec.get("text_channel", "")) == "dialogue" and not bub.is_empty()):
-		_draw_dialogue_box(r, shown_cap, shown_bub, cap)
+		var done := visible_characters >= _full_text.length()
+		_draw_dialogue_box(r, shown_cap, shown_bub, str(spec.get("speaker_label", "")), cap, done)
 		return
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))

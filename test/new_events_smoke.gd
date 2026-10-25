@@ -21,7 +21,7 @@ func _new_run(eid: String):
 
 
 func run() -> void:
-	for eid in ["LC26", "LC27", "LC28"]:
+	for eid in ["LC26", "LC27", "LC28", "LC31", "LC32", "LC33"]:
 		var run = _new_run(eid)
 		var page: Dictionary = Pages.make(run)
 		assert(page.panels.size() >= 3, eid + " 页面至少三格")
@@ -42,5 +42,5 @@ func run() -> void:
 			var result_page: Dictionary = Pages.make(r, true)
 			assert(result_page.panels.size() >= 2, "%s 结果页组装失败" % eid)
 
-	print("PASS: LC26/27/28 build pages, 3 choices each, outcomes resolve")
+	print("PASS: LC26-28/31-33 build pages, 3 choices each, outcomes resolve")
 	quit()
