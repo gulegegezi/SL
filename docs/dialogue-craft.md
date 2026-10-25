@@ -159,8 +159,17 @@ godot --headless --path . --script res://test/dialogue_rhythm_smoke.gd
 | 其它 | 1 | 默认 |
 | 显式 `aside_count` | 0–3 | 数据覆盖 |
 
-两次时分别插在第 2、第 5 句对白之后，第二句旁白用 `(tier+2)%4` 的另一档，
-避免同一页出现两句同款吐槽。
+**插在哪**：优先看数据里的 `aside_plan`：
+
+```json
+"aside_plan": {"count": 2, "after": [3, 9], "tiers": [1, 3]}
+```
+
+- `after`：第几句对白之后插（1 起）；
+- `tiers`：用哪一档旁白（不写就用 `(tier + k*2) % 4`）。
+
+没有 `aside_plan` 时**挑情绪峰值**：以「！」或「？」结尾的对白优先，
+不够再用第 2、5、3、4 句兜底；同一页不会出现两句同款吐槽。
 
 回归测试：
 

@@ -41,6 +41,18 @@ func run() -> void:
 	assert(Pages.aside_count_for({"npc_dialogue": "你：一\n你：二\n你：三\n你：四\n你：五\n你：六"}) == 2)
 	assert(Pages.aside_count_for({"npc_dialogue": "你：一\n你：二"}) == 1)
 	assert(Pages.aside_count_for({"aside_count": 0, "misread": "x"}) == 0)
+	assert(Pages.aside_count_for({"aside_plan": {"count": 3}}) == 3, "aside_plan 应覆盖类型规则")
+
+	# 位置：数据指定优先；否则挑以 ！/？ 结尾的对白
+	var panels := [
+		{"text_channel": "dialogue", "bubble": "你：来了。"},
+		{"text_channel": "dialogue", "bubble": "他：你终于来了？"},
+		{"text_channel": "dialogue", "bubble": "你：走吧。"},
+		{"text_channel": "dialogue", "bubble": "他：就现在！"},
+	]
+	assert(Pages.aside_positions(panels, 2, [1]) == [1], "after 应被尊重")
+	assert(Pages.aside_positions(panels, 2) == [2, 4], "应挑问句/叹句所在的对白序号")
+	assert(Pages.aside_positions(panels, 2, []) == [2, 4])
 
 	var cases := {"LC34": 2, "LC29": 0, "LC03": 1}
 	for eid in cases:
