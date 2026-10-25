@@ -15,8 +15,8 @@ func text_of(spec: Dictionary) -> String:
 	return output
 func _initialize() -> void:
 	var run = Run.new()
-	check(Pages.book().size() == run.events.size(),"all events have original narrator scripts")
-	for e in run.events.values():
+	check(Pages.book().size() == run.pack.events.size(),"all authored comic events have original narrator scripts")
+	for e in run.pack.events:
 		for t in range(4):
 			for choice_index in range(3):
 				var life = Run.new(); life.start(83)
@@ -25,7 +25,9 @@ func _initialize() -> void:
 				var opening: String = text_of(Pages.make(life))
 				check(opening.contains(e.facts),"setup facts preserved")
 				for literal in e.npc_dialogue.replace("妈妈：","\n妈妈：").replace("爸爸：","\n爸爸：").split("\n",false):
-					check(opening.contains(literal),"literal NPC words preserved in each lens")
+					var colon: int = literal.find("：")
+					var words: String = literal.substr(colon+1).strip_edges() if colon >= 0 else literal.strip_edges()
+					check(opening.contains(words),"literal NPC words preserved in each lens")
 				life.choose(choice_index)
 				var result_text: String = text_of(Pages.make(life,true))
 				check(result_text.count(life.s.committed.facts) == 1,"actual consequence stated exactly once")
@@ -36,5 +38,5 @@ func _initialize() -> void:
 	check(restored.count("同一件事。") == 1 and restored.contains("后续。") and restored.contains("你：我说的话"),"old pages migrate without duplicate facts or lost dialogue")
 	check(legacy.panels[1].caption.contains("旧心声"),"migration does not mutate its input")
 	check(Pages.upgrade_legacy(converted) == converted,"migration is idempotent")
-	print("LIFE_DIALOGUE_SMOKE ","PASS" if failures == 0 else "FAIL"," · ",run.events.size()," events x 4 tiers x 3 choices / legacy presentation")
+	print("LIFE_DIALOGUE_SMOKE ","PASS" if failures == 0 else "FAIL"," · ",run.pack.events.size()," events x 4 tiers x 3 choices / legacy presentation")
 	quit(0 if failures == 0 else 1)

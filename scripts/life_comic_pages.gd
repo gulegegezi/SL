@@ -106,6 +106,7 @@ static func panel(run, e: Dictionary, original: Dictionary, caption: String, bub
 
 static func make(run, result: bool = false) -> Dictionary:
 	var e: Dictionary = run.source()
+	if e.get("legacy", false): return legacy_page(run, e, result)
 	var t: int = run.s.committed.tier if result else run.s.pending.tier
 	var panels: Array = []
 	if e.has("choices"):
@@ -207,6 +208,22 @@ static func make(run, result: bool = false) -> Dictionary:
 		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2,
 		"text_only":bool(e.get("text_only", false))}
 
+static func legacy_page(run, e: Dictionary, result: bool) -> Dictionary:
+	var panels: Array = []
+	if result:
+		panels.append(speak(run, e, {"shot":"medium", "action":"talk"}, str(run.s.committed.label), "你"))
+		panels.append(speak(run, e, {"shot":"wide"}, str(run.s.committed.facts)))
+	else:
+		for paragraph in str(e.get("text", "")).split("\n", false):
+			panels.append(speak(run, e, {"shot":"wide"}, paragraph))
+		var invitation: String = ["你想怎么回应这件小事？", "好了，生活把选择题递过来了。", "布景已经摆好，这次由你接台词。", "旁白先停一下。下一笔，归你。"][run.tier()]
+		panels.append(speak(run, e, {"shot":"medium"}, invitation))
+	for p in panels:
+		p["box"] = "dialogue"
+		p["pixel_variant"] = "day"
+	return {"no":run.s.pages.size()+1, "age":run.s.age, "stage":"出生序章" if str(e.original_id).begins_with("OP") else "人生拾遗", "title":e.title,
+		"event_id":e.id, "result":result, "panels":panels, "series":0, "slots":[], "dialogue_version":2}
+
 ## 旁白插哪：数据指定 after，否则挑「情绪峰值」（以 ！/？ 结尾的对白）
 static func aside_positions(panels: Array, want: int, after: Array = []) -> Array:
 	if want <= 0:
@@ -301,7 +318,7 @@ static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
 			if fallback.strip_edges().is_empty():
 				var tier: int = int(run.s.pending.get("tier", 0))
 				var lenses: Array = e.get("lenses", [])
-				if tier < lenses.size():
+				if tier < lenses.size() and lenses[tier] is Dictionary:
 					fallback = str(lenses[tier].get("dialogue", ""))
 			speech = fallback
 		var second := ""

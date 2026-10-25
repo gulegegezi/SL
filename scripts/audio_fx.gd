@@ -75,6 +75,12 @@ static func _render(freqs: Array, note_ms: float, wave: String, vol: float,
 static func _tone(freq: float, ms: float, vol: float, square: bool) -> AudioStreamWAV:
 	return _render([freq], ms, "square" if square else "sin", vol)
 
+static func blip() -> AudioStreamWAV:
+	return stream("blip")
+
+static func confirm() -> AudioStreamWAV:
+	return stream("select")
+
 
 # ==========================================================
 # 音效表
@@ -258,11 +264,20 @@ static func music(track: String) -> AudioStreamWAV:
 static func play_music(host: Node, track: String = "title", db: float = -14.0) -> void:
 	if not enabled or host == null or not is_instance_valid(host) or not host.is_inside_tree():
 		return
+	if _music_player != null and is_instance_valid(_music_player) and not _music_player.is_inside_tree():
+		return
 	if _music_player == null or not is_instance_valid(_music_player):
-		_music_player = AudioStreamPlayer.new()
-		_music_player.name = "__bgm"
+		var player := AudioStreamPlayer.new()
+		player.name = "__bgm"
 		# Keep music alive when Main is replaced with LifeComic.
-		host.get_tree().root.add_child(_music_player)
+		# root 还在 _ready 里装子节点，直接 add_child 会失败，改成延迟加入。
+		player.stream = music(track)
+		player.volume_db = db
+		player.autoplay = true
+		player.set_deferred("stream_paused", not music_enabled)
+		host.get_tree().root.add_child.call_deferred(player)
+		_music_player = player
+		return
 	if _music_player.playing and _music_player.stream == music(track):
 		return
 	if is_instance_valid(_music_fade): _music_fade.kill()

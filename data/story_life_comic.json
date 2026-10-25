@@ -3114,25 +3114,29 @@
           "narrator": "你第一次被要求表演“知道未来”。",
           "inner": "可我只知道今天的点心是豆沙包。",
           "dialogue": "豆沙包。",
-          "result_tail": "快门响了，你笑得很像你自己。"
+          "result_tail": "快门响了，你笑得很像你自己。",
+          "tier": 0
         },
         {
           "narrator": "毕业照项目进入表情招标阶段，标书要求：像知道未来。",
           "inner": "我未来的全部信息：今天有豆沙包。",
           "dialogue": "可以笑给豆沙包吗？",
-          "result_tail": "照片洗出来，老师说你笑得太具体了。"
+          "result_tail": "照片洗出来，老师说你笑得太具体了。",
+          "tier": 1
         },
         {
           "narrator": "脑内未来是一间很大的教室，你先在里面找豆沙包。",
           "inner": "如果未来没有豆沙包，那也算一种答案。",
           "dialogue": "我准备好了。",
-          "result_tail": "未来的教室里，豆沙包暂时还没出现。"
+          "result_tail": "未来的教室里，豆沙包暂时还没出现。",
+          "tier": 2
         },
         {
           "narrator": "想象中的时间管理局要求你提交一份“未来知情同意书”。",
           "inner": "本人对未来一无所知，但愿意配合拍照。",
           "dialogue": "先拍，再知道。",
-          "result_tail": "时间管理局没有批复，照片先归档了。"
+          "result_tail": "时间管理局没有批复，照片先归档了。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -3185,6 +3189,76 @@
                   "tier": 3,
                   "narrator": "你笑得很标准。照片挂上墙，家长群里一片“真乖”。 时间管理局没有批复，照片先归档了。",
                   "inner": "本人对未来一无所知，但愿意配合拍照。",
+                  "dialogue": "先笑，再想。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher",
+                    "friend"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "按老师说的笑"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher",
+                    "friend"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "caption": "你笑得很标准。照片挂上墙，家长群里一片“真乖”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "照片洗出来时，你刚好眨了眼。老师另送了你一张花絮照，里面大家都在笑。",
+              "visual": "settle",
+              "effects": {
+                "mental": 3,
+                "abstract": 1
+              },
+              "memory": "_毕业照_标准笑_另一页",
+              "id": "LC26.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "照片洗出来时，你刚好眨了眼。老师另送了你一张花絮照，里面大家都在笑。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "豆沙包。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "照片洗出来时，你刚好眨了眼。老师另送了你一张花絮照，里面大家都在笑。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "我在想豆沙包。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "照片洗出来时，你刚好眨了眼。老师另送了你一张花絮照，里面大家都在笑。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "未来会有豆沙包吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "照片洗出来时，你刚好眨了眼。老师另送了你一张花絮照，里面大家都在笑。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "先笑，再想。"
                 }
               ],
@@ -3309,6 +3383,77 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "你做鬼脸时，身边两个同学也跟着做了。老师最后留下了这张，说这是最像你们的一张。",
+              "visual": "wave",
+              "effects": {
+                "charm": 1,
+                "abstract": 2,
+                "mental": 1
+              },
+              "memory": "_毕业照_鬼脸_另一页",
+              "id": "LC26.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你做鬼脸时，身边两个同学也跟着做了。老师最后留下了这张，说这是最像你们的一张。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "略。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你做鬼脸时，身边两个同学也跟着做了。老师最后留下了这张，说这是最像你们的一张。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "我要留证据。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你做鬼脸时，身边两个同学也跟着做了。老师最后留下了这张，说这是最像你们的一张。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "这张以后能卖钱吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你做鬼脸时，身边两个同学也跟着做了。老师最后留下了这张，说这是最像你们的一张。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "本照片最终解释权归我。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher",
+                    "friend"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "做鬼脸"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher",
+                    "friend"
+                  ],
+                  "action": "wave",
+                  "prop": "",
+                  "caption": "你做了个鬼脸。照片洗出来，老师犹豫了三秒，还是发了。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -3361,6 +3506,76 @@
                   "tier": 3,
                   "narrator": "你问了。老师愣住，旁边的同学替他回答：“甜的。” 时间管理局没有批复，照片先归档了。",
                   "inner": "本人对未来一无所知，但愿意配合拍照。",
+                  "dialogue": "请给未来加一点糖。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher",
+                    "friend"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "问“未来是什么味道”"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher",
+                    "friend"
+                  ],
+                  "action": "raise",
+                  "prop": "",
+                  "caption": "你问了。老师愣住，旁边的同学替他回答：“甜的。”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "摄影师没听清你的要求，却把你认真解释的样子拍了下来。照片背面，老师替你写下了日期。",
+              "visual": "raise",
+              "effects": {
+                "mental": 2,
+                "abstract": 3
+              },
+              "memory": "_毕业照_未来味_另一页",
+              "id": "LC26.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "摄影师没听清你的要求，却把你认真解释的样子拍了下来。照片背面，老师替你写下了日期。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "什么味？"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "摄影师没听清你的要求，却把你认真解释的样子拍了下来。照片背面，老师替你写下了日期。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "是豆沙包味吗？"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "摄影师没听清你的要求，却把你认真解释的样子拍了下来。照片背面，老师替你写下了日期。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "能尝一口吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "摄影师没听清你的要求，却把你认真解释的样子拍了下来。照片背面，老师替你写下了日期。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "请给未来加一点糖。"
                 }
               ],
@@ -5175,25 +5390,29 @@
           "narrator": "你认真写了一个理想，老师说它“不够具体”。",
           "inner": "我明明写得很具体：每天上线。",
           "dialogue": "玩家也要上班吗？",
-          "result_tail": "作文本发下来，评语是“想象丰富，注意审题”。"
+          "result_tail": "作文本发下来，评语是“想象丰富，注意审题”。",
+          "tier": 0
         },
         {
           "narrator": "作文评分标准里没有“玩家”这一项。旁白查了一下，也没有“旁白”。",
           "inner": "那旁白的理想算什么？",
           "dialogue": "能加个选项吗？",
-          "result_tail": "分数不高，但你把“玩家”两个字写得很好看。"
+          "result_tail": "分数不高，但你把“玩家”两个字写得很好看。",
+          "tier": 1
         },
         {
           "narrator": "脑内理想是一张巨大的地图，你在地图边缘找到一块没标注的区域。",
           "inner": "也许理想就是还没被命名的地方。",
           "dialogue": "我先去那边看看。",
-          "result_tail": "那块没标注的区域，被你记住了。"
+          "result_tail": "那块没标注的区域，被你记住了。",
+          "tier": 2
         },
         {
           "narrator": "想象中的职业介绍所只收录了三百六十行，你站在第三百六十一行前面。",
           "inner": "系统没收录，不代表不存在。",
           "dialogue": "申请新增一行。",
-          "result_tail": "介绍所没有回复，你把自己的名字写在了那一行。"
+          "result_tail": "介绍所没有回复，你把自己的名字写在了那一行。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -5280,6 +5499,74 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "老师没有划掉你的理想，而是问你想设计怎样的游戏。你画了一个永远可以重来的存档点。",
+              "visual": "read",
+              "effects": {
+                "mental": 3,
+                "abstract": 2
+              },
+              "memory": "_理想_玩家_另一页",
+              "id": "LC27.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "老师没有划掉你的理想，而是问你想设计怎样的游戏。你画了一个永远可以重来的存档点。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "我想当玩家。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "老师没有划掉你的理想，而是问你想设计怎样的游戏。你画了一个永远可以重来的存档点。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "玩家也是职业。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "老师没有划掉你的理想，而是问你想设计怎样的游戏。你画了一个永远可以重来的存档点。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "至少我是认真的。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "老师没有划掉你的理想，而是问你想设计怎样的游戏。你画了一个永远可以重来的存档点。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "请保留原文。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "hold",
+                  "prop": "notebook",
+                  "caption": "坚持不改，就写玩家"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "read",
+                  "prop": "notebook",
+                  "caption": "你没有改。作文得了中等分，老师在旁边写：“希望你找到自己的玩法。”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "notebook",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -5330,6 +5617,73 @@
                   "tier": 3,
                   "narrator": "你改成了科学家。老师满意，你在结尾偷偷加了一句“研究游戏也算”。 介绍所没有回复，你把自己的名字写在了那一行。",
                   "inner": "系统没收录，不代表不存在。",
+                  "dialogue": "科学地玩游戏。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "hold",
+                  "prop": "notebook",
+                  "caption": "改成科学家，研究游戏"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "draw",
+                  "prop": "notebook",
+                  "caption": "你改成了科学家。老师满意，你在结尾偷偷加了一句“研究游戏也算”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "notebook",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "同桌追问你要研究什么。你想了半节课，决定先研究为什么周末总是过得更快。",
+              "visual": "draw",
+              "effects": {
+                "mental": 3
+              },
+              "memory": "_理想_科学家_另一页",
+              "id": "LC27.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "同桌追问你要研究什么。你想了半节课，决定先研究为什么周末总是过得更快。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "好，我改。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "同桌追问你要研究什么。你想了半节课，决定先研究为什么周末总是过得更快。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "科学家具体一点。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "同桌追问你要研究什么。你想了半节课，决定先研究为什么周末总是过得更快。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "那我研究游戏行吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "同桌追问你要研究什么。你想了半节课，决定先研究为什么周末总是过得更快。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "科学地玩游戏。"
                 }
               ],
@@ -5450,6 +5804,75 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "老师把你的补充说明读给全班听。下课后，有人悄悄来问你能不能也借用这句话。",
+              "visual": "draw",
+              "effects": {
+                "abstract": 3,
+                "charm": 1,
+                "mental": 1
+              },
+              "memory": "_理想_免责声明_另一页",
+              "id": "LC27.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "老师把你的补充说明读给全班听。下课后，有人悄悄来问你能不能也借用这句话。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "加一句免责声明。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "老师把你的补充说明读给全班听。下课后，有人悄悄来问你能不能也借用这句话。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "以上内容由玩家本人负责。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "老师把你的补充说明读给全班听。下课后，有人悄悄来问你能不能也借用这句话。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "出了问题找我。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "老师把你的补充说明读给全班听。下课后，有人悄悄来问你能不能也借用这句话。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "旁白可以作证。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "hold",
+                  "prop": "notebook",
+                  "caption": "加一句“以上内容由玩家本人负责”"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "draw",
+                  "prop": "notebook",
+                  "caption": "你在结尾加了一行小字。老师看了很久，最后说：“这句写得比正文好。”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "notebook",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ],
           "roast": "旁白：你给作文写免责声明，老师给分数写了省略号。"
@@ -5532,25 +5955,29 @@
           "narrator": "你第一次发现，家可以被装进箱子。",
           "inner": "箱子上写“我的”，算不算一种占地方？",
           "dialogue": "这个放哪儿？",
-          "result_tail": "第一晚，你在新房间听见旧家具的声音。"
+          "result_tail": "第一晚，你在新房间听见旧家具的声音。",
+          "tier": 0
         },
         {
           "narrator": "搬家项目进入拆箱阶段，进度条停在第七个箱子。",
           "inner": "我的东西不多，但每一样都占一个位置。",
           "dialogue": "先拆哪个？",
-          "result_tail": "箱子拆到一半，你决定先吃晚饭。"
+          "result_tail": "箱子拆到一半，你决定先吃晚饭。",
+          "tier": 1
         },
         {
           "narrator": "脑内新家是一张还没画完的地图，旧家具在上面找位置。",
           "inner": "地图空着的地方，可以留给以后。",
           "dialogue": "先把床放好。",
-          "result_tail": "地图完成了四分之一，够睡了。"
+          "result_tail": "地图完成了四分之一，够睡了。",
+          "tier": 2
         },
         {
           "narrator": "想象中的居住管理局要求你为新房间重新登记所有物。",
           "inner": "有些东西没有编号，只有记忆。",
           "dialogue": "先登记那盏灯。",
-          "result_tail": "管理局下班了，灯还亮着。"
+          "result_tail": "管理局下班了，灯还亮着。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -5603,6 +6030,76 @@
                   "tier": 3,
                   "narrator": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。 管理局下班了，灯还亮着。",
                   "inner": "有些东西没有编号，只有记忆。",
+                  "dialogue": "按老房间的来。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "把箱子按记忆顺序拆"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "按记忆排好的纸箱被搬家师傅换了顺序。你只好和家人一起开箱，每打开一个就讲起一件旧事。",
+              "visual": "hold",
+              "effects": {
+                "mental": 3,
+                "abstract": 1
+              },
+              "memory": "_搬家_记忆顺序_另一页",
+              "id": "LC29.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "按记忆排好的纸箱被搬家师傅换了顺序。你只好和家人一起开箱，每打开一个就讲起一件旧事。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "先拆书架。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "按记忆排好的纸箱被搬家师傅换了顺序。你只好和家人一起开箱，每打开一个就讲起一件旧事。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "再拆台灯。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "按记忆排好的纸箱被搬家师傅换了顺序。你只好和家人一起开箱，每打开一个就讲起一件旧事。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "箱子会记得顺序吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "按记忆排好的纸箱被搬家师傅换了顺序。你只好和家人一起开箱，每打开一个就讲起一件旧事。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "按老房间的来。"
                 }
               ],
@@ -5727,6 +6224,76 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "照片刚贴上就翘了角。你们找来胶带，把一家人的手印也顺便按在了旁边。",
+              "visual": "raise",
+              "effects": {
+                "mental": 2,
+                "charm": 1
+              },
+              "memory": "_搬家_先贴照片_另一页",
+              "id": "LC29.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "照片刚贴上就翘了角。你们找来胶带，把一家人的手印也顺便按在了旁边。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "先贴照片。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "照片刚贴上就翘了角。你们找来胶带，把一家人的手印也顺便按在了旁边。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "墙就不空了。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "照片刚贴上就翘了角。你们找来胶带，把一家人的手印也顺便按在了旁边。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "这是哪儿？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "照片刚贴上就翘了角。你们找来胶带，把一家人的手印也顺便按在了旁边。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "我们家。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "先在墙上贴一张旧照片"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "raise",
+                  "prop": "",
+                  "caption": "你把旧照片贴在墙上，房间先有了一小块熟悉。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -5779,6 +6346,76 @@
                   "tier": 3,
                   "narrator": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。 管理局下班了，灯还亮着。",
                   "inner": "有些东西没有编号，只有记忆。",
+                  "dialogue": "明天再拆。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "坐在箱子上发呆"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "sit",
+                  "prop": "",
+                  "caption": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "你坐在还没拆的箱子上发呆。家人递来一杯水，陪你坐了五分钟，才继续拆下一箱。",
+              "visual": "sit",
+              "effects": {
+                "mental": 3,
+                "abstract": 2
+              },
+              "memory": "_搬家_发呆_另一页",
+              "id": "LC29.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你坐在还没拆的箱子上发呆。家人递来一杯水，陪你坐了五分钟，才继续拆下一箱。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "先坐会儿。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你坐在还没拆的箱子上发呆。家人递来一杯水，陪你坐了五分钟，才继续拆下一箱。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "不急。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你坐在还没拆的箱子上发呆。家人递来一杯水，陪你坐了五分钟，才继续拆下一箱。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "箱子挺结实。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你坐在还没拆的箱子上发呆。家人递来一杯水，陪你坐了五分钟，才继续拆下一箱。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "明天再拆。"
                 }
               ],
@@ -7058,25 +7695,29 @@
           "narrator": "你第一次教爸爸用一样他承认不会的东西。",
           "inner": "他按错的时候，假装是手机的问题。",
           "dialogue": "按这个绿的。",
-          "result_tail": "电话通了，他先说的是一句“没事”。"
+          "result_tail": "电话通了，他先说的是一句“没事”。",
+          "tier": 0
         },
         {
           "narrator": "家庭技术支持工单：一部手机，一位不肯看说明书的用户。",
           "inner": "教三遍不算多，他等我长大用了十几年。",
           "dialogue": "再看一遍。",
-          "result_tail": "他最后学会了，但只打给你。"
+          "result_tail": "他最后学会了，但只打给你。",
+          "tier": 1
         },
         {
           "narrator": "脑内通讯录第一行永远是“家”，后面才是世界。",
           "inner": "有些号码不用背，按下去就是。",
           "dialogue": "先存你的。",
-          "result_tail": "通讯录越存越长，第一行没变。"
+          "result_tail": "通讯录越存越长，第一行没变。",
+          "tier": 2
         },
         {
           "narrator": "想象中的电信局记录了一通只响一声的电话。",
           "inner": "他打来不是有事，是想确认你还在。",
           "dialogue": "我接。",
-          "result_tail": "记录里那通电话，响了一声就挂断。"
+          "result_tail": "记录里那通电话，响了一声就挂断。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -7129,6 +7770,74 @@
                   "tier": 3,
                   "narrator": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。 记录里那通电话，响了一声就挂断。",
                   "inner": "他打来不是有事，是想确认你还在。",
+                  "dialogue": "再来一次。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "一步一步教他拨号"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "第一次练习拨错了号码。对方听完来意，笑着说没关系；你们重新把联系人核对了一遍。",
+              "visual": "phone",
+              "effects": {
+                "mental": 3,
+                "charm": 1
+              },
+              "memory": "_手机_教拨号_另一页",
+              "id": "LC30.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "第一次练习拨错了号码。对方听完来意，笑着说没关系；你们重新把联系人核对了一遍。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "按绿的。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "第一次练习拨错了号码。对方听完来意，笑着说没关系；你们重新把联系人核对了一遍。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "先拨号，再按这个。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "第一次练习拨错了号码。对方听完来意，笑着说没关系；你们重新把联系人核对了一遍。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "错了也没关系。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "第一次练习拨错了号码。对方听完来意，笑着说没关系；你们重新把联系人核对了一遍。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "再来一次。"
                 }
               ],
@@ -7249,6 +7958,74 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "快捷键设好了，却被长按成了关机。你把操作画成三格小图，贴在了手机背面。",
+              "visual": "phone",
+              "effects": {
+                "mental": 2,
+                "abstract": 1
+              },
+              "memory": "_手机_快捷1_另一页",
+              "id": "LC30.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "快捷键设好了，却被长按成了关机。你把操作画成三格小图，贴在了手机背面。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "设成 1 吧。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "快捷键设好了，却被长按成了关机。你把操作画成三格小图，贴在了手机背面。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "按一下就行。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "快捷键设好了，却被长按成了关机。你把操作画成三格小图，贴在了手机背面。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "别告诉妈。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "快捷键设好了，却被长按成了关机。你把操作画成三格小图，贴在了手机背面。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "这样最快。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "把自己的号码设成快捷 1"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -7301,6 +8078,74 @@
                   "tier": 3,
                   "narrator": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。 记录里那通电话，响了一声就挂断。",
                   "inner": "他打来不是有事，是想确认你还在。",
+                  "dialogue": "练习需要观众缺席。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "假装没看见，让他自己练"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "他独自练习后打来了电话，只说了一句听得见吗。你回答听得见，谁也没有急着挂断。",
+              "visual": "phone",
+              "effects": {
+                "mental": 3,
+                "abstract": 1
+              },
+              "memory": "_手机_自己练_另一页",
+              "id": "LC30.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "他独自练习后打来了电话，只说了一句听得见吗。你回答听得见，谁也没有急着挂断。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "我先走开。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "他独自练习后打来了电话，只说了一句听得见吗。你回答听得见，谁也没有急着挂断。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "他自己能行。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "他独自练习后打来了电话，只说了一句听得见吗。你回答听得见，谁也没有急着挂断。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "别盯着他。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "他独自练习后打来了电话，只说了一句听得见吗。你回答听得见，谁也没有急着挂断。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "练习需要观众缺席。"
                 }
               ],
@@ -9142,25 +9987,29 @@
           "narrator": "你第一次发现，选择是要计时的。",
           "inner": "以后再说，算不算一个专业？",
           "dialogue": "有“以后再说”吗？",
-          "result_tail": "你按下确认，倒计时停了。"
+          "result_tail": "你按下确认，倒计时停了。",
+          "tier": 0
         },
         {
           "narrator": "志愿系统共 128 个专业，没有“再想想”选项。旁白建议先别刷新页面。",
           "inner": "刷新能刷出人生吗？",
           "dialogue": "能保存吗？",
-          "result_tail": "系统提示：提交后不可修改。你确认了两次。"
+          "result_tail": "系统提示：提交后不可修改。你确认了两次。",
+          "tier": 1
         },
         {
           "narrator": "脑内志愿表是一张车票，目的地一栏空着。",
           "inner": "空着也许不是错误。",
           "dialogue": "我先不填。",
-          "result_tail": "车票没有目的地，但你上了车。"
+          "result_tail": "车票没有目的地，但你上了车。",
+          "tier": 2
         },
         {
           "narrator": "想象中的未来规划局要求你提交一份确定的人生，窗口写着：不确定请排队。",
           "inner": "排队也算一种前进。",
           "dialogue": "拿个号。",
-          "result_tail": "规划局下班了，你还在排队。"
+          "result_tail": "规划局下班了，你还在排队。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -9213,6 +10062,74 @@
                   "tier": 3,
                   "narrator": "你选了一个最像的。班主任松了口气，你在备注里写了“待定”。 规划局下班了，你还在排队。",
                   "inner": "排队也算一种前进。",
+                  "dialogue": "先上车。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "hold",
+                  "prop": "report",
+                  "caption": "选一个最像的"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "read",
+                  "prop": "report",
+                  "caption": "你选了一个最像的。班主任松了口气，你在备注里写了“待定”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "report",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "你把最想选的那一项圈出来，又查了一遍课程表。那个名称看起来很近，真正要学的东西却让你重新想了很久。",
+              "visual": "read",
+              "effects": {
+                "mental": 3,
+                "money": 1
+              },
+              "memory": "_志愿_最像_另一页",
+              "id": "LC28.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你把最想选的那一项圈出来，又查了一遍课程表。那个名称看起来很近，真正要学的东西却让你重新想了很久。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "就这个吧。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你把最想选的那一项圈出来，又查了一遍课程表。那个名称看起来很近，真正要学的东西却让你重新想了很久。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "像就够了。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你把最想选的那一项圈出来，又查了一遍课程表。那个名称看起来很近，真正要学的东西却让你重新想了很久。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "以后可以换吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你把最想选的那一项圈出来，又查了一遍课程表。那个名称看起来很近，真正要学的东西却让你重新想了很久。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "先上车。"
                 }
               ],
@@ -9333,6 +10250,74 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "空格保留到了最后一天。你和家人把能查到的资料摆满桌子，终于写下一个暂时愿意相信的答案。",
+              "visual": "draw",
+              "effects": {
+                "abstract": 2,
+                "mental": 2
+              },
+              "memory": "_志愿_留白_另一页",
+              "id": "LC28.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "空格保留到了最后一天。你和家人把能查到的资料摆满桌子，终于写下一个暂时愿意相信的答案。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "我选其他。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "空格保留到了最后一天。你和家人把能查到的资料摆满桌子，终于写下一个暂时愿意相信的答案。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "理由：还没想好。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "空格保留到了最后一天。你和家人把能查到的资料摆满桌子，终于写下一个暂时愿意相信的答案。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "这不是偷懒。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "空格保留到了最后一天。你和家人把能查到的资料摆满桌子，终于写下一个暂时愿意相信的答案。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "这是留白。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "hold",
+                  "prop": "report",
+                  "caption": "填“其他”，写理由"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "draw",
+                  "prop": "report",
+                  "caption": "你在“其他”里写了一行理由。系统卡了三秒，居然通过了。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "report",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -9385,6 +10370,75 @@
                   "tier": 3,
                   "narrator": "班主任笑了半天，说：“你先毕业，再开。” 规划局下班了，你还在排队。",
                   "inner": "排队也算一种前进。",
+                  "dialogue": "学费怎么算？"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "hold",
+                  "prop": "report",
+                  "caption": "问能不能自己开一个"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "teacher"
+                  ],
+                  "action": "wave",
+                  "prop": "report",
+                  "caption": "班主任笑了半天，说：“你先毕业，再开。”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "report",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "你把自己的设想写在纸背面。填报系统不认识它，但一位老师认真看完，给了你一条可以先试的小路。",
+              "visual": "wave",
+              "effects": {
+                "abstract": 3,
+                "charm": 2,
+                "mental": 1
+              },
+              "memory": "_志愿_开一个_另一页",
+              "id": "LC28.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你把自己的设想写在纸背面。填报系统不认识它，但一位老师认真看完，给了你一条可以先试的小路。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "能开一个吗？"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你把自己的设想写在纸背面。填报系统不认识它，但一位老师认真看完，给了你一条可以先试的小路。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "就叫“以后再说”。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你把自己的设想写在纸背面。填报系统不认识它，但一位老师认真看完，给了你一条可以先试的小路。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "我当第一个学生。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你把自己的设想写在纸背面。填报系统不认识它，但一位老师认真看完，给了你一条可以先试的小路。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "学费怎么算？"
                 }
               ],
@@ -11187,25 +12241,29 @@
           "narrator": "你第一次发现，解释也会被当成剧情推进。",
           "inner": "我说的是游戏，她听到的是好事将近。",
           "dialogue": "阿姨，我们在打游戏。",
-          "result_tail": "门关上以后，语音里同事笑到破音。"
+          "result_tail": "门关上以后，语音里同事笑到破音。",
+          "tier": 0
         },
         {
           "narrator": "邻里关系进入信息不对称阶段，水果是开场白。",
           "inner": "她送的是苹果，收走的是我的清白。",
           "dialogue": "这真是同事。",
-          "result_tail": "第二天，楼道里多了一个版本。"
+          "result_tail": "第二天，楼道里多了一个版本。",
+          "tier": 1
         },
         {
           "narrator": "脑内邻里群正在直播一档叫《年轻人》的节目。",
           "inner": "我在自己家，成了别人剧里的角色。",
           "dialogue": "不是你们想的那样。",
-          "result_tail": "群里的剧情比游戏精彩。"
+          "result_tail": "群里的剧情比游戏精彩。",
+          "tier": 2
         },
         {
           "narrator": "想象中的社区广播站播报：本单元新增一段佳话。",
           "inner": "我只是想安静地输一把。",
           "dialogue": "请把音量调小。",
-          "result_tail": "广播没有停，游戏也输了。"
+          "result_tail": "广播没有停，游戏也输了。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -11258,6 +12316,74 @@
                   "tier": 3,
                   "narrator": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。 广播没有停，游戏也输了。",
                   "inner": "我只是想安静地输一把。",
+                  "dialogue": "我解释十分钟了。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "追出去解释清楚"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "talk",
+                  "prop": "phone",
+                  "caption": "你追到楼道解释了十分钟。邻居点头：“我懂，我懂。”第二天，传闻从“约会”升级成“同居”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "解释到一半，你们发现包裹上的门牌号少写了一位。误会有了很普通的答案，你们却因此多聊了一会儿。",
+              "visual": "talk",
+              "effects": {
+                "mental": 2,
+                "charm": 1
+              },
+              "memory": "_误会_解释_另一页",
+              "id": "LC34.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "解释到一半，你们发现包裹上的门牌号少写了一位。误会有了很普通的答案，你们却因此多聊了一会儿。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "阿姨，我们在打游戏。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "解释到一半，你们发现包裹上的门牌号少写了一位。误会有了很普通的答案，你们却因此多聊了一会儿。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "真的是同事。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "解释到一半，你们发现包裹上的门牌号少写了一位。误会有了很普通的答案，你们却因此多聊了一会儿。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "您别多想。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "解释到一半，你们发现包裹上的门牌号少写了一位。误会有了很普通的答案，你们却因此多聊了一会儿。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "我解释十分钟了。"
                 }
               ],
@@ -11377,6 +12503,73 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "你没有解释，对方也没再追问。第二天门口多了一张便签：昨天打扰了，祝你今天睡个好觉。",
+              "visual": "phone",
+              "effects": {
+                "mental": 3
+              },
+              "memory": "_误会_不解释_另一页",
+              "id": "LC34.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你没有解释，对方也没再追问。第二天门口多了一张便签：昨天打扰了，祝你今天睡个好觉。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "算了。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你没有解释，对方也没再追问。第二天门口多了一张便签：昨天打扰了，祝你今天睡个好觉。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "继续。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你没有解释，对方也没再追问。第二天门口多了一张便签：昨天打扰了，祝你今天睡个好觉。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "先打排位。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你没有解释，对方也没再追问。第二天门口多了一张便签：昨天打扰了，祝你今天睡个好觉。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "解释打不赢。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "不解释，继续打"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你没解释。第二天，楼下大爷见你就问：“对象呢？今天没来？”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -11431,6 +12624,75 @@
                   "tier": 3,
                   "narrator": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。 广播没有停，游戏也输了。",
                   "inner": "我只是想安静地输一把。",
+                  "dialogue": "就当团建。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "干脆请同事来家吃顿饭"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "offer",
+                  "prop": "phone",
+                  "caption": "周末你们真吃了顿饭。邻居在楼道里点头：“进展不错。”你说：只是团建。她说：懂。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "你顺着误会继续演，对方居然认真接了下一句。两个人最后都没忍住笑，决定先从交换名字开始。",
+              "visual": "offer",
+              "effects": {
+                "charm": 2,
+                "mental": 2,
+                "abstract": 1
+              },
+              "memory": "_误会_做实_另一页",
+              "id": "LC34.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你顺着误会继续演，对方居然认真接了下一句。两个人最后都没忍住笑，决定先从交换名字开始。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "一起吃个饭吧。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你顺着误会继续演，对方居然认真接了下一句。两个人最后都没忍住笑，决定先从交换名字开始。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "把误会做实。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你顺着误会继续演，对方居然认真接了下一句。两个人最后都没忍住笑，决定先从交换名字开始。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "省得解释。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你顺着误会继续演，对方居然认真接了下一句。两个人最后都没忍住笑，决定先从交换名字开始。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "就当团建。"
                 }
               ],
@@ -13249,25 +14511,29 @@
           "narrator": "你买下的不是课程，是一个更理想的自己。",
           "inner": "我到底想练，还是想拥有“正在练”的身份？",
           "dialogue": "明天一定去。",
-          "result_tail": "明天来了，卡没来。"
+          "result_tail": "明天来了，卡没来。",
+          "tier": 0
         },
         {
           "narrator": "年卡进入冷静期，钱包比肌肉先有反应。",
           "inner": "办卡那天，我的运动量是签字。",
           "dialogue": "能退吗？",
-          "result_tail": "合同写着：概不退款，但可转让给未来的你。"
+          "result_tail": "合同写着：概不退款，但可转让给未来的你。",
+          "tier": 1
         },
         {
           "narrator": "脑内健身房灯火通明，只有跑步机在等你。",
           "inner": "跑步机不需要我，它本来就会转。",
           "dialogue": "再办一张？",
-          "result_tail": "跑步机转了三年，你没上过。"
+          "result_tail": "跑步机转了三年，你没上过。",
+          "tier": 2
         },
         {
           "narrator": "想象中的自律之神收到一份年卡供奉，回赠一张收据。",
           "inner": "神明说：心诚则灵，卡不灵。",
           "dialogue": "能开发票吗？",
-          "result_tail": "神把收据折好，塞进了你的抽屉。"
+          "result_tail": "神把收据折好，塞进了你的抽屉。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -13320,6 +14586,75 @@
                   "tier": 3,
                   "narrator": "你把卡转给了朋友。他去了三次，比你多两次。 神把收据折好，塞进了你的抽屉。",
                   "inner": "神明说：心诚则灵，卡不灵。",
+                  "dialogue": "别浪费。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "contract",
+                  "caption": "转卡给朋友"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "offer",
+                  "prop": "contract",
+                  "caption": "你把卡转给了朋友。他去了三次，比你多两次。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "contract",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "健身房不允许直接转卡。你和朋友改成约一次体验课，年卡仍在，至少日历上终于多了一个真实的约定。",
+              "visual": "offer",
+              "effects": {
+                "charm": 1,
+                "money": 1,
+                "mental": 1
+              },
+              "memory": "_年卡_转给朋友_另一页",
+              "id": "LC32.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "健身房不允许直接转卡。你和朋友改成约一次体验课，年卡仍在，至少日历上终于多了一个真实的约定。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "转你吧。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "健身房不允许直接转卡。你和朋友改成约一次体验课，年卡仍在，至少日历上终于多了一个真实的约定。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "我出过一次汗了。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "健身房不允许直接转卡。你和朋友改成约一次体验课，年卡仍在，至少日历上终于多了一个真实的约定。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "办卡那天。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "健身房不允许直接转卡。你和朋友改成约一次体验课，年卡仍在，至少日历上终于多了一个真实的约定。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "别浪费。"
                 }
               ],
@@ -13440,6 +14775,74 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "你去了，却发现想上的课满员了。教练带你做了十分钟简单热身，你决定下次先预约。",
+              "visual": "raise",
+              "effects": {
+                "physical": 1,
+                "mental": 2
+              },
+              "memory": "_年卡_去一次_另一页",
+              "id": "LC32.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你去了，却发现想上的课满员了。教练带你做了十分钟简单热身，你决定下次先预约。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "去一次。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你去了，却发现想上的课满员了。教练带你做了十分钟简单热身，你决定下次先预约。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "就一次。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你去了，却发现想上的课满员了。教练带你做了十分钟简单热身，你决定下次先预约。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "拍照算吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你去了，却发现想上的课满员了。教练带你做了十分钟简单热身，你决定下次先预约。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "发个朋友圈。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "contract",
+                  "caption": "硬着头皮去一次"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "raise",
+                  "prop": "contract",
+                  "caption": "你去了一次，练了二十分钟，拍照十分钟。教练说：不错，下次见。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "contract",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -13492,6 +14895,74 @@
                   "tier": 3,
                   "narrator": "你把卡裱进相框，挂在玄关。来的人都问：这是奖状？ 神把收据折好，塞进了你的抽屉。",
                   "inner": "神明说：心诚则灵，卡不灵。",
+                  "dialogue": "标题：《计划》。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "contract",
+                  "caption": "把卡裱起来，当自律纪念"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "draw",
+                  "prop": "contract",
+                  "caption": "你把卡裱进相框，挂在玄关。来的人都问：这是奖状？"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "contract",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "年卡被你放进相框后，朋友看见笑了半天。第二天他喊你下楼散步，说这回不用刷卡。",
+              "visual": "draw",
+              "effects": {
+                "abstract": 3,
+                "mental": 2
+              },
+              "memory": "_年卡_裱起来_另一页",
+              "id": "LC32.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "年卡被你放进相框后，朋友看见笑了半天。第二天他喊你下楼散步，说这回不用刷卡。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "裱起来。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "年卡被你放进相框后，朋友看见笑了半天。第二天他喊你下楼散步，说这回不用刷卡。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "挂在墙上。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "年卡被你放进相框后，朋友看见笑了半天。第二天他喊你下楼散步，说这回不用刷卡。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "这是我的行为艺术。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "年卡被你放进相框后，朋友看见笑了半天。第二天他喊你下楼散步，说这回不用刷卡。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "标题：《计划》。"
                 }
               ],
@@ -13608,25 +15079,29 @@
           "narrator": "算法比你更记得你过过什么日子。",
           "inner": "它挑的十二张，有八张不是我拍的。",
           "dialogue": "生成吧。",
-          "result_tail": "视频做完，你看了两遍。"
+          "result_tail": "视频做完，你看了两遍。",
+          "tier": 0
         },
         {
           "narrator": "回忆自动打包，配乐不用你选，情绪也已预备。",
           "inner": "它把我加班那天，剪成了黄金时代。",
           "dialogue": "能换首歌吗？",
-          "result_tail": "系统说：此模板已获百万用户好评。"
+          "result_tail": "系统说：此模板已获百万用户好评。",
+          "tier": 1
         },
         {
           "narrator": "脑内相册是一间仓库，货架上摆着被算法挑过的自己。",
           "inner": "我记得的那几张，它一张都没选。",
           "dialogue": "我自己挑。",
-          "result_tail": "你挑了半天，只挑出一张。"
+          "result_tail": "你挑了半天，只挑出一张。",
+          "tier": 2
         },
         {
           "narrator": "想象中的记忆管理局给每年发一份年度报告，配图由它决定。",
           "inner": "报告里没有加班，只有蛋糕。",
           "dialogue": "能申诉吗？",
-          "result_tail": "申诉窗口排队的人，都拿着蛋糕照片。"
+          "result_tail": "申诉窗口排队的人，都拿着蛋糕照片。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -13679,6 +15154,74 @@
                   "tier": 3,
                   "narrator": "你生成了视频，没发。偶尔翻到，会看完。 申诉窗口排队的人，都拿着蛋糕照片。",
                   "inner": "报告里没有加班，只有蛋糕。",
+                  "dialogue": "存起来。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "生成，但不发"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你生成了视频，没发。偶尔翻到，会看完。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "你翻到一张自己早已忘记的照片，停了很久。那天没有特别的事，只是阳光刚好落在饭桌上。",
+              "visual": "phone",
+              "effects": {
+                "mental": 2,
+                "abstract": 1
+              },
+              "memory": "_相册_自己看_另一页",
+              "id": "LC33.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你翻到一张自己早已忘记的照片，停了很久。那天没有特别的事，只是阳光刚好落在饭桌上。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "生成。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你翻到一张自己早已忘记的照片，停了很久。那天没有特别的事，只是阳光刚好落在饭桌上。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "不发。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你翻到一张自己早已忘记的照片，停了很久。那天没有特别的事，只是阳光刚好落在饭桌上。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "自己看。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你翻到一张自己早已忘记的照片，停了很久。那天没有特别的事，只是阳光刚好落在饭桌上。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "存起来。"
                 }
               ],
@@ -13799,6 +15342,74 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "你挑完照片，发现并没有凑够软件建议的数量。你仍然保存了它，把标题改成了普通的一天。",
+              "visual": "draw",
+              "effects": {
+                "mental": 3,
+                "abstract": 1
+              },
+              "memory": "_相册_自己挑_另一页",
+              "id": "LC33.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你挑完照片，发现并没有凑够软件建议的数量。你仍然保存了它，把标题改成了普通的一天。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "我自己挑。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你挑完照片，发现并没有凑够软件建议的数量。你仍然保存了它，把标题改成了普通的一天。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "不加配乐。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你挑完照片，发现并没有凑够软件建议的数量。你仍然保存了它，把标题改成了普通的一天。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "用真实的那几张。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你挑完照片，发现并没有凑够软件建议的数量。你仍然保存了它，把标题改成了普通的一天。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "难看也没关系。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "重新挑十二张"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "draw",
+                  "prop": "phone",
+                  "caption": "你重新挑了十二张，一半是糊的。系统提示：效果可能不佳。你说：就这样。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -13851,6 +15462,74 @@
                   "tier": 3,
                   "narrator": "你关了提醒。三天后，系统换了个入口继续问：要看看去年吗？ 申诉窗口排队的人，都拿着蛋糕照片。",
                   "inner": "报告里没有加班，只有蛋糕。",
+                  "dialogue": "卸载。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "关掉提醒，卸载相册"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "boss"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你关了提醒。三天后，系统换了个入口继续问：要看看去年吗？"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "卸载前，你先把照片导出到一个普通文件夹。文件夹没有替你总结，只按日期安静地排着。",
+              "visual": "phone",
+              "effects": {
+                "abstract": 2,
+                "mental": 3
+              },
+              "memory": "_相册_卸载_另一页",
+              "id": "LC33.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "卸载前，你先把照片导出到一个普通文件夹。文件夹没有替你总结，只按日期安静地排着。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "关掉。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "卸载前，你先把照片导出到一个普通文件夹。文件夹没有替你总结，只按日期安静地排着。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "不看回忆。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "卸载前，你先把照片导出到一个普通文件夹。文件夹没有替你总结，只按日期安静地排着。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "我记性好。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "卸载前，你先把照片导出到一个普通文件夹。文件夹没有替你总结，只按日期安静地排着。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "卸载。"
                 }
               ],
@@ -13967,25 +15646,29 @@
           "narrator": "你盯着“必须到”三个字，想起当年也这么喊过。",
           "inner": "我到底是想见人，还是怕被写进“没来名单”？",
           "dialogue": "那天我有空吗？",
-          "result_tail": "你最后看了一眼群公告，没点接龙。"
+          "result_tail": "你最后看了一眼群公告，没点接龙。",
+          "tier": 0
         },
         {
           "narrator": "十周年聚会项目进入报名阶段，热情与 AA 制同步在线。",
           "inner": "群里的“必须到”一般活不过三天。",
           "dialogue": "先交钱还是先交人？",
-          "result_tail": "接龙停在第十七位，像当年值日表。"
+          "result_tail": "接龙停在第十七位，像当年值日表。",
+          "tier": 1
         },
         {
           "narrator": "脑内同学会是一间巨大的教室，所有人的座位都还在原来的位置。",
           "inner": "我怕的不是变老，是被问现在做什么。",
           "dialogue": "先坐后排。",
-          "result_tail": "教室没变，座位牌换成了职位。"
+          "result_tail": "教室没变，座位牌换成了职位。",
+          "tier": 2
         },
         {
           "narrator": "想象中的时间管理局要求你提交十年总结，格式不限。",
           "inner": "我的十年总结只有一行：还在。",
           "dialogue": "能交白卷吗？",
-          "result_tail": "管理局收下了白卷，盖了个章。"
+          "result_tail": "管理局收下了白卷，盖了个章。",
+          "tier": 3
         }
       ],
       "choices": [
@@ -14038,6 +15721,74 @@
                   "tier": 3,
                   "narrator": "你去了，待了一小时。有人问你近况，你说“还行”，居然是真的。 管理局收下了白卷，盖了个章。",
                   "inner": "我的十年总结只有一行：还在。",
+                  "dialogue": "一小时够认脸了。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "friend"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "去，但只待一小时"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "friend"
+                  ],
+                  "action": "wave",
+                  "prop": "",
+                  "caption": "你去了，待了一小时。有人问你近况，你说“还行”，居然是真的。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "一小时到了，旧同桌正好赶来。你们在门口多聊了十分钟，交换了联系方式，没有再回那张大桌子。",
+              "visual": "wave",
+              "effects": {
+                "mental": 3,
+                "charm": 1
+              },
+              "memory": "_同学会_一小时_另一页",
+              "id": "LC31.C1.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "一小时到了，旧同桌正好赶来。你们在门口多聊了十分钟，交换了联系方式，没有再回那张大桌子。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "我去，但只待一小时。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "一小时到了，旧同桌正好赶来。你们在门口多聊了十分钟，交换了联系方式，没有再回那张大桌子。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "先说好，不聊工资。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "一小时到了，旧同桌正好赶来。你们在门口多聊了十分钟，交换了联系方式，没有再回那张大桌子。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "我坐角落。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "一小时到了，旧同桌正好赶来。你们在门口多聊了十分钟，交换了联系方式，没有再回那张大桌子。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "一小时够认脸了。"
                 }
               ],
@@ -14158,6 +15909,74 @@
                   "voice_ref": "selected_outcome.voices[tier]"
                 }
               ]
+            },
+            {
+              "weight": 1,
+              "facts": "视频接通时现场太吵，谁都听不清。散场后，一位老同学单独给你打来电话，这次你们聊得很慢。",
+              "visual": "phone",
+              "effects": {
+                "mental": 2,
+                "money": -2
+              },
+              "memory": "_同学会_云参加_另一页",
+              "id": "LC31.C2.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "视频接通时现场太吵，谁都听不清。散场后，一位老同学单独给你打来电话，这次你们聊得很慢。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "钱我交，人不到。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "视频接通时现场太吵，谁都听不清。散场后，一位老同学单独给你打来电话，这次你们聊得很慢。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "群里替我留个名。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "视频接通时现场太吵，谁都听不清。散场后，一位老同学单独给你打来电话，这次你们聊得很慢。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "下次一定。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "视频接通时现场太吵，谁都听不清。散场后，一位老同学单独给你打来电话，这次你们聊得很慢。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
+                  "dialogue": "这算不算云参加？"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "friend"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "交钱不去"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "friend"
+                  ],
+                  "action": "phone",
+                  "prop": "",
+                  "caption": "你交了钱没去。群里发了合照，你在照片外，也在名单里。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
             }
           ]
         },
@@ -14212,6 +16031,75 @@
                   "tier": 3,
                   "narrator": "你提议改成四个人。班长沉默了很久，回了句：“也行，你先拉群。” 管理局收下了白卷，盖了个章。",
                   "inner": "我的十年总结只有一行：还在。",
+                  "dialogue": "别 @全体。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "friend"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "提议改期，改成小范围"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "friend"
+                  ],
+                  "action": "phone",
+                  "prop": "",
+                  "caption": "你提议改成四个人。班长沉默了很久，回了句：“也行，你先拉群。”"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            },
+            {
+              "weight": 1,
+              "facts": "小聚最后只来了两个人。没有人致辞，你们分了一份小菜，把那些大群里不好讲的话说完了。",
+              "visual": "phone",
+              "effects": {
+                "abstract": 2,
+                "mental": 2,
+                "charm": -1
+              },
+              "memory": "_同学会_改小_另一页",
+              "id": "LC31.C3.O2",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "小聚最后只来了两个人。没有人致辞，你们分了一份小菜，把那些大群里不好讲的话说完了。你记住了这个小插曲。",
+                  "inner": "你记住了这个小插曲。",
+                  "dialogue": "三十个人太多。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "小聚最后只来了两个人。没有人致辞，你们分了一份小菜，把那些大群里不好讲的话说完了。生活又加了一条脚注。",
+                  "inner": "生活又加了一条脚注。",
+                  "dialogue": "改成四个人吧。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "小聚最后只来了两个人。没有人致辞，你们分了一份小菜，把那些大群里不好讲的话说完了。这段即兴表演没有排练。",
+                  "inner": "这段即兴表演没有排练。",
+                  "dialogue": "我请客。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "小聚最后只来了两个人。没有人致辞，你们分了一份小菜，把那些大群里不好讲的话说完了。旁白刚写好的结论，又被划掉了。",
+                  "inner": "旁白刚写好的结论，又被划掉了。",
                   "dialogue": "别 @全体。"
                 }
               ],

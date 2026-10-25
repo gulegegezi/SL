@@ -230,6 +230,234 @@
           "text": "表停了不要紧。记得上发条的人还在，就行。"
         }
       ]
+    },
+    "OP05": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 56,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "camera": {
+        "zoom": 1.08,
+        "x": 80,
+        "y": 47
+      },
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "talk",
+          "target": "lead",
+          "text": "满月酒摆了八桌，来的亲戚比预想的多一倍。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "idle",
+          "target": "lead",
+          "text": "你被轮流抱着，像一件刚到的快递。有人往你手里塞红包，有人往你嘴里塞筷子。"
+        }
+      ]
+    },
+    "OP09": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 56,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "camera": {
+        "zoom": 1.08,
+        "x": 80,
+        "y": 47
+      },
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "talk",
+          "target": "lead",
+          "text": "十个月大，你终于开口了。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "idle",
+          "target": "lead",
+          "text": "全家人围成一圈，屏住呼吸，等你说出人生第一个词。"
+        }
+      ]
+    },
+    "OP10": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 56,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "camera": {
+        "zoom": 1.08,
+        "x": 80,
+        "y": 47
+      },
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "walk",
+          "target": "lead",
+          "text": "一岁生日前，你扶着沙发站起来。所有人都停下筷子看你。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "idle",
+          "target": "lead",
+          "text": "你面前有三条路：爸爸张开的手，妈妈举着的玩具，还有一扇没关严的门。"
+        }
+      ]
+    },
+    "OP11": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 56,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "camera": {
+        "zoom": 1.08,
+        "x": 80,
+        "y": 47
+      },
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "receive",
+          "target": "lead",
+          "text": "一岁生日，家里在桌上摆了一圈东西：算盘、毛笔、钞票、听诊器、拨浪鼓，还有一部亮着屏的旧手机。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "idle",
+          "target": "lead",
+          "text": "亲戚们围成一圈，比你还紧张。"
+        }
+      ]
+    },
+    "C33": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 56,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "camera": {
+        "zoom": 1.08,
+        "x": 80,
+        "y": 47
+      },
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "sit",
+          "target": "lead",
+          "text": "你在地板上爬来爬去，发现沙发底下有一个落满灰的乒乓球。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "idle",
+          "target": "lead",
+          "text": "它离你只有半臂远，但沙发底下的世界看起来很深。"
+        }
+      ]
+    },
+    "C34": {
+      "bg": "home",
+      "cast": [
+        {
+          "role": "lead",
+          "x": 56,
+          "y": 76
+        },
+        {
+          "role": "parent",
+          "x": 118,
+          "y": 74
+        }
+      ],
+      "camera": {
+        "zoom": 1.08,
+        "x": 80,
+        "y": 47
+      },
+      "beats": [
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "walk",
+          "target": "lead",
+          "text": "窗外下雨，你趴在窗台上看水珠赛跑。"
+        },
+        {
+          "speaker": "旁白",
+          "face": "lead",
+          "expr": "normal",
+          "action": "idle",
+          "target": "lead",
+          "text": "有一颗水珠跑得特别快，把别的都甩在后面。你伸手去按它。"
+        }
+      ]
     }
   }
 }

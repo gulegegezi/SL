@@ -22,6 +22,11 @@ var resume_on_open := false
 
 func _ready() -> void:
 	AudioFX.play_music(self, "story")
+	if get_tree().has_meta("life_comic_archive"):
+		save_path = str(get_tree().get_meta("life_comic_archive"))
+		save_enabled = false
+		resume_on_open = true
+		get_tree().remove_meta("life_comic_archive")
 	resume_on_open = resume_on_open or bool(get_tree().get_meta("life_comic_resume",false))
 	get_tree().remove_meta("life_comic_resume")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -41,6 +46,7 @@ func _ready() -> void:
 	var save_button := button(tools,"保存书签",func():
 		run.s["scroll"] = scroll.scroll_vertical
 		notice.text = "书签已保存" if run.save(save_path) else "保存失败，请检查磁盘空间")
+	save_button.disabled = not save_enabled
 	var music_button := button(tools, "音乐：开" if AudioFX.music_enabled else "音乐：关", func():
 		AudioFX.set_music_enabled(not AudioFX.music_enabled))
 	music_button.pressed.connect(func(): music_button.text = "音乐：开" if AudioFX.music_enabled else "音乐：关")
@@ -76,7 +82,12 @@ func _ready() -> void:
 			append_page(run.s.pages[i],false)
 	else:
 		run.start(int(Time.get_unix_time_from_system()) ^ Time.get_ticks_usec())
+		if bool(get_tree().get_meta("life_comic_prologue", false)):
+			run.s.pending = {}
+			run.s.seen["LC01"] = 0
+			run.begin(Run.Legacy.opening_id(run))
 		add_current()
+	get_tree().remove_meta("life_comic_prologue")
 	add_blank()
 	refresh()
 	if resume_on_open: call_deferred("restore_scroll")
@@ -131,9 +142,10 @@ func refresh() -> void:
 	for child in actions.get_children():
 		actions.remove_child(child)
 		child.queue_free()
-	status.text = "%d 岁 · 身体 %d · 心理 %d · 抽象 %d（%s）" % [run.s.age,run.s.scores.physical,run.s.scores.mental,run.s.scores.abstract,run.pack.rules.tiers[run.tier()].name]
+	status.text = "%s · %d 岁\n身体 %d · 心理 %d · 抽象 %d（%s）" % [life_chapter(run.s.age),run.s.age,run.s.scores.physical,run.s.scores.mental,run.s.scores.abstract,run.pack.rules.tiers[run.tier()].name]
 	locked = false
 	if not run.s.terminal.is_empty():
+		AudioFX.play_music(self, "ending")
 		button(actions,"这一卷读完了 · 返回首页",leave)
 	elif not run.s.committed.is_empty():
 		button(actions,"继续往下读",advance)
@@ -167,6 +179,14 @@ func refresh() -> void:
 		if page == blank: continue
 		page.interactions_enabled = run.s.committed.is_empty() and run.s.terminal.is_empty() and page.spec.get("event_id","") == run.s.pending.get("id","") and int(page.spec.get("age",-1)) == run.s.age
 	autosave()
+
+static func life_chapter(age: int) -> String:
+	if age < 4: return "序章 · 初来人间"
+	if age < 13: return "第一章 · 口袋里的宇宙"
+	if age < 19: return "第二章 · 世界不止课本"
+	if age < 35: return "第三章 · 独自开门"
+	if age < 60: return "第四章 · 日子有了重量"
+	return "终章 · 灯还亮着"
 
 func _find_stage_panel(key: String) -> Control:
 	var children := strip.get_children()
@@ -242,7 +262,11 @@ func advance() -> void:
 func autosave() -> void:
 	if is_instance_valid(conversation) and not conversation_page.is_empty():
 		conversation_page["conversation_progress"] = conversation.snapshot()
-	if save_enabled: run.save(save_path)
+	if save_enabled:
+		run.save(save_path)
+		if not run.s.terminal.is_empty():
+			DirAccess.make_dir_recursive_absolute("user://comic_books")
+			run.save("user://comic_books/%s.save" % str(run.s.seed))
 
 func restore_scroll() -> void:
 	await get_tree().process_frame

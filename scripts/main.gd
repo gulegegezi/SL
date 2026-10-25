@@ -171,26 +171,35 @@ func _build_action_layer() -> void:
 # ==========================================================
 func render_title() -> void:
 	clear_screen()
-	age_tag.text = "准备中"
+	age_tag.text = "漫画人生 · 整合版"
 	var card := _make_card()
 	var vb := _cv(card)
-	vb.add_child(_make_label("gamelife", C.green, 34, true, 5.0))
-	vb.add_child(_make_label("肉鸽 · 文字向 · 人生模拟", C.dim, 12, false, 1.0))
+	vb.add_child(_make_label("折痕与歪楼", C.green, 30, true, 2.0))
+	vb.add_child(_make_label("把一生，画成一本漫画", C.dim, 14, false, 1.0))
 	vb.add_child(_spacer(20))
-	vb.add_child(_make_label("你将随机出生在一个地方，\n随机抽到一种出身，随机走上一条人生线。\n你唯一能带走的，是结局和成就。", C.txt, 13))
+	vb.add_child(_make_label("从第一声啼哭，到最后一页留白。\n向下翻阅，选择、相遇和旧事逐格成画。\n每一生约 18–24 个重点事件，支线在其中相遇。", C.txt, 13))
 	vb.add_child(_spacer(22))
-	var saved := ComicArchive.load_run(archive_path)
-	if not saved.is_empty():
-		var resume_title := "回看上一生" if bool(saved.get("completed", false)) else "继续阅读"
-		vb.add_child(_btn("%s · %d 岁的书签" % [resume_title, int(saved.state.get("age", 1))], C.cyan, true, resume_saved))
-	var books := ComicArchive.books()
-	if not books.is_empty(): vb.add_child(_btn("完结书架 · %d 本人生" % books.size(), C.dim, false, render_books))
-	vb.add_child(_btn("折痕与歪楼 · 新剧情漫画人生", C.green, true, func(): _open_life_comic(false)))
+	vb.add_child(_btn("折痕与歪楼 · 开始新的一生", C.green, true, func(): _open_life_comic(false)))
 	if FileAccess.file_exists("user://life_comic_v1.save"):
-		vb.add_child(_btn("继续新剧情 · 上次的漫画书签", C.cyan, true, func(): _open_life_comic(true)))
-	vb.add_child(_btn("开始短篇人生 · 约 14–20 次抉择", C.green, true, func(): gc.new_game()))
-	vb.add_child(_btn("原版长篇 · 保留完整随机事件池", C.dim, false, func(): gc.new_game(false)))
+		vb.add_child(_btn("继续阅读 · 上次的漫画书签", C.cyan, true, func(): _open_life_comic(true)))
+	vb.add_child(_btn("从第一声开始 · 加长出生序章", C.dim, false, func():
+		get_tree().set_meta("life_comic_prologue", true)
+		_open_life_comic(false)))
+	vb.add_child(_btn("完结漫画书架", C.dim, false, render_comic_shelf))
+	vb.add_child(_btn("附录 · 早期版本与图鉴", C.dim, false, render_legacy_menu))
 	vb.add_child(_wrap_label("每一生有不同的留白。健康改变篇幅，选择留下性格。\n向下阅读，走过的年份将逐格成画。", C.dim, 12))
+	screen.add_child(card)
+
+func render_legacy_menu() -> void:
+	clear_screen()
+	var card := _make_card()
+	var vb := _cv(card)
+	vb.add_child(_make_label("附录 · 制作沿革", C.green, 24, true))
+	vb.add_child(_wrap_label("主线已整合旧事件与跨年龄支线。这里保留早期规则下的玩法与旧存档。", C.dim, 13))
+	vb.add_child(_btn("早期短篇 · 14–20 次抉择", C.dim, false, func(): gc.new_game()))
+	vb.add_child(_btn("早期长篇 · 原版数值规则", C.dim, false, func(): gc.new_game(false)))
+	if not ComicArchive.load_run(archive_path).is_empty(): vb.add_child(_btn("继续早期版本存档", C.cyan, false, resume_saved))
+	vb.add_child(_btn("早期版本完结书架", C.dim, false, render_books))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	var dex_n: int = meta.get("endings", {}).size()
@@ -198,6 +207,29 @@ func render_title() -> void:
 	row.add_child(_btn("结局图鉴 %d/%d" % [dex_n, DataLoader.endings().size()], C.dim, false, render_dex))
 	row.add_child(_btn("成就 %d/%d" % [ach_n, DataLoader.achievements().size()], C.dim, false, render_ach))
 	vb.add_child(row)
+	vb.add_child(_btn("返回漫画人生", C.green, true, render_title))
+	screen.add_child(card)
+
+func render_comic_shelf() -> void:
+	clear_screen()
+	var card := _make_card()
+	var vb := _cv(card)
+	vb.add_child(_make_label("完结漫画书架", C.green, 24, true))
+	var count := 0
+	if DirAccess.dir_exists_absolute("user://comic_books"):
+		for filename in DirAccess.get_files_at("user://comic_books"):
+			if not filename.ends_with(".save"): continue
+			var path := "user://comic_books/" + filename
+			var file := FileAccess.open(path, FileAccess.READ)
+			if file == null: continue
+			var book: Variant = file.get_var(false)
+			if not book is Dictionary or not book.get("terminal", {}) is Dictionary or book.get("terminal", {}).is_empty(): continue
+			count += 1
+			vb.add_child(_btn("%d 岁 · %d 页 · 第 %d 本" % [book.get("age", 0), book.get("pages", []).size(), count], C.cyan, false, func():
+				get_tree().set_meta("life_comic_archive", path)
+				_open_life_comic(true)))
+	if count == 0: vb.add_child(_wrap_label("还没有完结的漫画。读完的一生，会自动留在这里。", C.dim, 14))
+	vb.add_child(_btn("返回首页", C.green, true, render_title))
 	screen.add_child(card)
 
 func _open_life_comic(resume_book: bool) -> void:

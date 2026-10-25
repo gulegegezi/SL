@@ -55,6 +55,7 @@ const CAMERA_LOOK := Vector3(0,0.9,0)
 
 func setup(owner_panel: Control) -> void:
 	panel = owner_panel
+	add_to_group("pixel_stage_views")
 	cg = panel.spec.get("pixel_cg",{}).duplicate(true)
 	interacted = bool(panel.spec.get("interaction_progress",{}).get("completed",false))
 	if interacted: interaction_time = 4.0
@@ -83,6 +84,12 @@ func _process(delta: float) -> void:
 		return
 	offscreen_time = 0
 	if not is_instance_valid(viewport):
+		if live_viewports >= MAX_LIVE:
+			# Scrolling directly to an interaction must not wait for hidden worlds.
+			for other in get_tree().get_nodes_in_group("pixel_stage_views"):
+				if other != self and is_instance_valid(other.viewport) and not other.on_screen():
+					other.release_world()
+					if live_viewports < MAX_LIVE: break
 		if live_viewports >= MAX_LIVE: return
 		create_world()
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS

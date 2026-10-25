@@ -47,7 +47,7 @@ alignment = 1
 [node name="Logo" type="Label" parent="MarginContainer/ScrollContainer/VBox/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "gamelife"
+text = "LIFE IN PANELS"
 
 [node name="AgeTag" type="Label" parent="MarginContainer/ScrollContainer/VBox/TopBar"]
 layout_mode = 2
@@ -60,4 +60,4 @@ size_flags_vertical = 3
 
 [node name="Footer" type="Label" parent="MarginContainer/ScrollContainer/VBox"]
 layout_mode = 2
-text = "点击选项继续 · 一局约 5-10 分钟"
+text = "向下阅读 · 点击选项继续 · 书签自动保存"

@@ -2,6 +2,7 @@ extends RefCounted
 ## Native Godot runtime for the authored pack; no Python process is needed.
 const PACK_PATH := "res://data/story_life_comic.json"
 const SAVE_PATH := "user://life_comic_v1.save"
+const Legacy := preload("res://scripts/comic_legacy_content.gd")
 var pack: Dictionary = {}
 var events: Dictionary = {}
 var event_list: Array = []
@@ -15,6 +16,11 @@ func _init() -> void:
 		events[event.id] = event
 		event_list.append(event)
 	for arc in pack.rare_arcs: arcs[arc.id] = arc
+	var legacy_catalog := Legacy.catalog()
+	for id in legacy_catalog:
+		var entry: Dictionary = legacy_catalog[id]
+		events[id] = entry
+		event_list.append(entry)
 
 func start(seed_value: int) -> void:
 	for name in ["event", "outcome", "mortality", "illness", "npc", "layout"]:
@@ -31,12 +37,14 @@ func start(seed_value: int) -> void:
 		var offset: int = {"parent":r.randi_range(22,38), "mate":r.randi_range(22,40), "teacher":25,"boss":15}.get(role,0)
 		s.roles[role] = {"alive":true,"death_at":maxi(1,r.randi_range(68,108)-offset),"met":role in ["parent","mate"]}
 	for role in ["clinician","hobby_admin","community_teacher","naiwa"]: s.roles[role] = {"alive":true,"death_at":999,"met":false}
+	Legacy.initialize(self)
 	begin("LC01")
 
 func tier() -> int:
 	return clampi(int(float(s.scores.abstract)/25),0,3)
 
 func eligible(e: Dictionary) -> bool:
+	if e.get("legacy", false): return s.terminal.is_empty() and Legacy.eligible(self, e)
 	if not s.terminal.is_empty() or s.age < e.age_range[0] or s.age > e.age_range[1]: return false
 	if s.seen.has(e.id) and (e.recurrence.once or s.age-int(s.seen[e.id]) < int(e.recurrence.cooldown_years)): return false
 	var q: Dictionary = e.requirements
@@ -64,7 +72,8 @@ func begin(id: String, context: Dictionary = {}) -> void:
 			if s.roles.has(role): s.roles[role].met = true
 
 func source() -> Dictionary:
-	return events.get(s.pending.get("id",""),arcs.get(s.pending.get("id",""),{}))
+	var e: Dictionary = events.get(s.pending.get("id",""),arcs.get(s.pending.get("id",""),{}))
+	return Legacy.prepare(self, e) if e.get("legacy", false) else e
 
 func options() -> Array:
 	var e := source()
@@ -92,6 +101,9 @@ func choose(index: int) -> Dictionary:
 	if s.pending.is_empty() or not s.terminal.is_empty() or index < 0 or index >= options().size(): return {}
 	var e := source()
 	var result := {"choice":index,"label":options()[index],"tier":tier(),"facts":"","next":"","outcome_id":""}
+	if e.get("legacy", false):
+		s.committed = Legacy.choose(self, e, index)
+		return s.committed
 	if e.has("choices"):
 		var c: Dictionary = e.choices[index]
 		effects(c.effects)
@@ -128,6 +140,7 @@ func finish() -> bool:
 		end("END_ACCIDENT","accident")
 		return true
 	if arcs.has(result.get("next","")): s.queue.push_front({"id":result.next})
+	elif events.has(result.get("next", "")): s.queue.push_front({"id":result.next})
 	if not s.queue.is_empty():
 		var item: Dictionary = s.queue.pop_front()
 		begin(item.id,item.get("context",{}))
@@ -145,7 +158,11 @@ func finish() -> bool:
 		if s.decisions >= s.budget: continue
 		var pool: Array = event_list.filter(eligible)
 		if not pool.is_empty() and (s.age-previous_age >= 6 or s.age in [1,4,7,13,18,30,45,65] or streams.event.randf() < 0.35):
-			begin(pool[streams.event.randi_range(0,pool.size()-1)].id)
+			# Authored comic scenes carry the main story; older stories are interludes.
+			var core: Array = pool.filter(func(e): return not e.get("legacy", false))
+			var extras: Array = pool.filter(func(e): return e.get("legacy", false))
+			var selected: Array = core if not core.is_empty() and (extras.is_empty() or streams.event.randf() < .75) else extras
+			begin(selected[streams.event.randi_range(0,selected.size()-1)].id)
 			break
 	if s.age >= 140 and s.terminal.is_empty() and s.pending.is_empty(): end("END_OPEN","unfinished")
 	return true

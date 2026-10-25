@@ -404,51 +404,6 @@ static func speaker_key(speaker: String, spec: Dictionary) -> String:
 
 
 ## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
-<<<<<<< HEAD
-func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) -> void:
-	# 参照《传说之下》的规格：不透明黑底、3px 纯白直角框、正文以「* 」起行、
-	# 一页三行、打完右下角闪 ▼。长文分页，不再靠缩小字号硬塞进一屏。
-	var f := T.font_body()
-	var size: int = 16 if r.size.x >= 320 else 14
-	var pad := 14.0
-	var border := 3.0
-	var line_h := float(size) + 8.0
-
-	# 说话人优先取 spec.speaker_label —— 上游 Dialogue.copy 已经把气泡里的「谁：」剥掉了，
-	# 只看 bubble 会丢失说话人，名牌与立绘就都不出现。
-	var speaker := str(spec.get("speaker_label", ""))
-	var spoken := bubble
-	if speaker.is_empty() and not bubble.is_empty():
-		var at := bubble.find("：")
-		if at > 0:
-			speaker = bubble.substr(0, at)
-			spoken = bubble.substr(at + 1)
-		elif at == 0:
-			spoken = bubble.substr(1)
-	if speaker == "旁白":
-		speaker = ""
-
-	# 旁白与台词合成一段；行首「* 」只加一次。
-	# 数据里常写「旁白：」，而星号已经表明了旁白身份，重复就删掉。
-	var lead := text.strip_edges()
-	for prefix in ["旁白：", "旁白:", "旁白 "]:
-		if lead.begins_with(prefix):
-			lead = lead.substr(prefix.length()).strip_edges()
-			break
-	var spoken_clean := spoken.strip_edges()
-	var body := "* " + lead
-	if not spoken_clean.is_empty():
-		# 旁白为空时不留一个只有星号的空行
-		body = ("* " + lead + "\n" + spoken_clean) if not lead.is_empty() else ("* " + spoken_clean)
-	var cap_len := text.length()
-
-	# 已显示到正文的哪个位置（正文比「旁白+台词」多了 2 个星号字符，台词去掉了「谁：」）
-	var body_shown := 2 + mini(visible_characters, cap_len)
-	if not spoken.strip_edges().is_empty() and visible_characters > cap_len:
-		body_shown += 1 + mini(visible_characters - cap_len - 1, spoken.strip_edges().length())
-	body_shown = clampi(body_shown, 0, body.length())
-
-=======
 func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: String, layout: String, done: bool = true) -> void:
 	var f := T.font_body()
 	var size: int = 16 if r.size.x >= 300 else 14
@@ -471,53 +426,16 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: S
 	elif interrupted(body):
 		body = body.rstrip("…—") + "▍"
 	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
->>>>>>> origin/story
 	var portrait: Texture2D = null
-	if not speaker.is_empty():
+	if not speaker.is_empty() and speaker != "旁白":
 		var key := speaker_key(speaker, spec)
 		if key == "npc_naiwa":
 			portrait = load("res://assets/chars/npc_naiwa_full.png")
 		elif not key.is_empty():
 			portrait = Art.portrait(key, 0)
-
-	var box_h := pad * 2.0 + line_h * 3.0
-	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - box_h, r.size.x - 16.0, box_h)
-
-	var text_x := box.position.x + pad + border
-	var text_w := box.size.x - (text_x - box.position.x) - pad - border
+	var face_h := 0.0
 	var face_w := 0.0
 	if portrait != null:
-<<<<<<< HEAD
-		face_w = clampf(box_h - pad, 56.0, 110.0)
-		text_x += face_w + 10.0
-		text_w -= face_w + 10.0
-
-	var lines := _wrap_lines_manual(body, maxf(60.0, text_w), size)
-	var offsets: Array = []
-	var acc := 0
-	for line in lines:
-		offsets.append(acc)
-		acc += str(line).length()
-	var total_chars := acc
-	# 定位当前页：三行一页
-	var line_index := 0
-	for i in range(offsets.size()):
-		if body_shown > int(offsets[i]):
-			line_index = i
-	var page := line_index / 3
-	var page_start := page * 3
-	var page_end := mini(page_start + 3, lines.size())
-	var page_limit := total_chars
-	if page_end < lines.size():
-		page_limit = int(offsets[page_end])
-	var visible := clampi(body_shown, 0, page_limit)
-
-	# 框：黑底 + 直角白框
-	draw_rect(box, Color(0.02, 0.02, 0.03))
-	draw_rect(box.grow(-border * 0.5), T.CREAM, false, border)
-
-	# 左侧立绘（可选）：方形，贴框内左下
-=======
 		face_h = clampf(r.size.y * 0.46, 96.0, 190.0)
 		var ts := portrait.get_size()
 		face_w = minf(face_h * (ts.x / maxf(1.0, ts.y)), r.size.x * 0.36)
@@ -538,46 +456,19 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: S
 		draw_line(Vector2(box.end.x - 24.0, box.end.y - 8.0), Vector2(box.end.x - 10.0, box.end.y - 20.0),
 			Color(T.ACCENT, 0.9), 2.0)
 	var text_x: float = box.position.x + pad
->>>>>>> origin/story
 	if portrait != null:
-		var ts := portrait.get_size()
-		var side := minf(face_w, box_h - pad * 2.0)
-		var dest := Rect2(box.position.x + pad + border, box.get_center().y - side * 0.5, side, side)
-		draw_rect(dest, Color(0.06, 0.07, 0.09))
-		# 立绘取「头」所在的方形区域：先按宽度定边长，再以头部为中心裁，避免拉伸变形
-		var side_src: float = minf(ts.x * 0.62, ts.y * 0.42)
-		var cx: float = ts.x * 0.46
-		var cy: float = ts.y * 0.22
-		var src := Rect2(clampf(cx - side_src * 0.5, 0.0, ts.x - side_src),
-			clampf(cy - side_src * 0.5, 0.0, ts.y - side_src), side_src, side_src)
-		draw_texture_rect_region(portrait, dest.grow(-2.0), src)
-		draw_rect(dest, Color(T.CREAM, 0.45), false, 1.0)
-
-	# 名牌：压在框的左上沿
+		var dest := Rect2(box.position.x + pad, box.end.y - pad - face_h, face_w, face_h)
+		draw_texture_rect(portrait, dest, false)
+		draw_rect(dest, Color(T.CREAM, 0.35), false, 1.0)
+		text_x = dest.end.x + 12.0
+	var y: float = box.position.y + pad + size
 	if not speaker.is_empty():
-		var ns := f.get_string_size(speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, 13)
-		var plate := Rect2(Vector2(box.position.x + pad, box.position.y - 10.0), ns + Vector2(16, 6))
-		draw_rect(plate, Color(0.02, 0.02, 0.03))
-		draw_rect(plate, T.CREAM, false, 2.0)
-		draw_string(f, Vector2(plate.position.x + 8, plate.position.y + 11), speaker,
-			HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.98, 0.94, 0.80))
-
-	# 正文：只画当前页，且只画到当前进度
-	var y := box.position.y + pad + size
-	for i in range(page_start, page_end):
-		var line := str(lines[i])
-		var take := clampi(visible - int(offsets[i]), 0, line.length())
-		if take > 0:
-			draw_string(f, Vector2(text_x, y), line.substr(0, take),
-				HORIZONTAL_ALIGNMENT_LEFT, -1, size, Color(0.98, 0.97, 0.93))
+		draw_string(f, Vector2(text_x, y), speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, size - 2, T.ACCENT)
+		y += size + 4
+	var max_lines: int = int((box.size.y - pad * 2 - (18.0 if not speaker.is_empty() else 0.0)) / line_h)
+	for i in range(mini(lines.size(), max_lines)):
+		draw_string(f, Vector2(text_x, y), lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, size, T.CREAM)
 		y += line_h
-
-	# ▼：整段读完才出现
-	if body_shown >= total_chars:
-		var tip := Vector2(box.end.x - pad - 8.0, box.end.y - pad - 4.0)
-		draw_colored_polygon(PackedVector2Array([
-			tip + Vector2(-6, -7), tip + Vector2(6, -7), tip + Vector2(0, -1)
-		]), T.CREAM)
 
 
 func _draw_text_page(r: Rect2, dark: bool) -> void:
