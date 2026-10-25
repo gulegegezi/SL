@@ -28,6 +28,31 @@ Copy-Item "D:/gamelife/build/gamelife.pck" "D:/gamelife/build/windows/CreasesAnd
 
 运行：双击 `build/windows/CreasesAndTangents.exe`。
 
+## 自解压单文件（只发一个 exe）
+
+7-Zip 已安装到 `C:\Program Files-Zip`。做法：
+
+```powershell
+cd D:\gamelifeuild
+& "C:\Program Files-Zipz.exe" a -t7z -mx=7 -mmt=on payload.7z windows/CreasesAndTangents.exe windows/CreasesAndTangents.pck windows/README.txt
+
+# config.txt（UTF-8，无 BOM）
+# ;!@Install@!UTF-8!
+# Title="折痕与歪楼 / LIFE IN PANELS"
+# RunProgram="CreasesAndTangents.exe"
+# GUIMode="2"
+# ;!@InstallEnd@!
+
+cmd /c copy /b "C:\Program Files-Zipz.sfx" + sfx_config.txt + payload.7z CreasesAndTangents-Setup.exe
+```
+
+产物：`build/CreasesAndTangents-Setup.exe`（108 MB）。
+双击后它会解压到 `%TEMP%`（约 217 MB）并启动游戏，首次启动慢 5–10 秒；
+关闭游戏后临时文件由系统清理。
+
+**注意**：自解压包比 zip 更容易被杀毒软件误报；对方若被拦，
+右键「属性 → 解除锁定」或改用 zip。
+
 ## 想要单文件 exe
 
 装一次导出模板即可（约 1 GB，本机网络太慢没下）：
