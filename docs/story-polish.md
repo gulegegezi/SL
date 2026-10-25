@@ -55,12 +55,36 @@ python tools/check_story.py
 python tools/check_story.py
 godot --headless --path . --script res://test/story_echo_smoke.gd
 # PASS: 6 echoes, 6 motifs
+godot --headless --path . --script res://test/story_tone_smoke.gd
+# PASS: abstract/meta tone in first 30 years (facts 10, guide 8)
 godot --headless --path . --script res://test/comic_smoke.gd
 # 全部通过
 ```
 
-## 五、没动的部分
+## 五、前 30 岁：抽象 / 元叙述改写
+
+参考：《传说之下》（第二人称旁白、系统提示当台词）、《艾希》（旁白有自我意识、会和玩家较劲）、
+《逗比人生》（荒诞生活事件 + 冷幽默）。
+
+改写的是**真正会显示的三处**：
+
+| 位置 | 作用 | 例子 |
+| --- | --- | --- |
+| `facts` | 每页开场旁白 | 「爸爸想抽回毯角……试了两次都没成功。**系统提示：初始道具不可丢弃。**」 |
+| `guide[t]` | 选项前那句旁白 | 「我准备讲一个人的开场。他似乎更关心这块毯子。**……行吧，先拍道具。**」 |
+| `npc_dialogue` | 人物气泡 | 老师：「我回来以前，先别把证据吃掉。**尤其是你。**」 |
+
+> 说明：`lenses[*].narrator` 目前只被稀有事件用到，普通页不显示，
+> 所以没有把改写放在那里（原先改过一版，确认不显示后已还原，避免两套声音打架）。
+
+风格三条：
+
+1. **旁白知道自己在讲故事**——「我本来安排了一个明亮的夜晚。电力部门显然没有收到剧本。」
+2. **系统语言当笑话**——「系统提示：获得绑定道具『半块橡皮』」「本作没有工位装修系统。」
+3. **荒诞但不刻薄**——梗只加在叙述层，人物内心仍然是认真的，形成反差。
+
+## 六、没动的部分
 
 - 结局文本（`endings`）没改——它更接近总结陈词，不适合塞梗。
 - 后半生（30 岁以后）只做了回响，没有加新梗，避免冲淡语气。
-- `story_cutscenes.json`、`story_life_dialogue.json` 属于另一条线，没碰。
+- `story_cutscenes.json` 属于另一条线，没碰。
