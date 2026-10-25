@@ -6,12 +6,15 @@ const Pages := preload("res://scripts/life_comic_pages.gd")
 const ComicPage := preload("res://scripts/comic_page.gd")
 
 var out_dir := "D:/gamelife/_new_event_shots"
+var event_id := "LC26"
 
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
 	if args.size() > 0:
 		out_dir = args[0]
+	if args.size() > 1:
+		event_id = args[1]
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	_run()
 
@@ -26,9 +29,9 @@ func _run() -> void:
 	run.start(42)
 	run.s.pending = {}
 	run.s.committed = {}
-	var ev: Dictionary = run.events["LC26"]
+	var ev: Dictionary = run.events[event_id]
 	run.s.age = int(ev.age_range[0])
-	run.begin("LC26")
+	run.begin(event_id)
 	var page: Dictionary = Pages.make(run)
 	var view = ComicPage.new()
 	view.build(page, 1100.0)
@@ -36,6 +39,6 @@ func _run() -> void:
 	bg.add_child(view)
 	await create_timer(0.6).timeout
 	await RenderingServer.frame_post_draw
-	root.get_texture().get_image().save_png(out_dir + "/lc26.png")
-	print("saved lc26: ", ev.title)
+	root.get_texture().get_image().save_png(out_dir + "/" + event_id.to_lower() + ".png")
+	print("saved ", event_id, ": ", ev.title)
 	quit()

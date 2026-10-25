@@ -121,6 +121,13 @@ static func make(run, result: bool = false) -> Dictionary:
 	var special: Dictionary = PixelDirection.cg(e.id,result)
 	for p in panels: p["pixel_variant"] = special.get("variant","quiet" if str(e.id).begins_with("RX") else "day")
 	if not special.is_empty(): panels[0]["pixel_cg"] = special
+	if bool(e.get("text_only", false)):
+		for i in range(panels.size()):
+			panels[i]["presentation"] = "text"
+			if i == 0:
+				panels[i]["heading"] = str(e.get("title", ""))
+			panels[i].erase("pixel_cg")
+			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
 	if not result:
@@ -134,10 +141,13 @@ static func make(run, result: bool = false) -> Dictionary:
 					if earlier.get("support","none") != "none": panels[-1]["support"] = earlier.support; break
 				panels[-1]["world_solo"] = false
 	return {"no":run.s.pages.size()+1,"age":run.s.age,"stage":run.pack.rules.tiers[t].name,"title":e.title,
-		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2}
+		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2,
+		"text_only":bool(e.get("text_only", false))}
 
 ## 前半生里「动作演不出来」的页：改成双格漫画（旁白框 + 气泡 + 立绘）
 static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
+	if bool(e.get("text_only", false)):
+		return
 	if int(run.s.age) > FIRST_HALF_AGE:
 		return
 	for p in panels:
@@ -181,7 +191,9 @@ static func upgrade_legacy(spec: Dictionary) -> Dictionary:
 	if int(spec.get("dialogue_version",0)) >= 2:
 		var staged := spec.duplicate(true)
 		for p in staged.get("panels",[]):
-			if not str(p.get("ink","")).is_empty(): p["presentation"] = "pixel3d"
+			if bool(staged.get("text_only", false)):
+				p["presentation"] = "text"
+			elif not str(p.get("ink","")).is_empty(): p["presentation"] = "pixel3d"
 		if not staged.get("panels",[]).is_empty():
 			var id: String = staged.get("event_id","")
 			var special: Dictionary = PixelDirection.cg(id,bool(staged.get("result",false)))

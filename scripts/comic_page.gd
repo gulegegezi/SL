@@ -80,6 +80,11 @@ func _webtoon_slots() -> Array:
 		var text_length := str(item.get("caption", "")).length() + str(item.get("bubble", "")).length()
 		var columns := maxf(14, (maxf(size.x, 280) - 56) / 15)
 		var extra := maxf(0, ceilf(text_length / columns) - 2) * 21
+		if item.get("presentation","") == "text":
+			# 纯文本页：字号更大（见 comic_panel._draw_text_page），按 18px 重估行数
+			var cols := maxf(12.0, (maxf(size.x, 280) - 56.0) / 18.0)
+			base = 140.0 + maxf(0.0, ceilf(text_length / cols) - 1.0) * 28.0
+			extra = 0.0
 		heights.append(base + extra)
 		total += base + extra
 	page_h = total + HEAD_H + FOOT_H + 12

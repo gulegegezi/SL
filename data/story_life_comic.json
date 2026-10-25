@@ -5511,6 +5511,375 @@
       ]
     },
     {
+      "id": "LC29",
+      "title": "搬家那天，纸箱比人先认识新家",
+      "age_range": [
+        9,
+        13
+      ],
+      "stage": "school",
+      "scene": "home",
+      "actors": [
+        "lead",
+        "parent",
+        "mate"
+      ],
+      "prop": "",
+      "facts": "搬家那天，纸箱比人先认识新家。你在第七个箱子上写“我的”，笔没水了。新家的墙很白，白到能照出你旧东西的缺点。爸爸说先睡一晚就习惯了，妈妈在找烧水的锅，你坐在还没拆的箱子上，觉得房间比原来小，又比原来空。",
+      "npc_dialogue": "爸爸：先睡一晚，明天就习惯了。",
+      "lenses": [
+        {
+          "narrator": "你第一次发现，家可以被装进箱子。",
+          "inner": "箱子上写“我的”，算不算一种占地方？",
+          "dialogue": "这个放哪儿？",
+          "result_tail": "第一晚，你在新房间听见旧家具的声音。"
+        },
+        {
+          "narrator": "搬家项目进入拆箱阶段，进度条停在第七个箱子。",
+          "inner": "我的东西不多，但每一样都占一个位置。",
+          "dialogue": "先拆哪个？",
+          "result_tail": "箱子拆到一半，你决定先吃晚饭。"
+        },
+        {
+          "narrator": "脑内新家是一张还没画完的地图，旧家具在上面找位置。",
+          "inner": "地图空着的地方，可以留给以后。",
+          "dialogue": "先把床放好。",
+          "result_tail": "地图完成了四分之一，够睡了。"
+        },
+        {
+          "narrator": "想象中的居住管理局要求你为新房间重新登记所有物。",
+          "inner": "有些东西没有编号，只有记忆。",
+          "dialogue": "先登记那盏灯。",
+          "result_tail": "管理局下班了，灯还亮着。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "把箱子按记忆顺序拆",
+          "intent": "order",
+          "effects": {
+            "mental": 2,
+            "abstract": 1
+          },
+          "lines": [
+            "先拆书架。",
+            "再拆台灯。",
+            "箱子会记得顺序吗？",
+            "按老房间的来。"
+          ],
+          "memory": "_搬家_记忆顺序",
+          "id": "LC29.C1",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。",
+              "visual": "hold",
+              "effects": {
+                "mental": 2,
+                "abstract": 1
+              },
+              "memory": "_搬家_记忆顺序",
+              "id": "LC29.C1.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。 第一晚，你在新房间听见旧家具的声音。",
+                  "inner": "箱子上写“我的”，算不算一种占地方？",
+                  "dialogue": "先拆书架。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。 箱子拆到一半，你决定先吃晚饭。",
+                  "inner": "我的东西不多，但每一样都占一个位置。",
+                  "dialogue": "再拆台灯。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。 地图完成了四分之一，够睡了。",
+                  "inner": "地图空着的地方，可以留给以后。",
+                  "dialogue": "箱子会记得顺序吗？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。 管理局下班了，灯还亮着。",
+                  "inner": "有些东西没有编号，只有记忆。",
+                  "dialogue": "按老房间的来。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "把箱子按记忆顺序拆"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "你按老房间的顺序拆箱，新家慢慢有了旧家的形状。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "先在墙上贴一张旧照片",
+          "intent": "anchor",
+          "effects": {
+            "mental": 1,
+            "charm": 1
+          },
+          "lines": [
+            "先贴照片。",
+            "墙就不空了。",
+            "这是哪儿？",
+            "我们家。"
+          ],
+          "memory": "_搬家_先贴照片",
+          "id": "LC29.C2",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你把旧照片贴在墙上，房间先有了一小块熟悉。",
+              "visual": "raise",
+              "effects": {
+                "mental": 1,
+                "charm": 1
+              },
+              "memory": "_搬家_先贴照片",
+              "id": "LC29.C2.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你把旧照片贴在墙上，房间先有了一小块熟悉。 第一晚，你在新房间听见旧家具的声音。",
+                  "inner": "箱子上写“我的”，算不算一种占地方？",
+                  "dialogue": "先贴照片。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你把旧照片贴在墙上，房间先有了一小块熟悉。 箱子拆到一半，你决定先吃晚饭。",
+                  "inner": "我的东西不多，但每一样都占一个位置。",
+                  "dialogue": "墙就不空了。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你把旧照片贴在墙上，房间先有了一小块熟悉。 地图完成了四分之一，够睡了。",
+                  "inner": "地图空着的地方，可以留给以后。",
+                  "dialogue": "这是哪儿？"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你把旧照片贴在墙上，房间先有了一小块熟悉。 管理局下班了，灯还亮着。",
+                  "inner": "有些东西没有编号，只有记忆。",
+                  "dialogue": "我们家。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "先在墙上贴一张旧照片"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "raise",
+                  "prop": "",
+                  "caption": "你把旧照片贴在墙上，房间先有了一小块熟悉。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "坐在箱子上发呆",
+          "intent": "rest",
+          "effects": {
+            "mental": 2,
+            "abstract": 2
+          },
+          "lines": [
+            "先坐会儿。",
+            "不急。",
+            "箱子挺结实。",
+            "明天再拆。"
+          ],
+          "memory": "_搬家_发呆",
+          "id": "LC29.C3",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。",
+              "visual": "sit",
+              "effects": {
+                "mental": 2,
+                "abstract": 2
+              },
+              "memory": "_搬家_发呆",
+              "id": "LC29.C3.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。 第一晚，你在新房间听见旧家具的声音。",
+                  "inner": "箱子上写“我的”，算不算一种占地方？",
+                  "dialogue": "先坐会儿。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。 箱子拆到一半，你决定先吃晚饭。",
+                  "inner": "我的东西不多，但每一样都占一个位置。",
+                  "dialogue": "不急。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。 地图完成了四分之一，够睡了。",
+                  "inner": "地图空着的地方，可以留给以后。",
+                  "dialogue": "箱子挺结实。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。 管理局下班了，灯还亮着。",
+                  "inner": "有些东西没有编号，只有记忆。",
+                  "dialogue": "明天再拆。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "",
+                  "caption": "坐在箱子上发呆"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "parent",
+                    "mate"
+                  ],
+                  "action": "sit",
+                  "prop": "",
+                  "caption": "你坐在箱子上发呆，妈妈没催你，只把灯打开了。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "requirements": {},
+      "callback": null,
+      "recurrence": {
+        "once": true,
+        "cooldown_years": 0
+      },
+      "panels": [
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "parent",
+            "mate"
+          ],
+          "action": "establish",
+          "caption": "搬家那天，纸箱比人先认识新家。你在第七个箱子上写“我的”，笔没水了。新家的墙很白，白到能照出你旧东西的缺点。爸爸说先睡一晚就习惯了，妈妈在找烧水的锅，你坐在还没拆的箱子上，觉得房间比原来小，又比原来空。"
+        },
+        {
+          "shot": "detail",
+          "actors": [
+            "lead",
+            "parent",
+            "mate"
+          ],
+          "action": "look_at_prop",
+          "prop": "",
+          "caption": "爸爸：先睡一晚，明天就习惯了。"
+        },
+        {
+          "shot": "medium",
+          "actors": [
+            "lead"
+          ],
+          "action": "react",
+          "voice_ref": "lenses[tier]"
+        },
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "parent",
+            "mate"
+          ],
+          "action": "choice_pause",
+          "prop": ""
+        }
+      ],
+      "cast_bindings": {
+        "lead": "lead",
+        "parent": "parent",
+        "mate": "mate"
+      },
+      "narrator_asides": [
+        "旁白提醒：纸箱上的字，以后会成为拆箱的说明书。",
+        "进度条停在第七个箱子。旁白建议先吃饭，进度条不会跑。",
+        "地图空着的地方，可能是留给新朋友的。",
+        "居住管理局下班了。灯还亮着，就算登记过了。"
+      ],
+      "text_only": true
+    },
+    {
       "id": "LC08",
       "title": "考卷的最后一题不在卷子上",
       "age_range": [
@@ -6667,6 +7036,364 @@
         "灯光师（班主任）只会打全体光，C位不C位的，随缘。",
         "事故也算节目单的话，今晚名场面管够。导播记得切回放。"
       ]
+    },
+    {
+      "id": "LC30",
+      "title": "父亲的第一部手机，只会接不会打",
+      "age_range": [
+        14,
+        17
+      ],
+      "stage": "adolescence",
+      "scene": "home",
+      "actors": [
+        "lead",
+        "mate"
+      ],
+      "prop": "phone",
+      "facts": "爸爸买了第一部手机，只会接不会打。他让你把常用号码存进去，你发现通讯录第一行写着“家”。他练习了三次拨号，每次都拨到一半就放下。你说我教你，他摆手：我会。然后继续按错。",
+      "npc_dialogue": "爸爸：我会，就是按得慢。",
+      "lenses": [
+        {
+          "narrator": "你第一次教爸爸用一样他承认不会的东西。",
+          "inner": "他按错的时候，假装是手机的问题。",
+          "dialogue": "按这个绿的。",
+          "result_tail": "电话通了，他先说的是一句“没事”。"
+        },
+        {
+          "narrator": "家庭技术支持工单：一部手机，一位不肯看说明书的用户。",
+          "inner": "教三遍不算多，他等我长大用了十几年。",
+          "dialogue": "再看一遍。",
+          "result_tail": "他最后学会了，但只打给你。"
+        },
+        {
+          "narrator": "脑内通讯录第一行永远是“家”，后面才是世界。",
+          "inner": "有些号码不用背，按下去就是。",
+          "dialogue": "先存你的。",
+          "result_tail": "通讯录越存越长，第一行没变。"
+        },
+        {
+          "narrator": "想象中的电信局记录了一通只响一声的电话。",
+          "inner": "他打来不是有事，是想确认你还在。",
+          "dialogue": "我接。",
+          "result_tail": "记录里那通电话，响了一声就挂断。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "一步一步教他拨号",
+          "intent": "teach",
+          "effects": {
+            "mental": 2,
+            "charm": 1
+          },
+          "lines": [
+            "按绿的。",
+            "先拨号，再按这个。",
+            "错了也没关系。",
+            "再来一次。"
+          ],
+          "memory": "_手机_教拨号",
+          "id": "LC30.C1",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。",
+              "visual": "phone",
+              "effects": {
+                "mental": 2,
+                "charm": 1
+              },
+              "memory": "_手机_教拨号",
+              "id": "LC30.C1.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。 电话通了，他先说的是一句“没事”。",
+                  "inner": "他按错的时候，假装是手机的问题。",
+                  "dialogue": "按绿的。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。 他最后学会了，但只打给你。",
+                  "inner": "教三遍不算多，他等我长大用了十几年。",
+                  "dialogue": "先拨号，再按这个。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。 通讯录越存越长，第一行没变。",
+                  "inner": "有些号码不用背，按下去就是。",
+                  "dialogue": "错了也没关系。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。 记录里那通电话，响了一声就挂断。",
+                  "inner": "他打来不是有事，是想确认你还在。",
+                  "dialogue": "再来一次。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "一步一步教他拨号"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你教了他三次，第四次他自己拨通了，第一句话是“我就试试”。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "把自己的号码设成快捷 1",
+          "intent": "shortcut",
+          "effects": {
+            "mental": 1,
+            "abstract": 1
+          },
+          "lines": [
+            "设成 1 吧。",
+            "按一下就行。",
+            "别告诉妈。",
+            "这样最快。"
+          ],
+          "memory": "_手机_快捷1",
+          "id": "LC30.C2",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。",
+              "visual": "phone",
+              "effects": {
+                "mental": 1,
+                "abstract": 1
+              },
+              "memory": "_手机_快捷1",
+              "id": "LC30.C2.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。 电话通了，他先说的是一句“没事”。",
+                  "inner": "他按错的时候，假装是手机的问题。",
+                  "dialogue": "设成 1 吧。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。 他最后学会了，但只打给你。",
+                  "inner": "教三遍不算多，他等我长大用了十几年。",
+                  "dialogue": "按一下就行。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。 通讯录越存越长，第一行没变。",
+                  "inner": "有些号码不用背，按下去就是。",
+                  "dialogue": "别告诉妈。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。 记录里那通电话，响了一声就挂断。",
+                  "inner": "他打来不是有事，是想确认你还在。",
+                  "dialogue": "这样最快。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "把自己的号码设成快捷 1"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你把号码设成快捷 1。后来他按错过很多次，唯独没按错过 1。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "假装没看见，让他自己练",
+          "intent": "space",
+          "effects": {
+            "mental": 2,
+            "abstract": 1
+          },
+          "lines": [
+            "我先走开。",
+            "他自己能行。",
+            "别盯着他。",
+            "练习需要观众缺席。"
+          ],
+          "memory": "_手机_自己练",
+          "id": "LC30.C3",
+          "outcomes": [
+            {
+              "weight": 1,
+              "facts": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。",
+              "visual": "phone",
+              "effects": {
+                "mental": 2,
+                "abstract": 1
+              },
+              "memory": "_手机_自己练",
+              "id": "LC30.C3.O1",
+              "voices": [
+                {
+                  "tier": 0,
+                  "narrator": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。 电话通了，他先说的是一句“没事”。",
+                  "inner": "他按错的时候，假装是手机的问题。",
+                  "dialogue": "我先走开。"
+                },
+                {
+                  "tier": 1,
+                  "narrator": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。 他最后学会了，但只打给你。",
+                  "inner": "教三遍不算多，他等我长大用了十几年。",
+                  "dialogue": "他自己能行。"
+                },
+                {
+                  "tier": 2,
+                  "narrator": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。 通讯录越存越长，第一行没变。",
+                  "inner": "有些号码不用背，按下去就是。",
+                  "dialogue": "别盯着他。"
+                },
+                {
+                  "tier": 3,
+                  "narrator": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。 记录里那通电话，响了一声就挂断。",
+                  "inner": "他打来不是有事，是想确认你还在。",
+                  "dialogue": "练习需要观众缺席。"
+                }
+              ],
+              "panels": [
+                {
+                  "shot": "medium",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "hold",
+                  "prop": "phone",
+                  "caption": "假装没看见，让他自己练"
+                },
+                {
+                  "shot": "wide",
+                  "actors": [
+                    "lead",
+                    "mate"
+                  ],
+                  "action": "phone",
+                  "prop": "phone",
+                  "caption": "你假装去倒水。回来时他正对着手机说“通了通了”，像在跟谁报喜。"
+                },
+                {
+                  "shot": "detail",
+                  "actors": [
+                    "lead"
+                  ],
+                  "action": "settle",
+                  "prop": "phone",
+                  "voice_ref": "selected_outcome.voices[tier]"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "requirements": {},
+      "callback": null,
+      "recurrence": {
+        "once": true,
+        "cooldown_years": 0
+      },
+      "panels": [
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "mate"
+          ],
+          "action": "establish",
+          "caption": "爸爸买了第一部手机，只会接不会打。他让你把常用号码存进去，你发现通讯录第一行写着“家”。他练习了三次拨号，每次都拨到一半就放下。你说我教你，他摆手：我会。然后继续按错。"
+        },
+        {
+          "shot": "detail",
+          "actors": [
+            "lead",
+            "mate"
+          ],
+          "action": "look_at_prop",
+          "prop": "phone",
+          "caption": "爸爸：我会，就是按得慢。"
+        },
+        {
+          "shot": "medium",
+          "actors": [
+            "lead"
+          ],
+          "action": "react",
+          "voice_ref": "lenses[tier]"
+        },
+        {
+          "shot": "wide",
+          "actors": [
+            "lead",
+            "mate"
+          ],
+          "action": "choice_pause",
+          "prop": "phone"
+        }
+      ],
+      "cast_bindings": {
+        "lead": "lead",
+        "mate": "mate"
+      },
+      "narrator_asides": [
+        "旁白提醒：说明书在盒子最底下，和他想的一样难找。",
+        "工单状态：用户拒绝阅读说明书，但愿意按错十次。",
+        "通讯录第一行是“家”。旁白：这个号码不用备注也知道是谁。",
+        "电信局记录：响一声，挂断。疑似“确认你在”专线。"
+      ],
+      "text_only": true
     },
     {
       "id": "LC10",
