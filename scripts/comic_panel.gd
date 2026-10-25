@@ -319,19 +319,22 @@ static func speaker_key(speaker: String, spec: Dictionary) -> String:
 
 
 ## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
-func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) -> void:
+func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: String, layout: String) -> void:
 	var f := T.font_body()
 	var size: int = 16 if r.size.x >= 300 else 14
 	var pad := 12.0
 	var body := text
-	var speaker := ""
+	var speaker := speaker_label
 	if not bubble.is_empty():
-		var at := bubble.find("：")
-		if at > 0:
-			speaker = bubble.left(at)
-			body = text + (char(10) if not text.is_empty() else "") + bubble.substr(at + 1)
-		else:
-			body = text + (char(10) if not text.is_empty() else "") + bubble
+		var b := bubble
+		if not speaker.is_empty() and b.begins_with(speaker + "："):
+			b = b.substr((speaker + "：").length())
+		elif speaker.is_empty():
+			var at := b.find("：")
+			if at > 0 and at <= 6:
+				speaker = b.left(at)
+				b = b.substr(at + 1)
+		body = text + (char(10) if not text.is_empty() else "") + b
 	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
 	var portrait: Texture2D = null
 	if not speaker.is_empty() and speaker != "旁白":
@@ -636,7 +639,7 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 	var dialogue := Dialogue.copy(bub,maxi(0,visible_characters-caption_length-1),str(spec.get("speaker_label","")))
 	var shown_bub := str(dialogue.shown)
 	if str(spec.get("box", "")) == "dialogue" or (str(spec.get("text_channel", "")) == "dialogue" and not bub.is_empty()):
-		_draw_dialogue_box(r, shown_cap, shown_bub, cap)
+		_draw_dialogue_box(r, shown_cap, shown_bub, str(spec.get("speaker_label", "")), cap)
 		return
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))
