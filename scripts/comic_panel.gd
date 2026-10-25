@@ -10,6 +10,7 @@ const Motion := preload("res://scripts/comic_motion.gd")
 const Actor := preload("res://scripts/comic_actor.gd")
 const World := preload("res://scripts/comic_world.gd")
 const PixelStage := preload("res://scripts/pixel_stage_view.gd")
+const ComicInsert := preload("res://scripts/pixel_comic_insert.gd")
 var pixel_stage: Node
 signal interacted(progress: Dictionary)
 signal cinematic_finished
@@ -234,7 +235,9 @@ func _draw() -> void:
 	var dark := tone_kind == "black"
 	T.fill(self, r, tone_kind)
 
-	if revealed:
+	if revealed and spec.has("comic_insert"):
+		ComicInsert.draw(self, r.grow(-8.0), spec.comic_insert)
+	elif revealed:
 		var background := Art.background(str(spec.get("scene", "")))
 		if background != null and not World.enabled(spec) and not _uses_pixel():
 			var region := Art.cover_region(background,r.size)
@@ -277,7 +280,9 @@ func _draw() -> void:
 	if size.x > 120:
 		T.frame(self, r.grow(-7.0), 1.0, 0.5, Color(frame_col, 0.35))
 
-	if revealed:
+	if revealed and spec.has("comic_insert"):
+		pass
+	elif revealed:
 		_draw_text(r, dark)
 	else:
 		# 空白格：只有框和一个「未发生」，像还没画上去的一格
