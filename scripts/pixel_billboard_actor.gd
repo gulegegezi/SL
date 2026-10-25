@@ -25,7 +25,7 @@ func setup(key: String, age: int, _palette: Dictionary = {}) -> void:
 	is_newborn = age <= 1 and not key.begins_with("npc_")
 	height = 0.48 if is_newborn else (1.12 if age <= 6 else (1.45 if age <= 12 else 1.8))
 	if key.begins_with("npc_"): height = 1.75
-	if key == "npc_naiwa": height = 0.95
+	if key == "npc_naiwa": height = 1.45
 	sprite = Sprite3D.new()
 	sprite.name = "PaintedPixelCharacter"
 	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -51,7 +51,10 @@ func pose(value: String, time: float, speaking: bool = false, reduced_motion: bo
 	_frame = 0
 	var texture: Texture2D
 	if character_key == "npc_naiwa":
-		texture = load("res://assets/chars/npc_naiwa_idle_0_normal.png")
+		# 用高分辨率人设图，而不是 24x36 的分件贴图
+		texture = load("res://assets/chars/npc_naiwa_full.png")
+		if texture == null:
+			texture = load("res://assets/chars/npc_naiwa_idle_0_normal.png")
 	elif is_newborn:
 		texture = Art.portrait("infant_infant",0)
 	elif action == "walk":

@@ -317,6 +317,7 @@ static func speaker_key(speaker: String, spec: Dictionary) -> String:
 		"妈妈": "npc_parent", "母亲": "npc_parent",
 		"爸爸": "npc_mate", "父亲": "npc_mate",
 		"老师": "npc_teacher", "班主任": "npc_teacher",
+		"奶蛙": "npc_naiwa", "奶蛙同学": "npc_naiwa",
 		"同桌": "npc_friend", "同学": "npc_friend", "朋友": "npc_friend", "老同学": "npc_friend",
 		"室友": "npc_friend", "熟人": "npc_friend",
 		"医生": "npc_teacher", "管理员": "npc_teacher",
@@ -341,13 +342,17 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 	var border := 3.0
 	var line_h := float(size) + 8.0
 
-	var speaker := ""
+	# 说话人优先取 spec.speaker_label —— 上游 Dialogue.copy 已经把气泡里的「谁：」剥掉了，
+	# 只看 bubble 会丢失说话人，名牌与立绘就都不出现。
+	var speaker := str(spec.get("speaker_label", ""))
 	var spoken := bubble
-	if not bubble.is_empty():
+	if speaker.is_empty() and not bubble.is_empty():
 		var at := bubble.find("：")
 		if at > 0:
 			speaker = bubble.substr(0, at)
 			spoken = bubble.substr(at + 1)
+		elif at == 0:
+			spoken = bubble.substr(1)
 	if speaker == "旁白":
 		speaker = ""
 
@@ -358,11 +363,12 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 		if lead.begins_with(prefix):
 			lead = lead.substr(prefix.length()).strip_edges()
 			break
+	var spoken_clean := spoken.strip_edges()
 	var body := "* " + lead
+	if not spoken_clean.is_empty():
+		# 旁白为空时不留一个只有星号的空行
+		body = ("* " + lead + "\n" + spoken_clean) if not lead.is_empty() else ("* " + spoken_clean)
 	var cap_len := text.length()
-	if not spoken.strip_edges().is_empty():
-		body += "
-" + spoken.strip_edges()
 
 	# 已显示到正文的哪个位置（正文比「旁白+台词」多了 2 个星号字符，台词去掉了「谁：」）
 	var body_shown := 2 + mini(visible_characters, cap_len)
@@ -373,7 +379,9 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 	var portrait: Texture2D = null
 	if not speaker.is_empty():
 		var key := speaker_key(speaker, spec)
-		if not key.is_empty():
+		if key == "npc_naiwa":
+			portrait = load("res://assets/chars/npc_naiwa_full.png")
+		elif not key.is_empty():
 			portrait = Art.portrait(key, 0)
 
 	var box_h := pad * 2.0 + line_h * 3.0
@@ -384,6 +392,7 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 	var face_w := 0.0
 	if portrait != null:
 		face_w = clampf(box_h - pad, 56.0, 110.0)
+		text_x += face_w + 10.0
 		text_w -= face_w + 10.0
 
 	var lines := _wrap_lines_manual(body, maxf(60.0, text_w), size)
@@ -416,7 +425,11 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 		var side := minf(face_w, box_h - pad * 2.0)
 		var dest := Rect2(box.position.x + pad + border, box.get_center().y - side * 0.5, side, side)
 		draw_rect(dest, Color(0.06, 0.07, 0.09))
-		draw_texture_rect(portrait, dest.grow(-2.0), false)
+		# 全身立绘塞进方框会压扁，只取上半身（头肩），才认得出是谁
+		var head_h: float = ts.y * 0.52
+		var head_w: float = minf(ts.x, head_h * (side / side))
+		var src := Rect2((ts.x - head_w) * 0.5, 0.0, head_w, head_h)
+		draw_texture_rect_region(portrait, dest.grow(-2.0), src)
 		draw_rect(dest, Color(T.CREAM, 0.45), false, 1.0)
 
 	# 名牌：压在框的左上沿

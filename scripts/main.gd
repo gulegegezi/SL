@@ -61,6 +61,7 @@ var _completed := false
 var _readonly_archive := false
 
 func _ready() -> void:
+	AudioFX.play_music(self, "title")
 	DataLoader.ensure_loaded()
 	screen = $MarginContainer/ScrollContainer/VBox/Screen
 	age_tag = $MarginContainer/ScrollContainer/VBox/TopBar/AgeTag
@@ -200,6 +201,7 @@ func render_title() -> void:
 	screen.add_child(card)
 
 func _open_life_comic(resume_book: bool) -> void:
+	AudioFX.play_music(self, "story")
 	get_tree().set_meta("life_comic_resume",resume_book)
 	get_tree().change_scene_to_file("res://scenes/LifeComic.tscn")
 
@@ -783,6 +785,7 @@ func _set_footer(t: String) -> void:
 # 结局页
 # ==========================================================
 func _on_game_ended(s: GameState, ending: Dictionary, info: Dictionary) -> void:
+	AudioFX.play_music(self, "ending")
 	AudioFX.play(self, "ending", 1.0, -2.0)
 	if not _skipped.is_empty():
 		_page_no += 1

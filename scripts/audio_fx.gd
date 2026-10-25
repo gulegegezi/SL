@@ -155,3 +155,109 @@ static func speak(host: Node, low: bool = false, pitch: float = -1.0) -> void:
 		rng.seed = Time.get_ticks_usec()
 		p = rng.randf_range(0.94, 1.06)
 	play(host, "blip_low" if low else "blip", p)
+
+
+# ==========================================================
+# 背景音乐：同样是运行时合成，一条循环轨
+# 结构：4 段和弦 × 2 小节，8 分音符琶音 + 低音 + 轻噪声打点
+# ==========================================================
+const MUSIC_RATE := 22050
+static var _music_cache: Dictionary = {}
+static var _music_player: AudioStreamPlayer
+
+## 轨道定义：bpm、根音(MIDI)、四段和弦（相对根音的半音）、琶音密度
+const TRACKS := {
+	"title": {
+		"bpm": 82.0, "root": 57,
+		"chords": [[0, 3, 7, 10], [5, 8, 12, 15], [-2, 2, 5, 9], [3, 7, 10, 14]],
+		"lead": "square", "lead_vol": 0.16, "bass_vol": 0.20, "hat": 0.05
+	},
+	"story": {
+		"bpm": 72.0, "root": 60,
+		"chords": [[0, 4, 7, 11], [-3, 2, 5, 9], [5, 9, 12, 16], [-1, 3, 7, 10]],
+		"lead": "tri", "lead_vol": 0.13, "bass_vol": 0.18, "hat": 0.03
+	},
+	"ending": {
+		"bpm": 58.0, "root": 53,
+		"chords": [[0, 4, 7, 12], [-4, 0, 3, 7], [5, 9, 12, 17], [0, 3, 7, 10]],
+		"lead": "tri", "lead_vol": 0.15, "bass_vol": 0.17, "hat": 0.0
+	},
+}
+
+
+static func _midi_hz(note: int) -> float:
+	return 440.0 * pow(2.0, float(note - 69) / 12.0)
+
+
+static func music(track: String) -> AudioStreamWAV:
+	if _music_cache.has(track):
+		return _music_cache[track]
+	var spec: Dictionary = TRACKS.get(track, TRACKS["title"])
+	var bpm: float = float(spec["bpm"])
+	var beat: float = 60.0 / bpm
+	var step: float = beat * 0.5               # 8 分音符
+	var root: int = int(spec["root"])
+	var chords: Array = spec["chords"]
+	var bars := chords.size() * 2              # 每个和弦两小节
+	var steps_per_bar := 8
+	var total_steps := bars * steps_per_bar
+	var step_samples := int(MUSIC_RATE * step)
+	var total := total_steps * step_samples
+	var data := PackedByteArray()
+	data.resize(total * 2)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4242
+	var lead_wave: String = str(spec["lead"])
+	for i in range(total):
+		var step_index: int = i / step_samples
+		var local: float = float(i % step_samples) / float(step_samples)
+		var chord_index: int = (step_index / (steps_per_bar * 2)) % chords.size()
+		var chord: Array = chords[chord_index]
+		var in_bar: int = step_index % (steps_per_bar * 2)
+		var v := 0.0
+		# 琶音：按和弦音循环，每两步换一个音
+		var tone: int = root + int(chord[(in_bar / 2) % chord.size()])
+		var lead_phase := fmod(float(i) * _midi_hz(tone) / MUSIC_RATE, 1.0)
+		var lead := _triangle(lead_phase) if lead_wave == "tri" else _square(lead_phase)
+		# 每个 8 分音符重新起包络，听起来有颗粒
+		v += lead * pow(1.0 - local, 2.4) * float(spec["lead_vol"])
+		# 低音：每小节第一拍和第三拍
+		if in_bar % 4 == 0:
+			var bass_note: int = root - 12 + int(chord[0])
+			var bass_phase := fmod(float(i) * _midi_hz(bass_note) / MUSIC_RATE, 1.0)
+			v += _triangle(bass_phase) * 0.55 * float(spec["bass_vol"])
+		# 打点：轻噪声，落在偶数步上
+		if float(spec["hat"]) > 0.0 and step_index % 2 == 0:
+			v += rng.randf_range(-1.0, 1.0) * float(spec["hat"]) * pow(1.0 - local, 8.0)
+		v = _crunch(v, 15.0)
+		data.encode_s16(i * 2, int(clampf(v * 30000.0, -30000.0, 30000.0)))
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	wav.mix_rate = MUSIC_RATE
+	wav.stereo = false
+	wav.data = data
+	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	wav.loop_begin = 0
+	wav.loop_end = total
+	_music_cache[track] = wav
+	return wav
+
+
+## 播放（循环）。同一 track 重复调用不会重开
+static func play_music(host: Node, track: String = "title", db: float = -14.0) -> void:
+	if not enabled or host == null or not is_instance_valid(host) or not host.is_inside_tree():
+		return
+	if _music_player == null or not is_instance_valid(_music_player):
+		_music_player = AudioStreamPlayer.new()
+		_music_player.name = "__bgm"
+		host.add_child(_music_player)
+	if _music_player.playing and _music_player.stream == music(track):
+		return
+	_music_player.stream = music(track)
+	_music_player.volume_db = db
+	_music_player.play()
+
+
+static func stop_music() -> void:
+	if _music_player != null and is_instance_valid(_music_player):
+		_music_player.stop()
