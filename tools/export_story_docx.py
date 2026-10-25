@@ -78,7 +78,9 @@ def build_md(events, book):
             lines.append("")
             lines.append(f"**开场旁白**：{e.get('facts','')}")
             if e.get("npc_dialogue"):
-                lines.append(f"**人物对白**：{e['npc_dialogue']}")
+                lines.append("**人物对白**：")
+                for turn in str(e["npc_dialogue"]).splitlines():
+                    lines.append(f"  - {turn.strip()}")
             lines.append("")
             lines.append("| 档位 | 旁白 | 内心 | 台词 | 收尾 |")
             lines.append("| --- | --- | --- | --- | --- |")
@@ -157,9 +159,13 @@ def build_docx(events, book, data):
 
             if e.get("npc_dialogue"):
                 p = doc.add_paragraph()
-                style_run(p.add_run("人物对白  "), 9, True, ACCENT)
-                style_run(p.add_run(str(e["npc_dialogue"])), 10.5)
-                p.paragraph_format.space_after = Pt(6)
+                style_run(p.add_run("人物对白"), 9, True, ACCENT)
+                p.paragraph_format.space_after = Pt(2)
+                for turn in str(e["npc_dialogue"]).splitlines():
+                    line = doc.add_paragraph()
+                    line.paragraph_format.left_indent = Cm(0.6)
+                    line.paragraph_format.space_after = Pt(1)
+                    style_run(line.add_run(turn.strip()), 10)
 
             rows = e.get("lenses", [])
             table = doc.add_table(rows=1, cols=5)
