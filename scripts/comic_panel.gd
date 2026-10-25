@@ -356,6 +356,11 @@ static func box_polygon(rect: Rect2, cut: float) -> PackedVector2Array:
 		Vector2(rect.position.x, rect.end.y)])
 
 
+## 只有「打完字 + 句尾确实是破折号/省略号」才切角
+static func needs_cut(text: String, done: bool) -> bool:
+	return done and interrupted(text)
+
+
 ## 抢话/被打断：句尾是破折号或省略号
 static func interrupted(text: String) -> bool:
 	var t := text.strip_edges()
@@ -385,7 +390,7 @@ static func speaker_key(speaker: String, spec: Dictionary) -> String:
 
 
 ## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
-func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: String, layout: String) -> void:
+func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: String, layout: String, done: bool = true) -> void:
 	var f := T.font_body()
 	var size: int = 16 if r.size.x >= 300 else 14
 	var pad := 12.0
@@ -401,7 +406,10 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: S
 				speaker = b.left(at)
 				b = b.substr(at + 1)
 		body = text + (char(10) if not text.is_empty() else "") + b
-	if interrupted(body):
+	if not done:
+		# 还在逐字显示：行尾给一个光标，框会跟着字一起长
+		body = body + "▍"
+	elif interrupted(body):
 		body = body.rstrip("…—") + "▍"
 	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
 	var portrait: Texture2D = null
@@ -422,7 +430,7 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: S
 	var text_h: float = lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0)
 	var h: float = minf(r.size.y * 0.72, maxf(text_h, face_h + pad * 2))
 	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - h, r.size.x - 16.0, h)
-	var cut := 16.0 if interrupted(body) else 0.0
+	var cut := 16.0 if (done and interrupted(body)) else 0.0
 	var poly := box_polygon(box, cut)
 	draw_colored_polygon(poly, Color(T.INK, 0.90))
 	var outline := poly.duplicate()
@@ -714,7 +722,8 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 	var dialogue := Dialogue.copy(bub,maxi(0,visible_characters-caption_length-1),str(spec.get("speaker_label","")))
 	var shown_bub := str(dialogue.shown)
 	if str(spec.get("box", "")) == "dialogue" or (str(spec.get("text_channel", "")) == "dialogue" and not bub.is_empty()):
-		_draw_dialogue_box(r, shown_cap, shown_bub, str(spec.get("speaker_label", "")), cap)
+		var done := visible_characters >= _full_text.length()
+		_draw_dialogue_box(r, shown_cap, shown_bub, str(spec.get("speaker_label", "")), cap, done)
 		return
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))

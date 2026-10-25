@@ -30,5 +30,9 @@ func run() -> void:
 	assert(ComicPanel.char_delay("，") > ComicPanel.char_delay("字"), "逗号应长于普通字")
 	# 句内加速：ramp 越小越快
 	assert(ComicPanel.char_delay("字", 0.8) < ComicPanel.char_delay("字", 1.0), "加速后单字延迟应更短")
+	# 切角只在打字完成、且句尾真被打断时出现
+	assert(not ComicPanel.needs_cut("她可能以为……", false), "打字中不该切角")
+	assert(ComicPanel.needs_cut("她可能以为……", true), "打完后应切角")
+	assert(not ComicPanel.needs_cut("好，听他的。", true), "完整句不该切角")
 	print("PASS: speaker cadence and interruption marker helpers")
 	quit()
