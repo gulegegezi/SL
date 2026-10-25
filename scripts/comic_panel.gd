@@ -425,10 +425,12 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 		var side := minf(face_w, box_h - pad * 2.0)
 		var dest := Rect2(box.position.x + pad + border, box.get_center().y - side * 0.5, side, side)
 		draw_rect(dest, Color(0.06, 0.07, 0.09))
-		# 全身立绘塞进方框会压扁，只取上半身（头肩），才认得出是谁
-		var head_h: float = ts.y * 0.52
-		var head_w: float = minf(ts.x, head_h * (side / side))
-		var src := Rect2((ts.x - head_w) * 0.5, 0.0, head_w, head_h)
+		# 立绘取「头」所在的方形区域：先按宽度定边长，再以头部为中心裁，避免拉伸变形
+		var side_src: float = minf(ts.x * 0.62, ts.y * 0.42)
+		var cx: float = ts.x * 0.46
+		var cy: float = ts.y * 0.22
+		var src := Rect2(clampf(cx - side_src * 0.5, 0.0, ts.x - side_src),
+			clampf(cy - side_src * 0.5, 0.0, ts.y - side_src), side_src, side_src)
 		draw_texture_rect_region(portrait, dest.grow(-2.0), src)
 		draw_rect(dest, Color(T.CREAM, 0.45), false, 1.0)
 
