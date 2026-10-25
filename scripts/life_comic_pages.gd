@@ -94,6 +94,10 @@ static func make(run, result: bool = false) -> Dictionary:
 			if t == 1: response = "好，"+response
 			elif t == 2: response = "这场戏按你的办法往下走。"+response
 			elif t == 3: response = "我改一下旁白。"+response
+			# 过于离谱的选择：在结果旁白后面追加一句吐槽（数据里可选）
+			var roast := str(c.get("roast", "")).strip_edges()
+			if not roast.is_empty():
+				response += "\n" + roast
 			var reaction := speak(run,e,{"shot":"wide","action":"settle"},response)
 			reaction["expr"] = "normal"
 			panels.append(reaction)
