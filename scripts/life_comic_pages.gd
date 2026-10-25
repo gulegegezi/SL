@@ -23,7 +23,7 @@ static func npc_lines(run, e: Dictionary, text: String) -> Array:
 	var output: Array = []
 	# One label per actual speaker, including the two parents on the departure page.
 	var remaining := text
-	for marker in ["妈妈：","爸爸："]: remaining = remaining.replace(" "+marker,"\n"+marker)
+	for marker in ["妈妈：","爸爸："]: remaining = remaining.replace(marker,"\n"+marker)
 	for line in remaining.split("\n",false):
 		var at: int = line.find("：")
 		var name: String = line.left(at) if at >= 0 else "对方"

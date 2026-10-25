@@ -24,7 +24,7 @@ func _initialize() -> void:
 				life.begin(e.id)
 				var opening: String = text_of(Pages.make(life))
 				check(opening.contains(e.facts),"setup facts preserved")
-				for literal in e.npc_dialogue.replace(" 妈妈：","\n妈妈：").replace(" 爸爸：","\n爸爸：").split("\n",false):
+				for literal in e.npc_dialogue.replace("妈妈：","\n妈妈：").replace("爸爸：","\n爸爸：").split("\n",false):
 					check(opening.contains(literal),"literal NPC words preserved in each lens")
 				life.choose(choice_index)
 				var result_text: String = text_of(Pages.make(life,true))
