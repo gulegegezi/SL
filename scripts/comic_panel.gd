@@ -142,6 +142,7 @@ func _process(delta: float) -> void:
 	else:
 		_next_token -= delta
 		var guard := 0
+		var cadence := cadence_for(str(spec.get("speaker_label", "")))
 		while _next_token <= 0 and visible_characters < _full_text.length() and guard < 256:
 			guard += 1
 			while _moment_index + 1 < moments.size() and visible_characters >= int(moments[_moment_index + 1].trigger):
@@ -156,7 +157,8 @@ func _process(delta: float) -> void:
 			if _hold > 0: break
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
-			_next_token += 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", "\n"] else 0.025)
+			var base := 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", char(10)] else 0.025)
+			_next_token += base * cadence
 	if visible_characters >= _full_text.length() and _moment_age >= Motion.DURATION and _impact_left <= 0 and not interaction_holding and _interaction_clock >= Motion.DURATION:
 		set_process(false)
 	queue_redraw()
@@ -296,6 +298,26 @@ func _draw() -> void:
 
 # ----------------------------------------------------------
 ## 纯文本叙事：大字号、宽行距、引文用红杠，不用 3D
+## 逐字速度：爸爸/班长这类慢，主角/同桌快；没有就 1.0
+static func cadence_for(speaker: String) -> float:
+	var table := {
+		"你": 0.7, "我": 0.7,
+		"爸爸": 1.4, "父亲": 1.4,
+		"妈妈": 1.15, "母亲": 1.15,
+		"老师": 1.0, "班主任": 1.0, "医生": 1.25,
+		"同桌": 0.85, "同学": 0.85, "朋友": 0.9, "班长": 1.45,
+		"室友": 1.0, "同事": 1.05, "销售": 1.1,
+		"身边的人": 1.5, "熟人": 1.5, "邻居": 1.3, "对方": 1.1,
+	}
+	return float(table.get(speaker, 1.0))
+
+
+## 抢话/被打断：句尾是破折号或省略号
+static func interrupted(text: String) -> bool:
+	var t := text.strip_edges()
+	return t.ends_with("——") or t.ends_with("……") or t.ends_with("…")
+
+
 ## 说话人 → 立绘 key。「妈妈」「爸爸」这类中文称谓按角色映射，
 ## 映射不到就用格子的 support / ink 兜底。
 static func speaker_key(speaker: String, spec: Dictionary) -> String:
@@ -335,6 +357,8 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: S
 				speaker = b.left(at)
 				b = b.substr(at + 1)
 		body = text + (char(10) if not text.is_empty() else "") + b
+	if interrupted(body):
+		body = body.rstrip("…—") + "▍"
 	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
 	var portrait: Texture2D = null
 	if not speaker.is_empty() and speaker != "旁白":
