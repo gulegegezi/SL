@@ -6,6 +6,7 @@ const InkTheme := preload("res://scripts/comic_theme.gd")
 const Grade := preload("res://shaders/pixel_grade.gdshader")
 const PropKit := preload("res://scripts/pixel_prop_3d.gd")
 const CutIn := preload("res://scripts/pixel_cutin.gd")
+const Dialogue := preload("res://scripts/comic_dialogue.gd")
 static var live_viewports := 0
 const MAX_LIVE := 4
 var panel: Control
@@ -38,7 +39,17 @@ var _vel := {"lead": Vector3.ZERO, "npc": Vector3.ZERO}
 var _yaw := {"lead": 0.2, "npc": -0.45}
 var _phase := {"lead": 0.0, "npc": 0.0}
 const LEAD_POS := Vector3(-1.1,0,0.8)
+const LEAD_WALK_POS := Vector3(-0.72,0,1.35)
+const LEAD_NPC_INTERACT_POS := Vector3(0.05,0,0.8)
+const LEAD_PROP_INTERACT_POS := Vector3(-0.65,0,1.05)
 const NPC_POS := Vector3(1.15,0,0)
+const PROP_POS := Vector3(-0.10,0.8,0.6)
+const FRIDGE_POS := Vector3(-3.55,0,0.15)
+const FRIDGE_INTERACT_POS := Vector3(-2.70,0,1.00)
+const BENCH_POS := Vector3(0.40,0,-1.75)
+const BENCH_INTERACT_POS := Vector3(-0.20,0,-0.55)
+const ACTOR_CLEARANCE := 0.82
+const PROP_CLEARANCE := 0.70
 const CAMERA_POS := Vector3(6,5,8)
 const CAMERA_LOOK := Vector3(0,0.9,0)
 
@@ -161,8 +172,9 @@ func create_world() -> void:
 	prop_kind = str(panel.spec.get("pixel_interaction",{}).get("prop",panel.spec.get("prop","")))
 	object = build_prop(prop_kind,palette)
 	world.add_child(object)
-	prop_rest = Vector3(-0.10,0.8,0.6)
-	if prop_kind in ["fridge","bench"]: prop_rest = Vector3(0,0,0)
+	prop_rest = PROP_POS
+	if prop_kind == "fridge": prop_rest = FRIDGE_POS
+	elif prop_kind == "bench": prop_rest = BENCH_POS
 	elif prop_kind == "plant": prop_rest.y = 0.70
 	if int(panel.spec.get("age",25)) <= 1: prop_rest = LEAD_POS+Vector3(0.2,0.84,0.12)
 	object.position = prop_rest
@@ -215,7 +227,8 @@ func art_rect() -> Rect2:
 	var text_size: Vector2 = panel.size
 	var top := 12.0
 	var bubble: String = panel.spec.get("bubble","")
-	if not bubble.is_empty(): top += InkTheme.font_body().get_multiline_string_size(bubble,HORIZONTAL_ALIGNMENT_LEFT,maxf(30,minf(text_size.x-44,192)),13).y+22
+	var dialogue_text := str(Dialogue.copy(bubble).full)
+	if not bubble.is_empty(): top += InkTheme.font_body().get_multiline_string_size(dialogue_text,HORIZONTAL_ALIGNMENT_LEFT,maxf(30,minf(text_size.x-44,192)),14).y+22
 	var cap: String = panel.spec.get("caption","")
 	if interacted and panel.spec.has("pixel_interaction"): cap += "\n发现："+str(panel.spec.pixel_interaction.get("reveal",""))
 	var bottom := 12.0 if cap.is_empty() else InkTheme.font_body().get_multiline_string_size(cap,HORIZONTAL_ALIGNMENT_LEFT,maxf(30,text_size.x-46),15).y+40
@@ -284,19 +297,26 @@ func update_actors(delta: float = 0.016) -> void:
 	var npc_action := action if speaker != "lead" else "idle"
 	var base := LEAD_POS
 	if lead_action == "walk":
-		base = LEAD_POS.lerp(Vector3(-0.25,0,0.5),smoothstep(0,1.6,time))
+		base = LEAD_POS.lerp(LEAD_WALK_POS,smoothstep(0,1.6,time))
 		if time >= 1.6: lead_action = "idle"
 	if interaction_time >= 0:
 		var interaction: Dictionary = panel.spec.get("pixel_interaction",{})
 		var progress := smoothstep(0,1.25,interaction_time)
-		base = LEAD_POS.lerp(Vector3(0.05,0,0.8) if interaction.get("target","") == "npc" else Vector3(-0.65,0,1.05),progress)
+		var interact_pos := LEAD_PROP_INTERACT_POS
+		if interaction.get("target","") == "npc": interact_pos = LEAD_NPC_INTERACT_POS
+		elif prop_kind == "fridge": interact_pos = FRIDGE_INTERACT_POS
+		elif prop_kind == "bench": interact_pos = BENCH_INTERACT_POS
+		base = LEAD_POS.lerp(interact_pos,progress)
 		lead_action = "walk" if interaction_time < 1.25 else str(interaction.get("action","talk"))
 		time = interaction_time if interaction_time < 1.25 else maxf(0,interaction_time-1.25)
 		npc_action = "receive" if lead_action == "offer" else ("offer" if lead_action == "receive" else "talk")
 	elif cg_time >= 0 and not bool(cg.get("preserve_result_action",false)):
 		for shot in cg.get("shots",[]):
 			if float(shot.at) <= cg_time: lead_action = str(shot.get("action",lead_action)); time = cg_time-float(shot.at)
-	if int(panel.spec.get("age",25)) <= 1: base = LEAD_POS+Vector3(0,0.65,0)
+	if int(panel.spec.get("age",25)) <= 1:
+		base = LEAD_POS+Vector3(0,0.65,0)
+	else:
+		base = _safe_lead_target(base)
 	# 平滑走位：不是直接设位置，而是给一个目标点，让速度去追
 	var moved := _arrive(lead, base, "lead", delta)
 	if moved > 0.0004:
@@ -338,18 +358,52 @@ func update_actors(delta: float = 0.016) -> void:
 			var actor: Node3D = lead if speaker == "lead" or not is_instance_valid(npc) else npc
 			if action in ["read","phone","draw","offer","receive"]: object.global_position = actor.hand_anchor.global_position
 
+## 走位终点保持在人物和家具外，避免纸片身体插进桌台或另一名角色。
+func _safe_lead_target(target: Vector3) -> Vector3:
+	var safe := target
+	for _iteration in range(2):
+		if is_instance_valid(object) and object.visible:
+			var clearance := PROP_CLEARANCE
+			if prop_kind == "fridge": clearance = 1.0
+			elif prop_kind == "bench": clearance = 1.20
+			safe = _push_out_xz(safe, Vector3(prop_rest.x, target.y, prop_rest.z), clearance)
+		if is_instance_valid(npc):
+			safe = _push_out_xz(safe, Vector3(npc.position.x, target.y, npc.position.z), ACTOR_CLEARANCE)
+	return safe
+
+static func _push_out_xz(point: Vector3, obstacle: Vector3, clearance: float) -> Vector3:
+	var offset := Vector2(point.x-obstacle.x, point.z-obstacle.z)
+	if offset.length() >= clearance: return point
+	var direction := offset.normalized() if offset.length() > 0.001 else Vector2(0,1)
+	var pushed := Vector2(obstacle.x,obstacle.z)+direction*clearance
+	return Vector3(pushed.x,point.y,pushed.y)
+
 ## 走近-落位：按距离给期望速度，速度再缓动过去，起步/刹车都不会瞬移
 func _arrive(node: Node3D, target: Vector3, key: String, delta: float) -> float:
 	var before := node.position
-	var offset := target - before
-	var dist := offset.length()
-	if dist < 0.003:
+	if before.distance_to(target) < 0.003:
 		node.position = target
 		_vel[key] = Vector3.ZERO
 		return 0.0
-	var desired: Vector3 = offset / dist * minf(2.6, dist * 7.0)
-	_vel[key] = (_vel[key] as Vector3).lerp(desired, 1.0 - exp(-delta * 10.0))
-	node.position += (_vel[key] as Vector3) * delta
+	# 大卡顿帧按小步进积分，既不错过碰撞区，也不会一步冲过终点。
+	var remaining := maxf(0.0,delta)
+	while remaining > 0.0:
+		var step := minf(remaining,1.0/60.0)
+		remaining -= step
+		var offset := target-node.position
+		var dist := offset.length()
+		if dist < 0.003:
+			node.position = target
+			_vel[key] = Vector3.ZERO
+			break
+		var desired: Vector3 = offset/dist*minf(2.6,dist*7.0)
+		_vel[key] = (_vel[key] as Vector3).lerp(desired,1.0-exp(-step*10.0))
+		var motion: Vector3 = (_vel[key] as Vector3)*step
+		if motion.length() >= dist:
+			node.position = target
+			_vel[key] = Vector3.ZERO
+			break
+		node.position += motion
 	return node.position.distance_to(before)
 
 

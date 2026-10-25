@@ -7,6 +7,8 @@ static var opening: Dictionary = {}
 static var arcs: Dictionary = {}
 static var cutscenes: Dictionary = {}
 static var loaded: bool = false
+static var _events_cache: Array = []
+static var _event_by_id: Dictionary = {}
 
 static func ensure_loaded() -> void:
 	if loaded:
@@ -27,6 +29,7 @@ static func ensure_loaded() -> void:
 	_load_opening()
 	_load_arcs()
 	_load_cutscenes()
+	_rebuild_event_cache()
 	loaded = true
 
 ## 序章/分支节点与主数据分文件存放，便于单独编辑剧情树。
@@ -94,15 +97,16 @@ static func endings() -> Array: return data.get("ENDINGS", [])
 static func achievements() -> Array: return data.get("ACHIEVEMENTS", [])
 static func xhsd_provinces() -> Array: return data.get("XHSD_PROVINCES", [])
 
-## 主事件池 + 联动剧本事件。联动事件靠 cond 自己决定何时出现。
+## 主事件池 + 联动剧本事件。加载后只读，避免每次抽取都复制数百项。
+static func _rebuild_event_cache() -> void:
+	_events_cache = data.get("EVENTS", []).duplicate()
+	_events_cache.append_array(arc_events())
+	_event_by_id.clear()
+	for event in _events_cache:
+		_event_by_id[str(event.get("id", ""))] = event
+
 static func events() -> Array:
-	var base: Array = data.get("EVENTS", [])
-	var extra := arc_events()
-	if extra.is_empty():
-		return base
-	var out: Array = base.duplicate()
-	out.append_array(extra)
-	return out
+	return _events_cache
 
 static func arc_events() -> Array: return arcs.get("events", [])
 static func arc_nodes() -> Dictionary: return arcs.get("nodes", {})
@@ -124,10 +128,7 @@ static func events_by_filter(filter_fn: Callable) -> Array:
 	return result
 
 static func find_event(eid: String) -> Dictionary:
-	for e in events():
-		if e.get("id", "") == eid:
-			return e
-	return {}
+	return _event_by_id.get(eid, {})
 
 # ---- 序章 / 分支剧情 ----
 static func opening_data() -> Dictionary: return opening

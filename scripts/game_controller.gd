@@ -175,28 +175,28 @@ func pick_event() -> Dictionary:
 		s.achieved["_xhsd"] = true
 		var ev := DataLoader.find_event("S_XHSD")
 		if not ev.is_empty():
-			return ev
+			return _fill_and_emit(ev)
 
 	if s.age >= 20 and rng.randf() < 0.012:
 		var ev := DataLoader.find_event("S_HOT")
 		if not ev.is_empty() and not s.recent.has("S_HOT"):
-			return ev
+			return _fill_and_emit(ev)
 	if s.age >= 20 and s.health <= 6 and rng.randf() < 0.30:
 		var ev := DataLoader.find_event("S_NEAR")
 		if not ev.is_empty():
-			return ev
+			return _fill_and_emit(ev)
 	if s.age >= 25 and s.health <= 4 and rng.randf() < 0.40:
 		var ev := DataLoader.find_event("S_ICU")
 		if not ev.is_empty() and not s.recent.has("S_ICU"):
-			return ev
+			return _fill_and_emit(ev)
 	if s.line == "absurd" and s.age >= 25 and s.abstract_val >= 50 and not s.has_tag("退役") and rng.randf() < 0.05:
 		var ev := DataLoader.find_event("S_RETIRE")
 		if not ev.is_empty() and not s.recent.has("S_RETIRE"):
-			return ev
+			return _fill_and_emit(ev)
 	if s.age >= 20 and rng.randf() < 0.006:
 		var ev := DataLoader.find_event("S_LOTTERY")
 		if not ev.is_empty():
-			return ev
+			return _fill_and_emit(ev)
 
 	# 主候选池筛选
 	var cands: Array = []
@@ -267,9 +267,13 @@ func pick_event() -> Dictionary:
 	if ev == null:
 		return {}
 
-	var eDict: Dictionary = _fill_node(ev)
-	event_picked.emit(state, eDict)
-	return eDict
+	return _fill_and_emit(ev)
+
+## 所有事件入口共用文本填充和通知，特殊事件也不能绕过。
+func _fill_and_emit(ev: Dictionary) -> Dictionary:
+	var filled := _fill_node(ev)
+	event_picked.emit(state, filled)
+	return filled
 
 # ==========================================================
 # 选择处理
@@ -559,7 +563,7 @@ func _unlock_game_achievement(id: String) -> void:
 
 func _check_achievements() -> void:
 	var s := state
-	if s.age > 0 and s.age <= 10:
+	if s.health <= 0 and s.age > 0 and s.age <= 10:
 		_unlock_achievement("第一天就死了")
 	if s.age >= 100:
 		_unlock_achievement("老不死")

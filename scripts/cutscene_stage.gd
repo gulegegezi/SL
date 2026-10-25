@@ -7,6 +7,7 @@ signal finished(choice: Dictionary)
 const SpriteKit := preload("res://scripts/sprite_kit.gd")
 const AudioFX := preload("res://scripts/audio_fx.gd")
 const BeatDirector := preload("res://scripts/beat_director.gd")
+const Dialogue := preload("res://scripts/comic_dialogue.gd")
 
 const BG := Vector2(160, 90)
 const CHAR := Vector2(24, 36)
@@ -30,6 +31,7 @@ var visible_chars := 0
 var blip_timer := 0.0
 var finished_once := false
 var clock := 0.0
+var reduced_motion := false
 
 var lead_expr := "neutral"
 var cur_face: Texture2D
@@ -402,6 +404,27 @@ func _draw_weather() -> void:
 			draw_line(Vector2(wx, wy), Vector2(wx + 20.0, wy), Color(1, 1, 1, 0.16), 1.0)
 
 
+func is_talking(role: String) -> bool:
+	if in_choices or hold_timer > 0.0 or beat_index < 0 or beat_index >= beats.size(): return false
+	return role == str(beats[beat_index].get("face","lead")) and visible_chars < _current_text().length()
+
+
+func cast_frame_index(role: String, key: String, a: Dictionary) -> int:
+	var action := str(a.get("action", "idle"))
+	var expr := str(a.get("expr", "normal"))
+	if action == "idle" and _blink_phase(key): expr = "blink"
+	var lookup := ("npc_" + key) if role != "lead" else "lead_" + key
+	var n := int(SpriteKit.action_info(lookup, action).get("n", 1))
+	if n <= 1: return 0
+	if action == "idle" and is_talking(role) and not reduced_motion and expr in ["normal","blink"]:
+		# 中立表情用前两帧做口型；动作帧和特殊表情保持原来的节奏。
+		return int(clock*5.0)%mini(n,2)
+	if action == "idle" and expr not in ["normal","blink"]:
+		# 有情绪的这一拍停在烘焙了表情的第 0 帧，别让脸在两帧之间跳回无表情。
+		return 0
+	return int(float(a.get("clock", 0.0))*SpriteKit.action_fps(action))%n
+
+
 func _draw_cast(c: Dictionary) -> void:
 	var role := str(c.get("role", "lead"))
 	var is_npc := role != "lead"
@@ -409,17 +432,8 @@ func _draw_cast(c: Dictionary) -> void:
 	var a: Dictionary = actors.get(role, {"action": "idle", "expr": "normal", "clock": 0.0})
 	var action := str(a.get("action", "idle"))
 	var expr := str(a.get("expr", "normal"))
-	if action == "idle" and _blink_phase(key):
-		expr = "blink"
-	var lookup := ("npc_" + key) if is_npc else "lead_" + key
-	var n := int(SpriteKit.action_info(lookup, action).get("n", 1))
-	var fps := SpriteKit.action_fps(action)
-	var idx := 0
-	if n > 1:
-		idx = int(float(a.get("clock", 0.0)) * fps) % n
-		if action == "idle" and expr != "normal" and expr != "blink":
-			# 有情绪的这一拍停在烘焙了表情的第 0 帧，别让脸在两帧之间跳回无表情
-			idx = 0
+	if action == "idle" and _blink_phase(key): expr = "blink"
+	var idx := cast_frame_index(role,key,a)
 	var tex := SpriteKit.frame(key if is_npc else "lead_" + key, action, idx, expr, is_npc)
 	var foot := Vector2(float(c.get("x", 80)) + float(a.get("offset_x", 0.0)), float(c.get("y", 64)))
 	var rect := Rect2(foot - Vector2(CHAR.x * 0.5, CHAR.y), CHAR)
@@ -461,15 +475,20 @@ func _draw_box() -> void:
 	else:
 		name = str(beats[beat_index].get("speaker", ""))
 		text = _current_text()
-	draw_string(font, Vector2(tx, face_rect.position.y + 8.0), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("fff2c8"))
-	var shown := text if visible_chars < 0 else text.substr(0, visible_chars)
+	var model := Dialogue.copy(text,visible_chars,name)
+	name = str(model.speaker)
+	var shown := str(model.shown)
+	draw_string(font,Vector2(tx,face_rect.position.y+8.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("fff2c8"))
+	var name_width := font.get_string_size(name,HORIZONTAL_ALIGNMENT_LEFT,-1,15).x
+	draw_rect(Rect2(tx,face_rect.position.y+14.0,minf(name_width,tw-72.0),2.0),Color("d2242c"))
 	draw_multiline_string(font, Vector2(tx, face_rect.position.y + 30.0), shown,
 		HORIZONTAL_ALIGNMENT_LEFT, tw, 14, 2, Color("ffffff"))
 	if in_choices:
 		_draw_choices(box)
-	elif visible_chars >= text.length() and beat_index + 1 < beats.size():
-		draw_string(font, Vector2(box.end.x - 18.0, box.end.y - 14.0), "▾",
-			HORIZONTAL_ALIGNMENT_RIGHT, -1, 12, Color("ffffff"))
+	else:
+		var progress := "%02d / %02d" % [beat_index+1,beats.size()]
+		draw_string(font,Vector2(box.end.x-72.0,face_rect.position.y+8.0),progress,HORIZONTAL_ALIGNMENT_RIGHT,60,10,Color("a9adb5"))
+		Dialogue.draw_status(self,Vector2(box.end.x-30.0,box.end.y-14.0),model,clock,reduced_motion,12)
 
 func _draw_choices(box: Rect2) -> void:
 	if choices.is_empty():
