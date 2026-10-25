@@ -21,16 +21,21 @@ func run_test() -> void:
 	reader.add_current(); reader.refresh()
 	await frames()
 	var before: Dictionary = reader.run.snapshot()
+	reader.run.s.pages[-1].panels[0]["presentation"] = "comic_insert"
+	reader.run.s.pages[-1].panels[0]["comic_insert"] = {"panels": []}
 	reader.actions.get_node("SceneConversation").pressed.emit()
 	await frames()
 	var talk = reader.conversation
 	check(is_instance_valid(talk) and not reader.strip.visible,"conversation overlays comic and suspends background worlds")
+	check(is_instance_valid(talk.panel.pixel_stage) and not talk.panel.spec.has("comic_insert"),"illustrated opener creates conversation stage")
+	check(reader.run.s.pages[-1].panels[0].has("comic_insert"),"conversation preserves reader illustration")
 	talk.panel.visible_characters = 0
 	talk.advance()
 	check(talk.index == 0 and talk.panel.visible_characters == talk.panel._full_text.length(),"first click completes current line only")
 	talk.advance()
 	await frames()
 	check(talk.index == 1 and talk.panel.spec.text_channel == "dialogue","second click advances to NPC speech")
+	check(is_instance_valid(talk.panel.pixel_stage),"stage survives illustration-to-dialogue transition")
 	talk.panel.visible_characters = 3
 	talk.panel.set_process(false)
 	check(not talk.history_text().contains(str(talk.lines[-1].get("caption",""))),"history excludes unread future lines")

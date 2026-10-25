@@ -79,7 +79,9 @@ func add_button(parent: Node, text: String, callback: Callable) -> Button:
 func show_line() -> void:
 	if lines.is_empty(): close(); return
 	var spec: Dictionary = lines[index].duplicate(true)
-	for field in ["pixel_cg","pixel_interaction","interaction","interaction_progress","cg_progress"]: spec.erase(field)
+	for field in ["pixel_cg","pixel_interaction","interaction","interaction_progress","cg_progress","comic_insert"]: spec.erase(field)
+	# The reader keeps its illustrations; spoken sequences need a persistent stage.
+	if not str(spec.get("ink", "")).is_empty(): spec["presentation"] = "pixel3d"
 	spec["conversation_mode"] = true
 	# Keep the room and cast alive across utterances with the same staging.
 	if is_instance_valid(panel):
