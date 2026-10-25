@@ -5,6 +5,7 @@ const ActorRig := preload("res://scripts/pixel_billboard_actor.gd")
 const InkTheme := preload("res://scripts/comic_theme.gd")
 const Grade := preload("res://shaders/pixel_grade.gdshader")
 const PropKit := preload("res://scripts/pixel_prop_3d.gd")
+const CutIn := preload("res://scripts/pixel_cutin.gd")
 static var live_viewports := 0
 const MAX_LIVE := 4
 var panel: Control
@@ -20,6 +21,9 @@ var clock := 0.0
 var offscreen_time := 0.0
 var interaction_time := -1.0
 var interacted := false
+var cutin_time := -1.0
+var cutin_armed := true
+var cutin_data: Dictionary = {}
 var cg_time := -1.0
 var cg_started := false
 var cg_finished := false
@@ -29,6 +33,10 @@ var _last_size := Vector2.ZERO
 var _screen_rect := Rect2()
 var _target_rect := Rect2()
 var _render_offset := Vector2.ZERO
+# ---- 平滑走位：速度、朝向、步态相位 ----
+var _vel := {"lead": Vector3.ZERO, "npc": Vector3.ZERO}
+var _yaw := {"lead": 0.2, "npc": -0.45}
+var _phase := {"lead": 0.0, "npc": 0.0}
 const LEAD_POS := Vector3(-1.1,0,0.8)
 const NPC_POS := Vector3(1.15,0,0)
 const CAMERA_POS := Vector3(6,5,8)
@@ -71,10 +79,15 @@ func _process(delta: float) -> void:
 	if not panel.interactions_enabled and interaction_time >= 0 and not interacted: interaction_time = -1
 	if interaction_time >= 0 and not interacted:
 		interaction_time += delta
+		# 动作接触的一刻：弹一张漫画分格，代替昂贵的 3D 动作表演
+		if cutin_armed and interaction_time >= 1.25:
+			cutin_armed = false
+			_trigger_cutin()
 		if interaction_time >= 3.6:
 			interacted = true
 			panel.interaction_done = true
 			panel.spec["interaction_progress"] = {"completed":true,"id":panel.spec.get("pixel_interaction",{}).get("id","")}
+			_reaction_bump()
 			panel.interacted.emit(panel.spec.interaction_progress.duplicate(true))
 	if not cg.is_empty() and not cg_started and not cg_finished and not panel.reduced_motion:
 		cg_started = true
@@ -82,9 +95,13 @@ func _process(delta: float) -> void:
 	if cg_time >= 0:
 		cg_time += delta
 		if cg_time > float(cg.get("duration",8))+0.7: skip_cg()
+	if cutin_time >= 0.0:
+		cutin_time += delta
+		if cutin_time >= CutIn.DURATION:
+			cutin_time = -1.0
 	update_size()
 	update_camera()
-	update_actors()
+	update_actors(delta)
 	update_target()
 	panel.queue_redraw()
 
@@ -183,6 +200,9 @@ func create_world() -> void:
 	grading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var grade_material := ShaderMaterial.new()
 	grade_material.shader = Grade
+	var preset: Dictionary = _grade_preset(str(panel.spec.get("scene","home")), str(panel.spec.get("pixel_variant","day")))
+	for uniform_name in preset:
+		grade_material.set_shader_parameter(uniform_name, preset[uniform_name])
 	grading.material = grade_material
 	grading_layer.add_child(grading)
 	update_size()
@@ -256,7 +276,7 @@ func update_camera() -> void:
 static func v3(value: Array) -> Vector3:
 	return Vector3(float(value[0]),float(value[1]),float(value[2]))
 
-func update_actors() -> void:
+func update_actors(delta: float = 0.016) -> void:
 	var action: String = panel.current_direction.get("action",panel.spec.get("action","idle"))
 	var time: float = panel._moment_age
 	var speaker: String = panel.spec.get("actor","lead")
@@ -277,9 +297,22 @@ func update_actors() -> void:
 		for shot in cg.get("shots",[]):
 			if float(shot.at) <= cg_time: lead_action = str(shot.get("action",lead_action)); time = cg_time-float(shot.at)
 	if int(panel.spec.get("age",25)) <= 1: base = LEAD_POS+Vector3(0,0.65,0)
-	lead.position = base
-	var turn := smoothstep(0,1.25,interaction_time) if interaction_time >= 0 else 0.0
-	lead.rotation.y = lerp_angle(0.2,1.9,turn) if not lead.is_newborn else 0.2
+	# 平滑走位：不是直接设位置，而是给一个目标点，让速度去追
+	var moved := _arrive(lead, base, "lead", delta)
+	if moved > 0.0004:
+		_phase["lead"] += moved * 1.6
+	var speed := moved / maxf(delta, 0.0001)
+	if lead_action == "walk" and speed < 0.05:
+		# 原地走（CG 里的赶路镜头）：相位也要继续走，画面不能定格
+		_phase["lead"] += delta * 2.2
+	var staging_yaw: float = lerp_angle(0.2, 1.9, smoothstep(0, 1.25, interaction_time)) if interaction_time >= 0 else 0.2
+	var to_target: Vector3 = base - lead.position
+	var target_yaw := staging_yaw
+	if to_target.length() > 0.08:
+		target_yaw = atan2(to_target.x, to_target.z)
+	_yaw["lead"] = lerp_angle(float(_yaw["lead"]), target_yaw, 1.0 - exp(-delta * 9.0))
+	lead.rotation.y = float(_yaw["lead"]) if not lead.is_newborn else 0.2
+	var speed_ratio: float = clampf(speed / 1.1, 0.45, 1.6)
 	var talking: bool = panel.spec.get("text_channel","") == "dialogue" and panel.visible_characters < panel._full_text.length()
 	if panel.spec.get("conversation_paused",false) or panel._full_text.contains("一言不发"): talking = false
 	if panel.spec.get("conversation_mode",false) and panel.spec.get("text_channel","") == "dialogue":
@@ -287,9 +320,12 @@ func update_actors() -> void:
 		else: lead_action = "listen"
 		time = clock
 	lead.set_expression(str(panel.current_direction.get("expr","normal")) if speaker == "lead" else "normal")
-	lead.pose(lead_action,clock if lead_action == "idle" else time,talking and speaker == "lead",panel.reduced_motion)
+	var lead_time: float = clock if lead_action == "idle" else (float(_phase["lead"]) if lead_action == "walk" else time)
+	lead.pose(lead_action, lead_time, talking and speaker == "lead", panel.reduced_motion, speed_ratio)
 	if is_instance_valid(npc):
-		npc.rotation.y = lerp_angle(-0.45,-1.0,turn)
+		var npc_yaw: float = lerp_angle(-0.45, -1.0, smoothstep(0, 1.25, interaction_time)) if interaction_time >= 0 else -0.45
+		_yaw["npc"] = lerp_angle(float(_yaw["npc"]), npc_yaw, 1.0 - exp(-delta * 8.0))
+		npc.rotation.y = float(_yaw["npc"])
 		npc.set_expression(str(panel.current_direction.get("expr","normal")) if speaker != "lead" else "normal")
 		npc.pose(npc_action,clock if npc_action == "idle" else maxf(0,time-0.25),talking and speaker != "lead",panel.reduced_motion)
 	lead.face_camera(camera,false)
@@ -307,11 +343,62 @@ func update_actors() -> void:
 			var actor: Node3D = lead if speaker == "lead" or not is_instance_valid(npc) else npc
 			if action in ["read","phone","draw","offer","receive"]: object.global_position = actor.hand_anchor.global_position
 
+## 走近-落位：按距离给期望速度，速度再缓动过去，起步/刹车都不会瞬移
+func _arrive(node: Node3D, target: Vector3, key: String, delta: float) -> float:
+	var before := node.position
+	var offset := target - before
+	var dist := offset.length()
+	if dist < 0.003:
+		node.position = target
+		_vel[key] = Vector3.ZERO
+		return 0.0
+	var desired: Vector3 = offset / dist * minf(2.6, dist * 7.0)
+	_vel[key] = (_vel[key] as Vector3).lerp(desired, 1.0 - exp(-delta * 10.0))
+	node.position += (_vel[key] as Vector3) * delta
+	return node.position.distance_to(before)
+
+
+## 场景互动：物件被照料/打开/触碰时给一点物理反馈
+func _reaction_bump() -> void:
+	if not is_instance_valid(object):
+		return
+	if PropKit.handheld(prop_kind):
+		return
+	var tw := create_tween()
+	tw.tween_property(object, "rotation:z", 0.10, 0.20)
+	tw.parallel().tween_property(object, "scale", Vector3(1.05, 0.97, 1.05), 0.18)
+	tw.tween_property(object, "rotation:z", 0.0, 0.55)
+	tw.parallel().tween_property(object, "scale", Vector3.ONE, 0.55)
+
+
 func perform_interaction() -> bool:
 	if not panel.interactions_enabled or not panel.spec.has("pixel_interaction") or interacted or (interaction_time >= 0 and interaction_time < 3.6): return false
 	interaction_time = 0
+	cutin_armed = true
 	skip_cg()
 	return true
+
+## 动作 → 漫画弹窗：动作帧 + 竖排拟声词 + 一行标题，全部复用现有图
+func _trigger_cutin() -> void:
+	var it: Dictionary = panel.spec.get("pixel_interaction", {})
+	var action := str(it.get("action", ""))
+	if action.is_empty():
+		action = {"phone": "phone", "book": "read", "pencil": "draw", "drum": "drum",
+			"letter": "receive", "meal": "raise"}.get(str(it.get("prop", "")), "reach")
+	var key := str(panel.spec.get("ink", "lead_adult"))
+	if str(panel.spec.get("actor", "lead")) != "lead":
+		key = str(panel.spec.get("support", key))
+	var expr := str(panel.current_direction.get("expr", "normal"))
+	var override: Dictionary = panel.spec.get("pixel_cutin", {})
+	cutin_data = {
+		"key": str(override.get("key", key)),
+		"action": str(override.get("action", action)),
+		"expression": str(override.get("expression", expr)),
+		"title": str(override.get("title", it.get("label", "动作"))),
+		"sfx": str(override.get("sfx", CutIn.sfx_for(action))),
+	}
+	cutin_time = 0.0
+
 
 func replay_cg() -> void:
 	if cg.is_empty(): return
@@ -341,6 +428,7 @@ func draw_on() -> void:
 		var at := _screen_rect.position+_render_offset+camera.unproject_position(head)/Vector2(viewport.size)*_screen_rect.size
 		panel.draw_circle(at,4,Color("efbd76"))
 		panel.draw_string(InkTheme.font_body(),at+Vector2(8,4),str(panel.spec.get("speaker_label","")),HORIZONTAL_ALIGNMENT_LEFT,90,12,Color("ffe2a0"))
+	if not panel.spec.get("conversation_mode",false): CutIn.draw(panel, _screen_rect, cutin_time, cutin_data)
 	if panel.spec.has("pixel_interaction"):
 		var words: String = panel.spec.pixel_interaction.get("label","观察")
 		if interacted: words = "✓ 已观察 · "+words
@@ -354,3 +442,50 @@ func draw_on() -> void:
 			panel.draw_arc(_target_rect.get_center(),17,0,TAU,20,Color("efc478"),1.5)
 	if cg_time >= 0:
 		panel.draw_string(InkTheme.font_body(),_screen_rect.position+Vector2(8,16),"特别镜头 · "+str(cg.get("title","")),HORIZONTAL_ALIGNMENT_LEFT,_screen_rect.size.x-16,12,Color("f3dda9"))
+
+
+## 每个场景一套后处理参数：办公室的冷、家里的暖、医院的白、公园的开阔。
+## 参考《八方旅人》的移轴景深、《风来之国》的暖灯冷影、《旅行青蛙》的低对比柔光。
+static func _grade_preset(scene: String, variant: String) -> Dictionary:
+	var night: bool = variant == "night"
+	var preset := {
+		"strength": 0.72,
+		"dof_strength": 0.58,
+		"focus_center": 0.56,
+		"focus_width": 0.22,
+		"bloom_strength": 0.18,
+		"bloom_threshold": 0.78,
+		"vignette": 0.24,
+		"warm_cast": 0.30,
+		"haze": 0.10,
+		"haze_color": Vector3(0.145, 0.247, 0.286),
+	}
+	match scene:
+		"office":
+			preset["warm_cast"] = -0.12          # 荧光灯下偏冷
+			preset["bloom_strength"] = 0.26
+			preset["focus_width"] = 0.20
+		"hospital":
+			preset["warm_cast"] = -0.28          # 病房的临床白
+			preset["vignette"] = 0.34
+			preset["bloom_strength"] = 0.22
+			preset["haze"] = 0.14
+		"park":
+			preset["dof_strength"] = 0.44        # 室外景深远一点，别把人糊掉
+			preset["focus_width"] = 0.30
+			preset["vignette"] = 0.22
+			preset["warm_cast"] = 0.34
+			preset["bloom_strength"] = 0.24
+			preset["haze"] = 0.16
+			preset["haze_color"] = Vector3(0.176, 0.286, 0.294)
+		"classroom":
+			preset["warm_cast"] = 0.20
+			preset["bloom_strength"] = 0.26
+		_:
+			preset["warm_cast"] = 0.38           # 家里最暖
+	if night:
+		preset["bloom_strength"] = float(preset["bloom_strength"]) + 0.10
+		preset["warm_cast"] = float(preset["warm_cast"]) + 0.10
+		preset["vignette"] = float(preset["vignette"]) + 0.06
+		preset["haze"] = float(preset["haze"]) + 0.04
+	return preset

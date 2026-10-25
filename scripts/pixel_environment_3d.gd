@@ -1,4 +1,5 @@
 extends RefCounted
+const Fx := preload("res://scripts/pixel_fx_3d.gd")
 ## The Fold palette: ink teal shadows, warm amber light, terracotta punctuation.
 ## All scenery is actual shallow, block-built 3D geometry. Character standing
 ## lanes at (-1.1, 0, 0.8) and (1.15, 0, 0) are deliberately left unobstructed.
@@ -35,7 +36,7 @@ static func palette(variant: String = "day") -> Dictionary:
 static func build(scene: String, variant: String = "day") -> Node3D:
 	var root := Node3D.new()
 	root.name = "PixelEnvironment"
-	var context := {"root": root, "colors": palette(variant), "materials": {}}
+	var context := {"root": root, "colors": palette(variant), "materials": {}, "scene": scene}
 	root.set_meta("scene", scene)
 	root.set_meta("palette_variant", variant)
 	_ground(context, scene == "park")
@@ -47,6 +48,8 @@ static func build(scene: String, variant: String = "day") -> Node3D:
 		"hospital": _hospital(context)
 		"park": _park(context)
 		_: _home(context)
+	_foreground(context, scene)
+	_atmosphere(context, variant, scene)
 	_lighting(context, variant, scene == "park")
 	var mesh_count := 0
 	for child in root.get_children():
@@ -55,8 +58,53 @@ static func build(scene: String, variant: String = "day") -> Node3D:
 	root.set_meta("mesh_count", mesh_count)
 	return root
 
-static func _material(context: Dictionary, color: Color, glow: float = 0.0) -> StandardMaterial3D:
-	var key := color.to_html() + ":" + str(glow)
+
+# ==========================================================
+# 程序化材质：给方块加一层像素细节，去掉「塑料玩具」的平涂感
+# 32x32、最近邻采样、随材质缓存
+# ==========================================================
+static var _textures: Dictionary = {}
+
+
+static func _detail_texture(kind: String) -> Texture2D:
+	if _textures.has(kind):
+		return _textures[kind]
+	var size := 32
+	var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for y in range(size):
+		for x in range(size):
+			var n := float((x * 73 + y * 151 + x * y * 7) % 97) / 97.0
+			var shade := 1.0
+			match kind:
+				"floor":
+					# 砖缝：每 16 像素一条
+					if x % 16 == 0 or y % 16 == 0:
+						shade = 0.80
+					else:
+						shade = 0.96 + n * 0.08
+				"wall":
+					# 竖向抹灰痕
+					shade = 0.93 + n * 0.10
+					if x % 8 == 0:
+						shade *= 0.95
+				"wood":
+					# 横向木纹 + 偶发深色结
+					shade = 0.94 + n * 0.09
+					if y % 6 == 0:
+						shade *= 0.93
+					if (x * 3 + y * 5) % 61 == 0:
+						shade *= 0.82
+				_:
+					shade = 1.0
+			var v: int = clampi(int(255.0 * shade), 0, 255)
+			image.set_pixel(x, y, Color8(v, v, v, 255))
+	var texture := ImageTexture.create_from_image(image)
+	_textures[kind] = texture
+	return texture
+
+
+static func _material(context: Dictionary, color: Color, glow: float = 0.0, detail: String = "") -> StandardMaterial3D:
+	var key := color.to_html() + ":" + str(glow) + ":" + detail
 	var materials: Dictionary = context["materials"]
 	if materials.has(key):
 		return materials[key]
@@ -64,6 +112,9 @@ static func _material(context: Dictionary, color: Color, glow: float = 0.0) -> S
 	material.albedo_color = color
 	material.roughness = 0.93
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	if not detail.is_empty():
+		material.albedo_texture = _detail_texture(detail)
+		material.uv1_scale = Vector3(1.0, 1.0, 1.0)
 	if glow > 0.0:
 		material.emission_enabled = true
 		material.emission = color
@@ -71,13 +122,13 @@ static func _material(context: Dictionary, color: Color, glow: float = 0.0) -> S
 	materials[key] = material
 	return material
 
-static func _box(context: Dictionary, label: String, position: Vector3, dimensions: Vector3, color: Color, glow: float = 0.0) -> MeshInstance3D:
+static func _box(context: Dictionary, label: String, position: Vector3, dimensions: Vector3, color: Color, glow: float = 0.0, detail: String = "") -> MeshInstance3D:
 	var piece := MeshInstance3D.new()
 	piece.name = label
 	var mesh := BoxMesh.new()
 	mesh.size = dimensions
 	piece.mesh = mesh
-	piece.material_override = _material(context, color, glow)
+	piece.material_override = _material(context, color, glow, detail)
 	piece.position = position
 	context["root"].add_child(piece)
 	return piece
@@ -90,6 +141,8 @@ static func _ground(context: Dictionary, outdoors: bool) -> void:
 	var tile_material := StandardMaterial3D.new()
 	tile_material.vertex_color_use_as_albedo = true
 	tile_material.roughness = 1.0
+	tile_material.albedo_texture = _detail_texture("floor")
+	tile_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	tile_mesh.material = tile_material
 	var tiles := MultiMesh.new()
 	tiles.transform_format = MultiMesh.TRANSFORM_3D
@@ -115,8 +168,8 @@ static func _ground(context: Dictionary, outdoors: bool) -> void:
 
 static func _architecture(context: Dictionary, scene: String, variant: String) -> void:
 	var p: Dictionary = context["colors"]
-	_box(context, "BackWall", Vector3(0, 1.6, -2.8), Vector3(9, 3.2, 0.20), p.wall)
-	_box(context, "LeftReturnWall", Vector3(-4.4, 1.6, -1.0), Vector3(0.2, 3.2, 3.6), p.wall.darkened(0.15))
+	_box(context, "BackWall", Vector3(0, 1.6, -2.8), Vector3(9, 3.2, 0.20), p.wall, 0.0, "wall")
+	_box(context, "LeftReturnWall", Vector3(-4.4, 1.6, -1.0), Vector3(0.2, 3.2, 3.6), p.wall.darkened(0.15), 0.0, "wall")
 	_box(context, "BackSkirting", Vector3(0, 0.16, -2.66), Vector3(8.8, 0.24, 0.08), p.shadow)
 	_box(context, "LeftSkirting", Vector3(-4.26, 0.16, -1.0), Vector3(0.08, 0.24, 3.6), p.shadow)
 	_box(context, "BackCornice", Vector3(0, 3.10, -2.62), Vector3(8.8, 0.13, 0.19), p.ink)
@@ -127,7 +180,7 @@ static func _architecture(context: Dictionary, scene: String, variant: String) -
 		win_x = -3.15
 	var window_width := 1.45 if scene == "classroom" else 2.25
 	_box(context, "WindowRecess", Vector3(win_x, 2.0, -2.64), Vector3(window_width + 0.22, 1.65, 0.13), p.ink)
-	_box(context, "WindowLight", Vector3(win_x, 2.0, -2.54), Vector3(window_width, 1.45, 0.08), p.sky, 0.25 if variant == "night" else 0.6)
+	_box(context, "WindowLight", Vector3(win_x, 2.0, -2.54), Vector3(window_width, 1.45, 0.08), p.sky, 0.55 if variant == "night" else 0.22)
 	_box(context, "WindowMullion", Vector3(win_x, 2.0, -2.47), Vector3(0.07, 1.45, 0.08), p.paper)
 	_box(context, "WindowCrossbar", Vector3(win_x, 2.0, -2.47), Vector3(window_width, 0.065, 0.08), p.paper)
 	_box(context, "DeepWindowSill", Vector3(win_x, 1.22, -2.36), Vector3(window_width + 0.3, 0.12, 0.45), p.paper)
@@ -140,7 +193,7 @@ static func _architecture(context: Dictionary, scene: String, variant: String) -
 
 static func _table(context: Dictionary, center: Vector3, width: float = 1.8, depth: float = 0.8) -> void:
 	var p: Dictionary = context["colors"]
-	_box(context, "TableTop", center + Vector3(0, 0.82, 0), Vector3(width, 0.12, depth), p.wood)
+	_box(context, "TableTop", center + Vector3(0, 0.82, 0), Vector3(width, 0.12, depth), p.wood, 0.0, "wood")
 	for dx in [-1.0, 1.0]:
 		for dz in [-1.0, 1.0]:
 			_box(context, "TableLeg", center + Vector3(dx * (width * 0.5 - 0.11), 0.38, dz * (depth * 0.5 - 0.11)), Vector3(0.10, 0.76, 0.10), p.shadow)
@@ -309,29 +362,250 @@ static func _lighting(context: Dictionary, variant: String, outdoors: bool) -> v
 	var world := WorldEnvironment.new()
 	world.name = "TealAmberEnvironment"
 	var environment := Environment.new()
-	environment.background_mode = Environment.BG_COLOR
-	environment.background_color = p.fog
+	var sky := Sky.new()
+	var sky_material := ProceduralSkyMaterial.new()
+	sky_material.sky_top_color = p.fog.darkened(0.25)
+	sky_material.sky_horizon_color = p.fog.lerp(p.wall, 0.35)
+	sky_material.ground_bottom_color = p.ink.darkened(0.2)
+	sky_material.ground_horizon_color = p.fog.lerp(p.wall, 0.18)
+	sky_material.sun_angle_max = 0.0
+	sky.sky_material = sky_material
+	environment.background_mode = Environment.BG_SKY
+	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = p.sky
-	environment.ambient_light_energy = 0.30 if variant == "night" else 0.38
+	environment.ambient_light_energy = 0.33 if variant == "night" else 0.37
+	# 深度雾：按实际 3D 距离衰减（屏幕空间做不到的真景深线索）
+	environment.fog_enabled = true
+	environment.fog_mode = Environment.FOG_MODE_DEPTH
+	environment.fog_light_color = p.fog.lerp(p.sky, 0.30)
+	environment.fog_density = 0.18 if outdoors else 0.10
+	environment.fog_depth_begin = 4.5 if outdoors else 6.0
+	environment.fog_depth_end = 13.0 if outdoors else 12.0
+	environment.fog_depth_curve = 1.4
+	environment.fog_sky_affect = 0.12
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	environment.tonemap_exposure = 0.85
+	environment.tonemap_exposure = 0.84
 	world.environment = environment
 	context["root"].add_child(world)
 	var key_light := DirectionalLight3D.new()
 	key_light.name = "WarmRakingSun"
 	key_light.rotation_degrees = Vector3(-48, -32, 0)
 	key_light.light_color = p.light
-	key_light.light_energy = 0.45 if variant == "night" else 0.85
+	key_light.light_energy = 0.50 if variant == "night" else 0.82
 	key_light.shadow_enabled = true
 	key_light.directional_shadow_max_distance = 30.0
 	context["root"].add_child(key_light)
+	# 冷侧补光：从窗口方向过来，压住阴面但不留硬影
+	var fill_light := DirectionalLight3D.new()
+	fill_light.name = "CoolWindowFill"
+	fill_light.rotation_degrees = Vector3(-24, 148, 0)
+	fill_light.light_color = p.sky.lerp(p.light, 0.18)
+	fill_light.light_energy = 0.12 if variant == "night" else 0.16
+	fill_light.shadow_enabled = false
+	context["root"].add_child(fill_light)
+	# 轮廓光：从角色背后打，让人物从背景里「剥」出来
+	var rim_light := DirectionalLight3D.new()
+	rim_light.name = "WarmRimLight"
+	rim_light.rotation_degrees = Vector3(-12, 8, 0)
+	rim_light.light_color = p.light
+	rim_light.light_energy = 0.42 if variant == "night" else 0.34
+	rim_light.shadow_enabled = false
+	context["root"].add_child(rim_light)
 	var practical := OmniLight3D.new()
 	practical.name = "WarmPracticalLight"
 	practical.position = Vector3(2.3, 2.4, -1.5) if outdoors else Vector3(2.6, 2.0, -0.8)
 	practical.light_color = p.warm
-	practical.light_energy = 1.3 if variant == "night" else 0.70
-	practical.omni_range = 5.5
+	practical.light_energy = 1.05 if variant == "night" else 0.55
+	practical.omni_range = 6.4
 	practical.omni_attenuation = 1.7
 	practical.shadow_enabled = true
 	context["root"].add_child(practical)
+	Fx.breathe(practical, 0.07, 2.2)
+
+	# 第二盏实用光：办公室/教室是屏幕冷光，家里是床头暖光，公园是另一盏路灯
+	var secondary := OmniLight3D.new()
+	secondary.name = "SecondaryPracticalLight"
+	var cool: Color = p.sky.lerp(p.light, 0.25)
+	match str(context.get("scene", "home")):
+		"office", "classroom":
+			secondary.position = Vector3(1.55, 1.15, -1.95)
+			secondary.light_color = cool
+			secondary.light_energy = 0.82 if variant == "night" else 0.52
+			secondary.omni_range = 3.4
+		"park":
+			secondary.position = Vector3(-2.3, 2.35, -1.4)
+			secondary.light_color = p.warm
+			secondary.light_energy = 1.05 if variant == "night" else 0.45
+			secondary.omni_range = 5.6
+		_:
+			secondary.position = Vector3(-2.45, 1.55, -0.35)
+			secondary.light_color = p.warm.lerp(p.light, 0.35)
+			secondary.light_energy = 0.92 if variant == "night" else 0.50
+			secondary.omni_range = 4.0
+	secondary.omni_attenuation = 1.5
+	secondary.shadow_enabled = false
+	context["root"].add_child(secondary)
+	Fx.breathe(secondary, 0.10, 3.1)
+
+	# 地面反弹光：从下方把地板、裙板、裤腿提一点，避免下半身死黑
+	var bounce := OmniLight3D.new()
+	bounce.name = "FloorBounce"
+	bounce.position = Vector3(0.0, 0.28, 0.9)
+	bounce.light_color = p.floor.lerp(p.light, 0.42)
+	bounce.light_energy = 0.34 if variant == "night" else 0.25
+	bounce.omni_range = 4.6
+	bounce.omni_attenuation = 1.9
+	bounce.shadow_enabled = false
+	context["root"].add_child(bounce)
+
+
+# ==========================================================
+# 前景层：贴着镜头的一层剪影，负责「框景」与视差
+# 左右两侧各留出角色站位（-1.1 / +1.15），不遮挡人物
+# ==========================================================
+static func _foreground(context: Dictionary, scene: String) -> void:
+	var p: Dictionary = context["colors"]
+	if scene == "park":
+		# 近景树干 + 草丛：镜头前的遮挡，读起来比远景更「有空气」
+		_box(context, "NearTrunk", Vector3(-3.55, 1.15, 2.55), Vector3(0.34, 2.30, 0.34), p.ink.lerp(p.wood, 0.28))
+		for index in range(3):
+			_box(context, "NearFrond", Vector3(-3.55 + (index - 1) * 0.26, 2.15 + index * 0.10, 2.52),
+				Vector3(0.72, 0.26, 0.30), p.leaf.darkened(0.45 + index * 0.05))
+		_box(context, "NearRightPost", Vector3(3.62, 0.85, 2.62), Vector3(0.22, 1.70, 0.22), p.ink.lerp(p.wood, 0.2))
+		for index in range(6):
+			_box(context, "ForeGrass", Vector3(-3.4 + index * 0.34, 0.16, 2.85 + (index % 2) * 0.10),
+				Vector3(0.16, 0.34 + (index % 3) * 0.08, 0.14), p.leaf.darkened(0.55))
+		for index in range(5):
+			_box(context, "ForeGrassRight", Vector3(2.55 + index * 0.28, 0.14, 2.88),
+				Vector3(0.15, 0.30 + (index % 2) * 0.10, 0.13), p.leaf.darkened(0.6))
+		return
+	# 室内：左侧垂下的帘边、右侧吊篮，压住画面四角
+	# 前景只留给「家」：办公室/教室/医院里不该出现灌木。
+	# 竖直的布幔在这一机位会读成一根柱子，所以用低矮的叶片剪影。
+	if scene != "home":
+		_box(context, "ForeSillShadow", Vector3(0, 0.06, 2.90), Vector3(9.0, 0.10, 0.30), p.ink)
+		return
+	for index in range(4):
+		_box(context, "ForeLeaf", Vector3(-4.20 + index * 0.30, 0.38 + (index % 2) * 0.16, 3.00),
+			Vector3(0.46, 0.34, 0.20), p.leaf.darkened(0.62 - index * 0.03))
+	_box(context, "ForeLeafStem", Vector3(-3.90, 0.22, 3.00), Vector3(0.10, 0.44, 0.10), p.ink)
+	_box(context, "HangingPot", Vector3(3.86, 2.36, 2.86), Vector3(0.30, 0.22, 0.30), p.accent.darkened(0.55))
+	for index in range(4):
+		var spread := (index - 1.5) * 0.16
+		_box(context, "HangingVine", Vector3(3.86 + spread, 1.99 - index * 0.15, 2.86),
+			Vector3(0.11, 0.38, 0.11), p.leaf.darkened(0.55 + index * 0.04))
+	_box(context, "ForeSillShadow", Vector3(0, 0.06, 2.90), Vector3(9.0, 0.10, 0.30), p.ink)
+
+
+# ==========================================================
+# 氛围：地面光池 / 窗光柱 / 浮尘 / 墙角压暗
+# ==========================================================
+static func _radial_texture() -> GradientTexture2D:
+	# 加法混合里 alpha 不参与运算：渐变必须做在 RGB 上（白→黑），
+	# 否则整块 quad 会被原样加上去 —— 地面上会出现一块纯白方块。
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(1, 1, 1, 1))
+	gradient.set_color(1, Color(0, 0, 0, 1))
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(0.5, 0.02)
+	texture.width = 64
+	texture.height = 64
+	return texture
+
+
+static func _linear_texture() -> GradientTexture2D:
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(1, 1, 1, 1))
+	gradient.set_color(1, Color(0, 0, 0, 1))
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_LINEAR
+	texture.fill_from = Vector2(0.5, 0.0)
+	texture.fill_to = Vector2(0.5, 1.0)
+	texture.width = 8
+	texture.height = 64
+	return texture
+
+
+## 柔光材质：径向/线性衰减在着色器里算，不依赖贴图 ——
+## 之前用 GradientTexture2D 配加法混合，整块 quad 会被原样加上去，地面出现纯白方块。
+const SOFT_LIGHT := preload("res://shaders/soft_light.gdshader")
+
+
+static func _soft_light_material(color: Color, intensity: float, shape: int) -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = SOFT_LIGHT
+	material.set_shader_parameter("tint", color)
+	material.set_shader_parameter("intensity", intensity)
+	material.set_shader_parameter("shape", shape)
+	return material
+
+
+## 躺在地上的柔光圆盘：灯下的「暖光落点」
+static func _light_pool(context: Dictionary, center: Vector3, radius: float, color: Color) -> void:
+	var quad := QuadMesh.new()
+	quad.size = Vector2(radius * 2.0, radius * 2.0)
+	var piece := MeshInstance3D.new()
+	piece.name = "FloorLightPool"
+	piece.mesh = quad
+	piece.material_override = _soft_light_material(color, 0.24, 0)
+	piece.rotation_degrees = Vector3(-90, 0, 0)
+	piece.position = Vector3(center.x, 0.035, center.z)
+	piece.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	context["root"].add_child(piece)
+
+
+## 从窗口斜射下来的光柱
+static func _light_shaft(context: Dictionary, from: Vector3, size: Vector2, tilt: float, color: Color) -> void:
+	var quad := QuadMesh.new()
+	quad.size = size
+	var piece := MeshInstance3D.new()
+	piece.name = "WindowLightShaft"
+	piece.mesh = quad
+	piece.material_override = _soft_light_material(color, 0.30, 1)
+	piece.rotation_degrees = Vector3(0, 0, tilt)
+	piece.position = from
+	piece.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	context["root"].add_child(piece)
+
+
+static func _atmosphere(context: Dictionary, variant: String, scene: String) -> void:
+	var p: Dictionary = context["colors"]
+	var night: bool = variant == "night"
+	# 灯下光池：位置与 _lighting 里的实用光对齐
+	if scene == "park":
+		_light_pool(context, Vector3(2.3, 0, -1.8), 1.20, Color(p.light, 1.0) * (0.09 if not night else 0.20))
+		_light_pool(context, Vector3(-1.1, 0, 0.8), 1.05, Color(p.sky, 1.0) * 0.10)
+	else:
+		var lamp_at := Vector3(2.6, 0, -0.8) if scene not in ["classroom", "hospital"] else Vector3(-2.4, 0, -0.4)
+		_light_pool(context, lamp_at, 1.55, Color(p.light, 1.0) * (0.13 if not night else 0.24))
+		# 窗口漏进来的冷光，落在地上一小片
+		_light_pool(context, Vector3(-2.5, 0, -1.3), 1.20, Color(p.sky, 1.0) * 0.10)
+		# 第二盏实用光的地面落点：和 _lighting 里的副灯位置对齐，叠出第二层光
+		if scene in ["office", "classroom"]:
+			_light_pool(context, Vector3(1.55, 0, -1.55), 0.95, Color(p.light, 1.0) * (0.10 if not night else 0.16))
+		else:
+			_light_pool(context, Vector3(-2.45, 0, -0.35), 1.15, Color(p.warm, 1.0) * (0.10 if not night else 0.16))
+		_light_shaft(context, Vector3(-2.5, 1.35, -1.05), Vector2(1.45, 1.9),
+			-16.0 if scene != "classroom" else -20.0, Color(p.light, 1.0) * (0.10 if not night else 0.15))
+	# 浮尘：只在有光的地方飘
+	if scene == "park":
+		# 飘絮 + 少量落叶；夜里换成萤火
+		Fx.pollen(context["root"], Vector3(0.4, 0.9, 0.2), Vector3(4.2, 1.1, 2.2), Color(p.light, 0.45), 44)
+		Fx.leaves(context["root"], Vector3(0.4, 2.0, 0.4), Vector3(4.0, 0.8, 2.0), p.leaf.lightened(0.22), 9)
+		if night:
+			Fx.fireflies(context["root"], Vector3(0.6, 0.9, 0.3), Vector3(3.6, 0.8, 2.0),
+				Color(1.0, 0.93, 0.62, 0.9), 18)
+	else:
+		# 窗口附近再补一层更细的尘，让光柱里「有东西在动」
+		Fx.dust(context["root"], Vector3(-1.05, 1.15, -1.15), Vector3(1.5, 0.7, 0.9),
+			Color(p.light, 0.34), 24)
+		# 第二道更淡、角度不同的光柱：两层叠在一起才有体积
+		_light_shaft(context, Vector3(-1.72, 1.24, -1.02), Vector2(0.95, 1.72),
+			-24.0 if scene != "classroom" else -28.0, Color(p.light, 1.0) * (0.05 if not night else 0.075))
+	# 墙角压暗：一条贴着墙根的暗带，让墙与地分开
+	_box(context, "CornerShade", Vector3(0, 0.40, -2.69), Vector3(8.7, 0.62, 0.02), p.ink.lerp(p.wall, 0.25))
