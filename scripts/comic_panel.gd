@@ -142,7 +142,11 @@ func _process(delta: float) -> void:
 	else:
 		_next_token -= delta
 		var guard := 0
-		var cadence := cadence_for(str(spec.get("speaker_label", "")))
+		var speaker := str(spec.get("speaker_label", ""))
+		var expr := str(spec.get("expr", "normal"))
+		if speaker == "你":
+			expr = str(current_direction.get("expr", "normal"))
+		var cadence := cadence_for(speaker, expr)
 		while _next_token <= 0 and visible_characters < _full_text.length() and guard < 256:
 			guard += 1
 			while _moment_index + 1 < moments.size() and visible_characters >= int(moments[_moment_index + 1].trigger):
@@ -299,7 +303,7 @@ func _draw() -> void:
 # ----------------------------------------------------------
 ## 纯文本叙事：大字号、宽行距、引文用红杠，不用 3D
 ## 逐字速度：爸爸/班长这类慢，主角/同桌快；没有就 1.0
-static func cadence_for(speaker: String) -> float:
+static func cadence_for(speaker: String, expr: String = "normal") -> float:
 	var table := {
 		"你": 0.7, "我": 0.7,
 		"爸爸": 1.4, "父亲": 1.4,
@@ -309,7 +313,23 @@ static func cadence_for(speaker: String) -> float:
 		"室友": 1.0, "同事": 1.05, "销售": 1.1,
 		"身边的人": 1.5, "熟人": 1.5, "邻居": 1.3, "对方": 1.1,
 	}
-	return float(table.get(speaker, 1.0))
+	var mood := {
+		"angry": 0.75, "rage": 0.7, "panic": 0.7, "scared": 0.75, "shock": 0.8, "surprise": 0.85,
+		"happy": 0.9, "smile": 0.9, "smug": 0.95, "determined": 0.95,
+		"sad": 1.3, "cry": 1.35, "tired": 1.35, "sleep": 1.4,
+	}
+	return float(table.get(speaker, 1.0)) * float(mood.get(expr, 1.0))
+
+
+## 气泡切角：被打断时右下角斜切一刀
+static func box_polygon(rect: Rect2, cut: float) -> PackedVector2Array:
+	if cut <= 0.0:
+		return PackedVector2Array([rect.position, Vector2(rect.end.x, rect.position.y),
+			rect.end, Vector2(rect.position.x, rect.end.y)])
+	var c := minf(cut, rect.size.x * 0.25)
+	return PackedVector2Array([rect.position, Vector2(rect.end.x, rect.position.y),
+		Vector2(rect.end.x, rect.end.y - c), Vector2(rect.end.x - c, rect.end.y),
+		Vector2(rect.position.x, rect.end.y)])
 
 
 ## 抢话/被打断：句尾是破折号或省略号
@@ -378,8 +398,15 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, speaker_label: S
 	var text_h: float = lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0)
 	var h: float = minf(r.size.y * 0.72, maxf(text_h, face_h + pad * 2))
 	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - h, r.size.x - 16.0, h)
-	draw_rect(box, Color(T.INK, 0.90))
-	draw_rect(box, Color(T.CREAM, 0.85), false, 1.5)
+	var cut := 16.0 if interrupted(body) else 0.0
+	var poly := box_polygon(box, cut)
+	draw_colored_polygon(poly, Color(T.INK, 0.90))
+	var outline := poly.duplicate()
+	outline.append(poly[0])
+	draw_polyline(outline, Color(T.CREAM, 0.85), 1.5)
+	if cut > 0.0:
+		draw_line(Vector2(box.end.x - 24.0, box.end.y - 8.0), Vector2(box.end.x - 10.0, box.end.y - 20.0),
+			Color(T.ACCENT, 0.9), 2.0)
 	var text_x: float = box.position.x + pad
 	if portrait != null:
 		var dest := Rect2(box.position.x + pad, box.end.y - pad - face_h, face_w, face_h)

@@ -88,6 +88,19 @@ godot --headless --path . --script res://test/dialogue_craft_smoke.gd
 | 爸爸 / 班长 | 1.4–1.45 | 慢，像在斟酌 |
 | 身边的熟人 / 熟人 | 1.5 | 最慢，像在回忆 |
 
+**情绪叠加**（`cadence_for(speaker, expr)`）：同一角色，生气时更快、哭/累时更慢：
+
+| 情绪 | 倍率 |
+| --- | --- |
+| rage | 0.70 |
+| angry / panic / scared | 0.70–0.75 |
+| shock / surprise | 0.80–0.85 |
+| happy / smile | 0.90 |
+| 默认 | 1.00 |
+| sad | 1.30 |
+| cry / tired | 1.35 |
+| sleep | 1.40 |
+
 **抢话标记**：句尾是「——」或「……」时，正文末尾自动补一个 `▍`，
 读起来就是话没说完被打断。例如：
 

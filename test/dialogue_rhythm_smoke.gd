@@ -15,5 +15,14 @@ func run() -> void:
 	assert(ComicPanel.interrupted("她可能以为……"), "省略号应判为被打断")
 	assert(ComicPanel.interrupted("等等——"), "破折号应判为被打断")
 	assert(not ComicPanel.interrupted("好，听他的。"), "完整句不应判为被打断")
+	# 情绪叠加：生气更快，哭更慢
+	assert(ComicPanel.cadence_for("爸爸", "angry") < ComicPanel.cadence_for("爸爸"), "生气应更快")
+	assert(ComicPanel.cadence_for("爸爸", "cry") > ComicPanel.cadence_for("爸爸"), "哭应更慢")
+	# 切角：4 点 → 5 点，且右下角被切掉
+	var rect := Rect2(0, 0, 100, 40)
+	assert(ComicPanel.box_polygon(rect, 0.0).size() == 4, "完整框应是四角")
+	var cut := ComicPanel.box_polygon(rect, 16.0)
+	assert(cut.size() == 5, "切角框应是五角")
+	assert(cut[2].y < rect.end.y and cut[3].x < rect.end.x, "切角位置不对")
 	print("PASS: speaker cadence and interruption marker helpers")
 	quit()
