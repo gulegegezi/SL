@@ -1,4 +1,5 @@
 extends RefCounted
+const Fx := preload("res://scripts/pixel_fx_3d.gd")
 ## The Fold palette: ink teal shadows, warm amber light, terracotta punctuation.
 ## All scenery is actual shallow, block-built 3D geometry. Character standing
 ## lanes at (-1.1, 0, 0.8) and (1.15, 0, 0) are deliberately left unobstructed.
@@ -35,7 +36,7 @@ static func palette(variant: String = "day") -> Dictionary:
 static func build(scene: String, variant: String = "day") -> Node3D:
 	var root := Node3D.new()
 	root.name = "PixelEnvironment"
-	var context := {"root": root, "colors": palette(variant), "materials": {}}
+	var context := {"root": root, "colors": palette(variant), "materials": {}, "scene": scene}
 	root.set_meta("scene", scene)
 	root.set_meta("palette_variant", variant)
 	_ground(context, scene == "park")
@@ -349,7 +350,7 @@ static func _lighting(context: Dictionary, variant: String, outdoors: bool) -> v
 	rim_light.name = "WarmRimLight"
 	rim_light.rotation_degrees = Vector3(-12, 8, 0)
 	rim_light.light_color = p.light
-	rim_light.light_energy = 0.26 if variant == "night" else 0.20
+	rim_light.light_energy = 0.42 if variant == "night" else 0.34
 	rim_light.shadow_enabled = false
 	context["root"].add_child(rim_light)
 	var practical := OmniLight3D.new()
@@ -361,6 +362,43 @@ static func _lighting(context: Dictionary, variant: String, outdoors: bool) -> v
 	practical.omni_attenuation = 1.7
 	practical.shadow_enabled = true
 	context["root"].add_child(practical)
+	Fx.breathe(practical, 0.07, 2.2)
+
+	# 第二盏实用光：办公室/教室是屏幕冷光，家里是床头暖光，公园是另一盏路灯
+	var secondary := OmniLight3D.new()
+	secondary.name = "SecondaryPracticalLight"
+	var cool: Color = p.sky.lerp(p.light, 0.25)
+	match str(context.get("scene", "home")):
+		"office", "classroom":
+			secondary.position = Vector3(1.55, 1.15, -1.95)
+			secondary.light_color = cool
+			secondary.light_energy = 0.82 if variant == "night" else 0.52
+			secondary.omni_range = 3.4
+		"park":
+			secondary.position = Vector3(-2.3, 2.35, -1.4)
+			secondary.light_color = p.warm
+			secondary.light_energy = 1.05 if variant == "night" else 0.45
+			secondary.omni_range = 5.6
+		_:
+			secondary.position = Vector3(-2.45, 1.55, -0.35)
+			secondary.light_color = p.warm.lerp(p.light, 0.35)
+			secondary.light_energy = 0.92 if variant == "night" else 0.50
+			secondary.omni_range = 4.0
+	secondary.omni_attenuation = 1.5
+	secondary.shadow_enabled = false
+	context["root"].add_child(secondary)
+	Fx.breathe(secondary, 0.10, 3.1)
+
+	# 地面反弹光：从下方把地板、裙板、裤腿提一点，避免下半身死黑
+	var bounce := OmniLight3D.new()
+	bounce.name = "FloorBounce"
+	bounce.position = Vector3(0.0, 0.28, 0.9)
+	bounce.light_color = p.floor.lerp(p.light, 0.42)
+	bounce.light_energy = 0.34 if variant == "night" else 0.25
+	bounce.omni_range = 4.6
+	bounce.omni_attenuation = 1.9
+	bounce.shadow_enabled = false
+	context["root"].add_child(bounce)
 
 
 # ==========================================================
@@ -513,12 +551,29 @@ static func _atmosphere(context: Dictionary, variant: String, scene: String) -> 
 		_light_pool(context, lamp_at, 1.55, Color(p.light, 1.0) * (0.13 if not night else 0.24))
 		# 窗口漏进来的冷光，落在地上一小片
 		_light_pool(context, Vector3(-2.5, 0, -1.3), 1.20, Color(p.sky, 1.0) * 0.10)
+		# 第二盏实用光的地面落点：和 _lighting 里的副灯位置对齐，叠出第二层光
+		if scene in ["office", "classroom"]:
+			_light_pool(context, Vector3(1.55, 0, -1.55), 0.95, Color(p.light, 1.0) * (0.10 if not night else 0.16))
+		else:
+			_light_pool(context, Vector3(-2.45, 0, -0.35), 1.15, Color(p.warm, 1.0) * (0.10 if not night else 0.16))
 		_light_shaft(context, Vector3(-2.5, 1.35, -1.05), Vector2(1.45, 1.9),
-			-16.0 if scene != "classroom" else -20.0, Color(p.light, 1.0) * (0.05 if not night else 0.08))
+			-16.0 if scene != "classroom" else -20.0, Color(p.light, 1.0) * (0.10 if not night else 0.15))
 	# 浮尘：只在有光的地方飘
 	if scene == "park":
 		_dust(context, Vector3(0.6, 1.05, -0.6), Vector3(3.4, 0.9, 1.6), Color(p.light, 0.35), 26)
+		# 飘絮 + 少量落叶；夜里换成萤火
+		Fx.pollen(context["root"], Vector3(0.4, 0.9, 0.2), Vector3(4.2, 1.1, 2.2), Color(p.light, 0.45), 44)
+		Fx.leaves(context["root"], Vector3(0.4, 2.0, 0.4), Vector3(4.0, 0.8, 2.0), p.leaf.lightened(0.22), 9)
+		if night:
+			Fx.fireflies(context["root"], Vector3(0.6, 0.9, 0.3), Vector3(3.6, 0.8, 2.0),
+				Color(1.0, 0.93, 0.62, 0.9), 18)
 	else:
-		_dust(context, Vector3(-1.4, 1.10, -0.9), Vector3(2.2, 0.8, 1.2), Color(p.light, 0.42), 22)
+		_dust(context, Vector3(-1.4, 1.10, -0.9), Vector3(2.2, 0.8, 1.2), Color(p.light, 0.52), 34)
+		# 窗口附近再补一层更细的尘，让光柱里「有东西在动」
+		Fx.dust(context["root"], Vector3(-1.05, 1.15, -1.15), Vector3(1.5, 0.7, 0.9),
+			Color(p.light, 0.34), 24)
+		# 第二道更淡、角度不同的光柱：两层叠在一起才有体积
+		_light_shaft(context, Vector3(-1.72, 1.24, -1.02), Vector2(0.95, 1.72),
+			-24.0 if scene != "classroom" else -28.0, Color(p.light, 1.0) * (0.05 if not night else 0.075))
 	# 墙角压暗：一条贴着墙根的暗带，让墙与地分开
 	_box(context, "CornerShade", Vector3(0, 0.40, -2.69), Vector3(8.7, 0.62, 0.02), p.ink.lerp(p.wall, 0.25))

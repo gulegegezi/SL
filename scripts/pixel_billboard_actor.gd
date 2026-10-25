@@ -1,6 +1,7 @@
 extends Node3D
 ## Flat painted actors staged in a lit 3D world. No voxel body geometry.
 const Art := preload("res://scripts/comic_art.gd")
+const Fx := preload("res://scripts/pixel_fx_3d.gd")
 var hand_anchor: Node3D
 var left_hand_anchor: Node3D
 var sprite: Sprite3D
@@ -33,6 +34,10 @@ func setup(key: String, age: int, _palette: Dictionary = {}) -> void:
 	add_child(sprite)
 	hand_anchor = Node3D.new(); hand_anchor.name = "RightGrip"; add_child(hand_anchor)
 	left_hand_anchor = Node3D.new(); left_hand_anchor.name = "LeftGrip"; add_child(left_hand_anchor)
+	# 接地影：脚下一片压暗，人物才像站在地板上而不是浮着
+	var shadow := Fx.contact_shadow(self, Vector3(0.0, 0.02, 0.03),
+		Vector2(0.46, 0.33) * (height / 1.8), 0.34)
+	shadow.name = "FeetContactShadow"
 	pose("idle",0)
 
 func set_expression(value: String) -> void:
