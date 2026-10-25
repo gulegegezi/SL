@@ -4,6 +4,7 @@ extends SceneTree
 const ActionModule := preload("res://scripts/pixel_action_module.gd")
 const ActorRig := preload("res://scripts/pixel_billboard_actor.gd")
 const Stage := preload("res://scripts/pixel_stage_view.gd")
+const CutIn := preload("res://scripts/pixel_cutin.gd")
 
 
 func _initialize() -> void:
@@ -53,5 +54,12 @@ func run() -> void:
 	actor.pose("sit", 0.5, false, false, 1.0)
 	assert(actor._drop > 0.1, "坐下要下沉")
 
-	print("PASS: action module, smooth locomotion, actor pose")
+	# 4) 漫画弹窗：时间轴与拟声词
+	assert(CutIn.active(0.0) and CutIn.active(1.0))
+	assert(not CutIn.active(CutIn.DURATION + 0.01), "弹窗要自己收走")
+	assert(CutIn.sfx_for("drum") == "咚")
+	assert(CutIn.sfx_for("phone") == "嗡")
+	assert(not CutIn.sfx_for("unknown").is_empty(), "未知动作也要有兜底拟声词")
+
+	print("PASS: action module, smooth locomotion, actor pose, cut-in timeline")
 	quit()

@@ -5,6 +5,7 @@ const ActorRig := preload("res://scripts/pixel_billboard_actor.gd")
 const InkTheme := preload("res://scripts/comic_theme.gd")
 const Grade := preload("res://shaders/pixel_grade.gdshader")
 const PropKit := preload("res://scripts/pixel_prop_3d.gd")
+const CutIn := preload("res://scripts/pixel_cutin.gd")
 static var live_viewports := 0
 const MAX_LIVE := 4
 var panel: Control
@@ -20,6 +21,9 @@ var clock := 0.0
 var offscreen_time := 0.0
 var interaction_time := -1.0
 var interacted := false
+var cutin_time := -1.0
+var cutin_armed := true
+var cutin_data: Dictionary = {}
 var cg_time := -1.0
 var cg_started := false
 var cg_finished := false
@@ -75,6 +79,10 @@ func _process(delta: float) -> void:
 	if not panel.interactions_enabled and interaction_time >= 0 and not interacted: interaction_time = -1
 	if interaction_time >= 0 and not interacted:
 		interaction_time += delta
+		# 动作接触的一刻：弹一张漫画分格，代替昂贵的 3D 动作表演
+		if cutin_armed and interaction_time >= 1.25:
+			cutin_armed = false
+			_trigger_cutin()
 		if interaction_time >= 3.6:
 			interacted = true
 			panel.interaction_done = true
@@ -87,6 +95,10 @@ func _process(delta: float) -> void:
 	if cg_time >= 0:
 		cg_time += delta
 		if cg_time > float(cg.get("duration",8))+0.7: skip_cg()
+	if cutin_time >= 0.0:
+		cutin_time += delta
+		if cutin_time >= CutIn.DURATION:
+			cutin_time = -1.0
 	update_size()
 	update_camera()
 	update_actors(delta)
@@ -357,8 +369,31 @@ func _reaction_bump() -> void:
 func perform_interaction() -> bool:
 	if not panel.interactions_enabled or not panel.spec.has("pixel_interaction") or interacted or (interaction_time >= 0 and interaction_time < 3.6): return false
 	interaction_time = 0
+	cutin_armed = true
 	skip_cg()
 	return true
+
+## 动作 → 漫画弹窗：动作帧 + 竖排拟声词 + 一行标题，全部复用现有图
+func _trigger_cutin() -> void:
+	var it: Dictionary = panel.spec.get("pixel_interaction", {})
+	var action := str(it.get("action", ""))
+	if action.is_empty():
+		action = {"phone": "phone", "book": "read", "pencil": "draw", "drum": "drum",
+			"letter": "receive", "meal": "raise"}.get(str(it.get("prop", "")), "reach")
+	var key := str(panel.spec.get("ink", "lead_adult"))
+	if str(panel.spec.get("actor", "lead")) != "lead":
+		key = str(panel.spec.get("support", key))
+	var expr := str(panel.current_direction.get("expr", "normal"))
+	var override: Dictionary = panel.spec.get("pixel_cutin", {})
+	cutin_data = {
+		"key": str(override.get("key", key)),
+		"action": str(override.get("action", action)),
+		"expression": str(override.get("expression", expr)),
+		"title": str(override.get("title", it.get("label", "动作"))),
+		"sfx": str(override.get("sfx", CutIn.sfx_for(action))),
+	}
+	cutin_time = 0.0
+
 
 func replay_cg() -> void:
 	if cg.is_empty(): return
@@ -382,6 +417,7 @@ func handle_input(event: InputEvent) -> bool:
 func draw_on() -> void:
 	if not is_instance_valid(viewport): return
 	panel.draw_texture_rect(viewport.get_texture(),Rect2(_screen_rect.position+_render_offset,_screen_rect.size),false)
+	CutIn.draw(panel, _screen_rect, cutin_time, cutin_data)
 	if panel.spec.has("pixel_interaction"):
 		var words: String = panel.spec.pixel_interaction.get("label","观察")
 		if interacted: words = "✓ 已观察 · "+words
