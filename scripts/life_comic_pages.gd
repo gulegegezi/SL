@@ -160,23 +160,31 @@ static func make(run, result: bool = false) -> Dictionary:
 			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
-	# 旁白插入：对白之间补一句 tier 对应的旁白，别让整页只剩对话
+	# 旁白插拍：按事件类型决定插几次，位置在第 2、第 5 句对白之后
 	if not result and e.has("narrator_asides"):
 		var asides: Array = e.get("narrator_asides", [])
 		if not asides.is_empty():
-			var aside := str(asides[mini(t, asides.size() - 1)]).strip_edges()
-			if not aside.is_empty():
-				var at := panels.size()
-				var seen := 0
-				for i in range(panels.size()):
-					if str(panels[i].get("text_channel", "")) == "dialogue":
-						seen += 1
-						if seen == 2:
-							at = i + 1
+			var want := aside_count_for(e)
+			var spots: Array = []
+			var seen := 0
+			if want <= 0:
+				seen = -1
+			for i in range(panels.size()):
+				if seen < 0:
+					break
+				if str(panels[i].get("text_channel", "")) == "dialogue":
+					seen += 1
+					if seen in [2, 5]:
+						spots.append(i + 1)
+						if spots.size() >= want:
 							break
+			for k in range(spots.size() - 1, -1, -1):
+				var aside := str(asides[(t + k * 2) % asides.size()]).strip_edges()
+				if aside.is_empty():
+					continue
 				var note := speak(run, e, {"shot": "detail", "action": "settle"}, aside)
 				note["expr"] = "normal"
-				panels.insert(at, note)
+				panels.insert(int(spots[k]), note)
 	# 电波系：把「此刻的误会」明摆出来（参考 GAMERS 的误会网）
 	var misread := str(e.get("misread", "")).strip_edges()
 	if not result and not misread.is_empty():
@@ -196,6 +204,22 @@ static func make(run, result: bool = false) -> Dictionary:
 	return {"no":run.s.pages.size()+1,"age":run.s.age,"stage":run.pack.rules.tiers[t].name,"title":e.title,
 		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2,
 		"text_only":bool(e.get("text_only", false))}
+
+## 旁白插几次：按事件类型决定，可用 aside_count 覆盖
+static func aside_count_for(e: Dictionary) -> int:
+	if e.has("aside_count"):
+		return clampi(int(e.aside_count), 0, 3)
+	if bool(e.get("text_only", false)):
+		return 0          # 长文本页本身旁白已经很多
+	if e.has("misread"):
+		return 2          # 误会喜剧：旁白多嘴两次
+	if e.has("echo"):
+		return 1          # 回响页：一次就够
+	var turns := str(e.get("npc_dialogue", "")).count("：")
+	if turns >= 6:
+		return 2          # 对白密集：插两次
+	return 1
+
 
 ## 前半生里「动作演不出来」的页：改成双格漫画（旁白框 + 气泡 + 立绘）
 static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
