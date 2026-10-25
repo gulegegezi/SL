@@ -121,10 +121,11 @@ static func make(run, result: bool = false) -> Dictionary:
 	var special: Dictionary = PixelDirection.cg(e.id,result)
 	for p in panels: p["pixel_variant"] = special.get("variant","quiet" if str(e.id).begins_with("RX") else "day")
 	if not special.is_empty(): panels[0]["pixel_cg"] = special
+	# 剧情统一用对话框讲：画面只当背景，不再要求每句话都配一个镜头
+	for i in range(panels.size()):
+		panels[i]["box"] = "dialogue"
 	if bool(e.get("text_only", false)):
-		# 长文本仍然用分格 + 对话框，不切成文本页
 		for i in range(panels.size()):
-			panels[i]["box"] = "dialogue"
 			panels[i].erase("pixel_cg")
 			panels[i].erase("pixel_interaction")
 	if not result:
@@ -175,6 +176,19 @@ static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
 			var c2 := speech.find("：")
 			if c2 >= 0:
 				speech = speech.substr(c2 + 1)
+		# 有的页里对话已经单独成格，has_dialogue 为真，但被选中的这一格本身没有台词，
+		# 于是插页第二格会没有气泡。退一步：优先用 npc_dialogue，再用本档位的台词。
+		if speech.strip_edges().is_empty():
+			var fallback := str(e.get("npc_dialogue", ""))
+			var c3 := fallback.find("：")
+			if c3 >= 0:
+				fallback = fallback.substr(c3 + 1)
+			if fallback.strip_edges().is_empty():
+				var tier: int = int(run.s.pending.get("tier", 0))
+				var lenses: Array = e.get("lenses", [])
+				if tier < lenses.size():
+					fallback = str(lenses[tier].get("dialogue", ""))
+			speech = fallback
 		var second := ""
 		var bits := str(e.get("facts", "")).split("。", false)
 		if bits.size() > 1:
