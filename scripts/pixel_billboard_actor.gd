@@ -60,6 +60,8 @@ func pose(value: String, time: float, speaking: bool = false, reduced_motion: bo
 	sprite.pixel_size = height/float(texture.get_height())
 	_width = texture.get_width()*sprite.pixel_size
 	_bob = 0.0 if reduced_motion or is_newborn else (absf(sin(time*8))*0.025 if action == "walk" else sin(time*2)*0.008)
+	if action == "listen" and not reduced_motion and not is_newborn:
+		_bob -= maxf(0,sin(maxf(0,time-0.4)*2.8))*0.025
 
 func face_camera(camera: Camera3D, flip: bool) -> void:
 	_flip = flip

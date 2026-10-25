@@ -61,6 +61,12 @@ func _ready() -> void:
 func _uses_pixel() -> bool:
 	return spec.get("presentation","") == "pixel3d" and not str(spec.get("ink","")).is_empty()
 
+func reveal_all_text() -> void:
+	visible_characters = _full_text.length()
+	_hold = 0
+	if not moments.is_empty(): _activate(moments.size()-1,false)
+	queue_redraw()
+
 func setup(p: Dictionary, ink_tex: Texture2D) -> void:
 	_moment_index = -1
 	_hold = 0

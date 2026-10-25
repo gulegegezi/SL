@@ -281,6 +281,11 @@ func update_actors() -> void:
 	var turn := smoothstep(0,1.25,interaction_time) if interaction_time >= 0 else 0.0
 	lead.rotation.y = lerp_angle(0.2,1.9,turn) if not lead.is_newborn else 0.2
 	var talking: bool = panel.spec.get("text_channel","") == "dialogue" and panel.visible_characters < panel._full_text.length()
+	if panel.spec.get("conversation_paused",false) or panel._full_text.contains("一言不发"): talking = false
+	if panel.spec.get("conversation_mode",false) and panel.spec.get("text_channel","") == "dialogue":
+		if speaker == "lead": npc_action = "listen"
+		else: lead_action = "listen"
+		time = clock
 	lead.set_expression(str(panel.current_direction.get("expr","normal")) if speaker == "lead" else "normal")
 	lead.pose(lead_action,clock if lead_action == "idle" else time,talking and speaker == "lead",panel.reduced_motion)
 	if is_instance_valid(npc):
@@ -330,6 +335,12 @@ func handle_input(event: InputEvent) -> bool:
 func draw_on() -> void:
 	if not is_instance_valid(viewport): return
 	panel.draw_texture_rect(viewport.get_texture(),Rect2(_screen_rect.position+_render_offset,_screen_rect.size),false)
+	if panel.spec.get("conversation_mode",false) and panel.spec.get("text_channel","") == "dialogue":
+		var actor: Node3D = lead if panel.spec.get("actor","lead") == "lead" or not is_instance_valid(npc) else npc
+		var head: Vector3 = actor.global_position+camera.global_basis.y*(actor.height+0.13)
+		var at := _screen_rect.position+_render_offset+camera.unproject_position(head)/Vector2(viewport.size)*_screen_rect.size
+		panel.draw_circle(at,4,Color("efbd76"))
+		panel.draw_string(InkTheme.font_body(),at+Vector2(8,4),str(panel.spec.get("speaker_label","")),HORIZONTAL_ALIGNMENT_LEFT,90,12,Color("ffe2a0"))
 	if panel.spec.has("pixel_interaction"):
 		var words: String = panel.spec.pixel_interaction.get("label","观察")
 		if interacted: words = "✓ 已观察 · "+words

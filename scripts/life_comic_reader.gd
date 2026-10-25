@@ -4,6 +4,9 @@ const Run := preload("res://scripts/life_comic_run.gd")
 const Pages := preload("res://scripts/life_comic_pages.gd")
 const Page := preload("res://scripts/comic_page.gd")
 const ThemeKit := preload("res://scripts/comic_theme.gd")
+const Conversation := preload("res://scripts/scene_conversation.gd")
+var conversation: Control
+var conversation_page: Dictionary = {}
 var run = Run.new()
 var scroll: ScrollContainer
 var strip: VBoxContainer
@@ -134,6 +137,9 @@ func refresh() -> void:
 		for i in range(options.size()):
 			var choice_button := button(actions,str(options[i]),select.bind(i))
 			choice_button.name = "Choice_"+str(i)
+	if not run.s.pages.is_empty():
+		var talk_button := button(actions,"人物对话 · 逐句观看",open_conversation)
+		talk_button.name = "SceneConversation"
 	var exploring := _find_stage_panel("pixel_interaction")
 	if exploring != null and run.s.committed.is_empty() and run.s.terminal.is_empty():
 		var explore_button := button(actions,"◇ "+str(exploring.spec.pixel_interaction.get("label","观察现场")),explore_scene)
@@ -166,6 +172,25 @@ func _find_stage_panel(key: String) -> Control:
 		for p in page.panels:
 			if p.spec.has(key): return p
 	return null
+
+func open_conversation() -> void:
+	if is_instance_valid(conversation) or run.s.pages.is_empty(): return
+	var page: Dictionary = run.s.pages[-1]
+	conversation_page = page
+	var sequence := page.duplicate(true)
+	if page.get("result",false):
+		for earlier in run.s.pages:
+			if earlier.get("event_id","") == page.get("event_id","") and earlier.get("age",-1) == page.get("age",-1) and not earlier.get("result",false):
+				sequence["panels"] = earlier.panels.duplicate(true)+page.panels.duplicate(true)
+				break
+	conversation = Conversation.new()
+	conversation.configure(sequence)
+	strip.hide()
+	conversation.finished.connect(func(progress):
+		page["conversation_progress"] = progress
+		strip.show()
+		autosave())
+	add_child(conversation)
 
 func explore_scene() -> void:
 	var p := _find_stage_panel("pixel_interaction")
@@ -210,6 +235,8 @@ func advance() -> void:
 	refresh()
 
 func autosave() -> void:
+	if is_instance_valid(conversation) and not conversation_page.is_empty():
+		conversation_page["conversation_progress"] = conversation.snapshot()
 	if save_enabled: run.save(save_path)
 
 func restore_scroll() -> void:
