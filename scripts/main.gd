@@ -8,6 +8,7 @@ const DataLoader := preload("res://scripts/data_loader.gd")
 const ComicDirector := preload("res://scripts/comic_director.gd")
 const ComicPage := preload("res://scripts/comic_page.gd")
 const ComicTheme := preload("res://scripts/comic_theme.gd")
+const AudioFX := preload("res://scripts/audio_fx.gd")
 const CrtOverlay := preload("res://scripts/crt_overlay.gd")
 const ComicArchive := preload("res://scripts/comic_archive.gd")
 
@@ -461,6 +462,7 @@ func _render_montage(ev: Dictionary) -> void:
 
 ## 选择后的结果页
 func _render_result(ev: Dictionary, c: Dictionary) -> void:
+	AudioFX.play(self, "result", 1.0, -3.0)
 	_after_choice = true
 	var s := gc.state
 	_strip_begin()
@@ -624,6 +626,8 @@ func _ink_choice_btn(c: Dictionary, s: GameState) -> Button:
 	for property in b.get_property_list():
 		if str(property.name) == "autowrap_mode": b.set("autowrap_mode", TextServer.AUTOWRAP_WORD_SMART)
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.mouse_entered.connect(func():
+		if not b.disabled: AudioFX.play(self, "move", 1.0, -5.0))
 	b.add_theme_font_override("font", ComicTheme.font_body())
 	b.add_theme_font_size_override("font_size", 14)
 	var col := ComicTheme.CREAM
@@ -779,6 +783,7 @@ func _set_footer(t: String) -> void:
 # 结局页
 # ==========================================================
 func _on_game_ended(s: GameState, ending: Dictionary, info: Dictionary) -> void:
+	AudioFX.play(self, "ending", 1.0, -2.0)
 	if not _skipped.is_empty():
 		_page_no += 1
 		_append_life_page(ComicDirector.build_montage(s, _skipped, gc.rng, _page_no), 470)

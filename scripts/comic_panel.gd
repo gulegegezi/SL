@@ -3,6 +3,7 @@
 extends Control
 
 const T := preload("res://scripts/comic_theme.gd")
+const AudioFX := preload("res://scripts/audio_fx.gd")
 const Art := preload("res://scripts/comic_art.gd")
 const SemanticPlan := preload("res://scripts/comic_performance.gd")
 const Interaction := preload("res://scripts/comic_interaction.gd")
@@ -48,6 +49,7 @@ var _impact_left := 0.0
 var _full_text := ""
 var _base_ink := ""
 var _weather := ""
+var _sfx_gate := 0.0
 
 func _ready() -> void:
 	# Godot enables an overridden _process when entering the tree. Respect the
@@ -141,6 +143,7 @@ func _process(delta: float) -> void:
 		if interaction_amount >= 1: complete_interaction()
 	_age += delta
 	_moment_age += delta
+	_sfx_gate = maxf(0.0, _sfx_gate - delta)
 	_impact_left = maxf(0, _impact_left - delta)
 	if _hold > 0:
 		_hold -= delta
@@ -161,6 +164,10 @@ func _process(delta: float) -> void:
 			if _hold > 0: break
 			var ch := _full_text.substr(visible_characters, 1)
 			visible_characters += 1
+			# 逐字音：标点与空白不出声，并做 55ms 节流，避免一页几十个音叠在一起
+			if _sfx_gate <= 0.0 and ch.strip_edges() != "" and ch not in ["。", "！", "？", "…", "，", "；"]:
+				_sfx_gate = 0.055
+				AudioFX.speak(self, str(spec.get("actor", "lead")) != "lead")
 			_next_token += 0.22 if ch in ["。", "！", "？", "…"] else (0.10 if ch in ["，", "；", "\n"] else 0.025)
 	if visible_characters >= _full_text.length() and _moment_age >= Motion.DURATION and _impact_left <= 0 and not interaction_holding and _interaction_clock >= Motion.DURATION:
 		set_process(false)

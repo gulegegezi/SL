@@ -9,6 +9,7 @@ var interactions_enabled := true:
 		for panel in panels: panel.interactions_enabled = value
 
 const T := preload("res://scripts/comic_theme.gd")
+const AudioFX := preload("res://scripts/audio_fx.gd")
 const PanelScript := preload("res://scripts/comic_panel.gd")
 const Art := preload("res://scripts/comic_art.gd")
 
@@ -144,6 +145,7 @@ func reveal_panels(step: float = 0.08) -> void:
 		p.set_revealed(false)
 	_revealing = true
 	_reveal_clock = 0.0
+	AudioFX.play(self, "page", 1.0, -3.0)
 	set_process(true)
 
 func _process(delta: float) -> void:
