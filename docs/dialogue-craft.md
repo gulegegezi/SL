@@ -159,6 +159,9 @@ godot --headless --path . --script res://test/dialogue_rhythm_smoke.gd
 | 其它 | 1 | 默认 |
 | 显式 `aside_count` | 0–3 | 数据覆盖 |
 
+**导出里也会出现**：`tools/export_story_docx.py` 会按同一套规则把旁白插进对白之间，
+标成 `★ 旁白插入(第 N 句后 · T档)：…`，所以 Word 里能看到“哪句之后插了哪句旁白”。
+
 **插在哪**：优先看数据里的 `aside_plan`：
 
 ```json
