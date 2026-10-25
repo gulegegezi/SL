@@ -139,6 +139,23 @@ godot --headless --path . --script res://test/dialogue_rhythm_smoke.gd
 # PASS: speaker cadence and interruption marker helpers
 ```
 
+## 五·六、旁白插拍
+
+对白之间不能只剩对白。页面生成时会取该事件 `narrator_asides[tier]` 的一句，
+插在**第二句对白之后**（`life_comic_pages.make`），所以一页的节奏是：
+
+> 开场旁白 → 对白 1 → 对白 2 → **旁白一句** → 对白 3 …… → 收尾
+
+旁白按抽象度档位取不同的一句：同一段剧情，抽象度高的玩家看到的是另一种吐槽。
+没有对白的事件不插（保持原来的旁白—选择结构）。
+
+回归测试：
+
+```bash
+godot --headless --path . --script res://test/narration_aside_smoke.gd
+# PASS: narration asides between dialogue turns
+```
+
 ## 六、没做的
 
 - 口癖还没有做成数据表（现在靠用词区分：爸爸“我自己来”、妈妈“先……再说”、老师“算/不算”）；
