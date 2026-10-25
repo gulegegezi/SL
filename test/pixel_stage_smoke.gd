@@ -30,7 +30,9 @@ func run_test() -> void:
 	verify(p.pixel_stage != null and is_instance_valid(p.pixel_stage.viewport),"visible panel owns real 3D viewport")
 	verify(p.pixel_stage.lead is Node3D and p.pixel_stage.camera is Camera3D,"actor staged in real 3D world")
 	verify(p.pixel_stage.lead.sprite is Sprite3D and p.pixel_stage.npc.sprite is Sprite3D,"lead and NPC use flat 2D artwork")
-	verify(p.pixel_stage.lead.find_children("*","MeshInstance3D",true,false).is_empty(),"no voxel body geometry in character")
+	var body_meshes: Array = p.pixel_stage.lead.find_children("*","MeshInstance3D",true,false).filter(
+		func(mesh): return not str(mesh.name).contains("ContactShadow"))
+	verify(body_meshes.is_empty(),"no voxel body geometry in character (contact shadow is allowed)")
 	verify(p.pixel_stage.lead.sprite.global_basis.z.dot(p.pixel_stage.camera.global_basis.z) > 0.999,"sprite faces the cinematic camera")
 	verify(p.pixel_stage.viewport.size.x <= 320,"bounded pixel resolution")
 	var ratio: Vector2 = p.pixel_stage._screen_rect.size/Vector2(p.pixel_stage.viewport.size)

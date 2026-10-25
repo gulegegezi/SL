@@ -58,8 +58,53 @@ static func build(scene: String, variant: String = "day") -> Node3D:
 	root.set_meta("mesh_count", mesh_count)
 	return root
 
-static func _material(context: Dictionary, color: Color, glow: float = 0.0) -> StandardMaterial3D:
-	var key := color.to_html() + ":" + str(glow)
+
+# ==========================================================
+# 程序化材质：给方块加一层像素细节，去掉「塑料玩具」的平涂感
+# 32x32、最近邻采样、随材质缓存
+# ==========================================================
+static var _textures: Dictionary = {}
+
+
+static func _detail_texture(kind: String) -> Texture2D:
+	if _textures.has(kind):
+		return _textures[kind]
+	var size := 32
+	var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for y in range(size):
+		for x in range(size):
+			var n := float((x * 73 + y * 151 + x * y * 7) % 97) / 97.0
+			var shade := 1.0
+			match kind:
+				"floor":
+					# 砖缝：每 16 像素一条
+					if x % 16 == 0 or y % 16 == 0:
+						shade = 0.80
+					else:
+						shade = 0.96 + n * 0.08
+				"wall":
+					# 竖向抹灰痕
+					shade = 0.93 + n * 0.10
+					if x % 8 == 0:
+						shade *= 0.95
+				"wood":
+					# 横向木纹 + 偶发深色结
+					shade = 0.94 + n * 0.09
+					if y % 6 == 0:
+						shade *= 0.93
+					if (x * 3 + y * 5) % 61 == 0:
+						shade *= 0.82
+				_:
+					shade = 1.0
+			var v: int = clampi(int(255.0 * shade), 0, 255)
+			image.set_pixel(x, y, Color8(v, v, v, 255))
+	var texture := ImageTexture.create_from_image(image)
+	_textures[kind] = texture
+	return texture
+
+
+static func _material(context: Dictionary, color: Color, glow: float = 0.0, detail: String = "") -> StandardMaterial3D:
+	var key := color.to_html() + ":" + str(glow) + ":" + detail
 	var materials: Dictionary = context["materials"]
 	if materials.has(key):
 		return materials[key]
@@ -67,6 +112,9 @@ static func _material(context: Dictionary, color: Color, glow: float = 0.0) -> S
 	material.albedo_color = color
 	material.roughness = 0.93
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	if not detail.is_empty():
+		material.albedo_texture = _detail_texture(detail)
+		material.uv1_scale = Vector3(1.0, 1.0, 1.0)
 	if glow > 0.0:
 		material.emission_enabled = true
 		material.emission = color
@@ -74,13 +122,13 @@ static func _material(context: Dictionary, color: Color, glow: float = 0.0) -> S
 	materials[key] = material
 	return material
 
-static func _box(context: Dictionary, label: String, position: Vector3, dimensions: Vector3, color: Color, glow: float = 0.0) -> MeshInstance3D:
+static func _box(context: Dictionary, label: String, position: Vector3, dimensions: Vector3, color: Color, glow: float = 0.0, detail: String = "") -> MeshInstance3D:
 	var piece := MeshInstance3D.new()
 	piece.name = label
 	var mesh := BoxMesh.new()
 	mesh.size = dimensions
 	piece.mesh = mesh
-	piece.material_override = _material(context, color, glow)
+	piece.material_override = _material(context, color, glow, detail)
 	piece.position = position
 	context["root"].add_child(piece)
 	return piece
@@ -93,6 +141,8 @@ static func _ground(context: Dictionary, outdoors: bool) -> void:
 	var tile_material := StandardMaterial3D.new()
 	tile_material.vertex_color_use_as_albedo = true
 	tile_material.roughness = 1.0
+	tile_material.albedo_texture = _detail_texture("floor")
+	tile_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	tile_mesh.material = tile_material
 	var tiles := MultiMesh.new()
 	tiles.transform_format = MultiMesh.TRANSFORM_3D
@@ -118,8 +168,8 @@ static func _ground(context: Dictionary, outdoors: bool) -> void:
 
 static func _architecture(context: Dictionary, scene: String, variant: String) -> void:
 	var p: Dictionary = context["colors"]
-	_box(context, "BackWall", Vector3(0, 1.6, -2.8), Vector3(9, 3.2, 0.20), p.wall)
-	_box(context, "LeftReturnWall", Vector3(-4.4, 1.6, -1.0), Vector3(0.2, 3.2, 3.6), p.wall.darkened(0.15))
+	_box(context, "BackWall", Vector3(0, 1.6, -2.8), Vector3(9, 3.2, 0.20), p.wall, 0.0, "wall")
+	_box(context, "LeftReturnWall", Vector3(-4.4, 1.6, -1.0), Vector3(0.2, 3.2, 3.6), p.wall.darkened(0.15), 0.0, "wall")
 	_box(context, "BackSkirting", Vector3(0, 0.16, -2.66), Vector3(8.8, 0.24, 0.08), p.shadow)
 	_box(context, "LeftSkirting", Vector3(-4.26, 0.16, -1.0), Vector3(0.08, 0.24, 3.6), p.shadow)
 	_box(context, "BackCornice", Vector3(0, 3.10, -2.62), Vector3(8.8, 0.13, 0.19), p.ink)
@@ -143,7 +193,7 @@ static func _architecture(context: Dictionary, scene: String, variant: String) -
 
 static func _table(context: Dictionary, center: Vector3, width: float = 1.8, depth: float = 0.8) -> void:
 	var p: Dictionary = context["colors"]
-	_box(context, "TableTop", center + Vector3(0, 0.82, 0), Vector3(width, 0.12, depth), p.wood)
+	_box(context, "TableTop", center + Vector3(0, 0.82, 0), Vector3(width, 0.12, depth), p.wood, 0.0, "wood")
 	for dx in [-1.0, 1.0]:
 		for dz in [-1.0, 1.0]:
 			_box(context, "TableLeg", center + Vector3(dx * (width * 0.5 - 0.11), 0.38, dz * (depth * 0.5 - 0.11)), Vector3(0.10, 0.76, 0.10), p.shadow)
@@ -325,6 +375,15 @@ static func _lighting(context: Dictionary, variant: String, outdoors: bool) -> v
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = p.sky
 	environment.ambient_light_energy = 0.33 if variant == "night" else 0.37
+	# 深度雾：按实际 3D 距离衰减（屏幕空间做不到的真景深线索）
+	environment.fog_enabled = true
+	environment.fog_mode = Environment.FOG_MODE_DEPTH
+	environment.fog_light_color = p.fog.lerp(p.sky, 0.30)
+	environment.fog_density = 0.18 if outdoors else 0.10
+	environment.fog_depth_begin = 4.5 if outdoors else 6.0
+	environment.fog_depth_end = 13.0 if outdoors else 12.0
+	environment.fog_depth_curve = 1.4
+	environment.fog_sky_affect = 0.12
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	environment.tonemap_exposure = 0.84
 	world.environment = environment
@@ -472,17 +531,17 @@ static func _linear_texture() -> GradientTexture2D:
 	return texture
 
 
-## 叠加用的自发光材质：颜色 × 强度，黑边等于不添加
-static func _additive_material(texture: Texture2D, color: Color, intensity: float) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	material.albedo_texture = texture
-	material.albedo_color = Color(color.r * intensity, color.g * intensity, color.b * intensity, 1.0)
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.disable_receive_shadows = true
-	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+## 柔光材质：径向/线性衰减在着色器里算，不依赖贴图 ——
+## 之前用 GradientTexture2D 配加法混合，整块 quad 会被原样加上去，地面出现纯白方块。
+const SOFT_LIGHT := preload("res://shaders/soft_light.gdshader")
+
+
+static func _soft_light_material(color: Color, intensity: float, shape: int) -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = SOFT_LIGHT
+	material.set_shader_parameter("tint", color)
+	material.set_shader_parameter("intensity", intensity)
+	material.set_shader_parameter("shape", shape)
 	return material
 
 
@@ -493,7 +552,7 @@ static func _light_pool(context: Dictionary, center: Vector3, radius: float, col
 	var piece := MeshInstance3D.new()
 	piece.name = "FloorLightPool"
 	piece.mesh = quad
-	piece.material_override = _additive_material(_radial_texture(), color, 1.0)
+	piece.material_override = _soft_light_material(color, 0.24, 0)
 	piece.rotation_degrees = Vector3(-90, 0, 0)
 	piece.position = Vector3(center.x, 0.035, center.z)
 	piece.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -507,36 +566,11 @@ static func _light_shaft(context: Dictionary, from: Vector3, size: Vector2, tilt
 	var piece := MeshInstance3D.new()
 	piece.name = "WindowLightShaft"
 	piece.mesh = quad
-	piece.material_override = _additive_material(_linear_texture(), color, 1.0)
+	piece.material_override = _soft_light_material(color, 0.30, 1)
 	piece.rotation_degrees = Vector3(0, 0, tilt)
 	piece.position = from
 	piece.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	context["root"].add_child(piece)
-
-
-## 浮尘：慢速漂浮的小点，给静止画面一点呼吸
-static func _dust(context: Dictionary, center: Vector3, extents: Vector3, color: Color, amount: int) -> void:
-	var mote := BoxMesh.new()
-	mote.size = Vector3(0.022, 0.022, 0.022)
-	var particles := CPUParticles3D.new()
-	particles.name = "DustMotes"
-	particles.mesh = mote
-	particles.material_override = _additive_material(null, color, 1.0)
-	particles.amount = amount
-	particles.lifetime = 7.0
-	particles.preprocess = 3.0
-	particles.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
-	particles.emission_box_extents = extents
-	particles.position = center
-	particles.gravity = Vector3(0, 0.012, 0)
-	particles.initial_velocity_min = 0.02
-	particles.initial_velocity_max = 0.06
-	particles.scale_amount_min = 0.6
-	particles.scale_amount_max = 1.4
-	particles.direction = Vector3(0.2, 1, 0.1)
-	particles.spread = 60.0
-	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	context["root"].add_child(particles)
 
 
 static func _atmosphere(context: Dictionary, variant: String, scene: String) -> void:
@@ -560,7 +594,6 @@ static func _atmosphere(context: Dictionary, variant: String, scene: String) -> 
 			-16.0 if scene != "classroom" else -20.0, Color(p.light, 1.0) * (0.10 if not night else 0.15))
 	# 浮尘：只在有光的地方飘
 	if scene == "park":
-		_dust(context, Vector3(0.6, 1.05, -0.6), Vector3(3.4, 0.9, 1.6), Color(p.light, 0.35), 26)
 		# 飘絮 + 少量落叶；夜里换成萤火
 		Fx.pollen(context["root"], Vector3(0.4, 0.9, 0.2), Vector3(4.2, 1.1, 2.2), Color(p.light, 0.45), 44)
 		Fx.leaves(context["root"], Vector3(0.4, 2.0, 0.4), Vector3(4.0, 0.8, 2.0), p.leaf.lightened(0.22), 9)
@@ -568,7 +601,6 @@ static func _atmosphere(context: Dictionary, variant: String, scene: String) -> 
 			Fx.fireflies(context["root"], Vector3(0.6, 0.9, 0.3), Vector3(3.6, 0.8, 2.0),
 				Color(1.0, 0.93, 0.62, 0.9), 18)
 	else:
-		_dust(context, Vector3(-1.4, 1.10, -0.9), Vector3(2.2, 0.8, 1.2), Color(p.light, 0.52), 34)
 		# 窗口附近再补一层更细的尘，让光柱里「有东西在动」
 		Fx.dust(context["root"], Vector3(-1.05, 1.15, -1.15), Vector3(1.5, 0.7, 0.9),
 			Color(p.light, 0.34), 24)

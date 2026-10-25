@@ -70,3 +70,46 @@ godot --headless --path . --script res://test/comic_smoke.gd
 - 人物只有有限方向的姿势图，没有八方向动画；轮廓光是靠灯而不是描边 shader。
 - 景深是屏幕空间近似，没有按 3D 深度取样——所以「远处的树」和「近处的树」虚化程度一样。
 - 场景仍是方块搭建（BoxMesh），没有贴图材质。要做到《风来之国》那种手绘厚度，需要给地台加 UV 贴图与法线。
+
+---
+
+## 六、第二轮：材质细节 / 深度雾 / 柔光着色器
+
+### 材质
+`_detail_texture()` 在运行时用 `Image.create(32,32)` 生成三种可平铺的灰度细节，最近邻采样：
+
+| 种类 | 图案 | 用在哪 |
+| --- | --- | --- |
+| `floor` | 16px 砖缝 + 轻微噪点 | 地砖（MultiMesh 的 vertex color 负责染色） |
+| `wall` | 竖向抹灰痕（每 8px 一道） | 背墙、侧墙 |
+| `wood` | 横向木纹（每 6px）+ 偶发深色结 | 桌面 |
+
+不引入二进制资源，随工程走；`_material()` 按 `颜色:辉光:材质` 缓存，不会重复建材质。
+
+### 深度雾（真·距离线索）
+`Environment.fog_mode = FOG_MODE_DEPTH`，室内 `density 0.10 / begin 6.0 / end 12.0`，
+室外 `0.18 / 4.5 / 13.0`。
+
+**坑**：一开始把 `end` 设成 7.2，而后墙离相机大约 8 个单位 —— 整面墙被雾洗成一片白，
+看起来像窗户过曝。雾的 `end` 必须大于「最远的可见表面」，否则它会把场景吃掉。
+
+### 柔光着色器 `shaders/soft_light.gdshader`
+地面光池、窗光柱、浮尘共用一个 spatial shader：`shape=0` 用 `length(uv*2-1)` 算径向衰减，
+`shape=1` 用 UV.y 算竖向衰减，`blend_add` 叠加。
+
+**为什么换成着色器**：`GradientTexture2D` 配 `BLEND_MODE_ADD` 时，整块 quad 会被原样加上去，
+地面上出现两块纯白方块；换成着色器后衰减写在 `ALBEDO` 里，黑色自然等于不添加。
+
+### 关于「真 3D 景深」
+试过在 canvas_item 后处理里取深度：`hint_depth_texture` **不支持 canvas_item shader**，
+编译直接失败。而 Compatibility 渲染器没有内置 DOF。
+所以景深保持**屏幕空间移轴**——这恰好也是《八方旅人》的做法（固定机位 + 竖向模糊带），
+真正的距离感改由上面的深度雾补上。
+
+### 与并行提交的去重
+`699c89a`（多光源分层 + 体积光柱 + 空气粒子 + 接地影）已经提供 `pixel_fx_3d.gd`
+（`dust/pollen/leaves/fireflies`、`contact_shadow`、`breathe`）。
+本次删掉了自己写的浮尘，统一走 `Fx.*`；光池、材质、雾、前景、分级预设不重叠，保留。
+
+另：`pixel_stage_smoke` 里「角色不能有 MeshInstance3D」这条断言已被接地影打破，
+改成排除 `ContactShadow` 之后再判空 —— 不变量（没有体素身体）仍然成立。
