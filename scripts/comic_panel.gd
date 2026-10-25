@@ -296,6 +296,37 @@ func _draw() -> void:
 
 # ----------------------------------------------------------
 ## 纯文本叙事：大字号、宽行距、引文用红杠，不用 3D
+## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
+func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) -> void:
+	var f := T.font_body()
+	var size: int = 16 if r.size.x >= 300 else 14
+	var pad := 12.0
+	var inner_w: float = r.size.x - 16.0 - pad * 2
+	var body := text
+	var speaker := ""
+	if not bubble.is_empty():
+		var at := bubble.find("：")
+		if at > 0:
+			speaker = bubble.left(at)
+			body = text + (char(10) if not text.is_empty() else "") + bubble.substr(at + 1)
+		else:
+			body = text + (char(10) if not text.is_empty() else "") + bubble
+	var lines := _wrap_lines_manual(body, inner_w, size)
+	var line_h: float = size + 8.0
+	var h: float = minf(r.size.y * 0.62, lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0))
+	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - h, r.size.x - 16.0, h)
+	draw_rect(box, Color(T.INK, 0.90))
+	draw_rect(box, Color(T.CREAM, 0.85), false, 1.5)
+	var y: float = box.position.y + pad + size
+	if not speaker.is_empty():
+		draw_string(f, Vector2(box.position.x + pad, y), speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, size - 2, T.ACCENT)
+		y += size + 4
+	var max_lines: int = int((box.size.y - pad * 2 - (18.0 if not speaker.is_empty() else 0.0)) / line_h)
+	for i in range(mini(lines.size(), max_lines)):
+		draw_string(f, Vector2(box.position.x + pad, y), lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, size, T.CREAM)
+		y += line_h
+
+
 func _draw_text_page(r: Rect2, dark: bool) -> void:
 	var f := T.font_body()
 	var big := T.font_big()
@@ -562,6 +593,9 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		shown_cap += "\n"+discovery
 	var dialogue := Dialogue.copy(bub,maxi(0,visible_characters-caption_length-1),str(spec.get("speaker_label","")))
 	var shown_bub := str(dialogue.shown)
+	if str(spec.get("box", "")) == "dialogue":
+		_draw_dialogue_box(r, shown_cap, shown_bub, cap)
+		return
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))
 	var pad := 8.0

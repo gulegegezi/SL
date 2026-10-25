@@ -122,10 +122,9 @@ static func make(run, result: bool = false) -> Dictionary:
 	for p in panels: p["pixel_variant"] = special.get("variant","quiet" if str(e.id).begins_with("RX") else "day")
 	if not special.is_empty(): panels[0]["pixel_cg"] = special
 	if bool(e.get("text_only", false)):
+		# 长文本仍然用分格 + 对话框，不切成文本页
 		for i in range(panels.size()):
-			panels[i]["presentation"] = "text"
-			if i == 0:
-				panels[i]["heading"] = str(e.get("title", ""))
+			panels[i]["box"] = "dialogue"
 			panels[i].erase("pixel_cg")
 			panels[i].erase("pixel_interaction")
 	if not result:
@@ -191,9 +190,7 @@ static func upgrade_legacy(spec: Dictionary) -> Dictionary:
 	if int(spec.get("dialogue_version",0)) >= 2:
 		var staged := spec.duplicate(true)
 		for p in staged.get("panels",[]):
-			if bool(staged.get("text_only", false)):
-				p["presentation"] = "text"
-			elif not str(p.get("ink","")).is_empty(): p["presentation"] = "pixel3d"
+			if not str(p.get("ink","")).is_empty(): p["presentation"] = "pixel3d"
 		if not staged.get("panels",[]).is_empty():
 			var id: String = staged.get("event_id","")
 			var special: Dictionary = PixelDirection.cg(id,bool(staged.get("result",false)))

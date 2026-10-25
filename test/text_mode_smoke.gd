@@ -1,5 +1,5 @@
 extends SceneTree
-## 纯文本叙事回归：LC29/30 必须是文本页，且文本量足够大。
+## 对话框回归：LC29/30 保持分格 + 对话框，文本量足够大。
 
 const Run := preload("res://scripts/life_comic_run.gd")
 const Pages := preload("res://scripts/life_comic_pages.gd")
@@ -24,12 +24,11 @@ func run() -> void:
 	for eid in ["LC29", "LC30"]:
 		var run = _new_run(eid)
 		var page: Dictionary = Pages.make(run)
-		assert(bool(page.get("text_only", false)), eid + " 应是纯文本页")
-		assert(str(page.panels[0].get("presentation", "")) == "text", eid + " 首页应是 text")
-		assert(not str(page.panels[0].get("heading", "")).is_empty(), eid + " 文本页要有标题")
+		assert(bool(page.get("text_only", false)), eid + " 应是长文本页")
 		var chars := 0
 		for p in page.panels:
-			assert(str(p.get("presentation", "")) == "text", eid + " 每一格都应是文本")
+			assert(str(p.get("box", "")) == "dialogue", eid + " 每一格都应是对话框")
+			assert(str(p.get("presentation", "")) != "text", eid + " 不应切成纯文本页")
 			chars += str(p.get("caption", "")).length()
 		assert(chars >= 120, eid + " 文本量太少：%d 字" % chars)
 
@@ -37,5 +36,5 @@ func run() -> void:
 	var other = _new_run("LC01")
 	assert(str(Pages.make(other).panels[0].get("presentation", "")) != "text", "普通页不应变成文本页")
 
-	print("PASS: text-only pages LC29/LC30 carry enough text")
+	print("PASS: LC29/LC30 keep dialogue boxes and carry enough text")
 	quit()
