@@ -149,6 +149,11 @@ static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
 		return
 	if int(run.s.age) > FIRST_HALF_AGE:
 		return
+	var has_dialogue := false
+	for probe in panels:
+		if str(probe.get("text_channel", "")) == "dialogue":
+			has_dialogue = true
+			break
 	for p in panels:
 		if str(p.get("action", "idle")) != "idle":
 			continue
@@ -165,7 +170,7 @@ static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
 		var colon := speech.find("：")
 		if colon >= 0:
 			speech = speech.substr(colon + 1)
-		if speech.is_empty():
+		if speech.is_empty() and not has_dialogue:
 			speech = str(e.get("npc_dialogue", ""))
 			var c2 := speech.find("：")
 			if c2 >= 0:

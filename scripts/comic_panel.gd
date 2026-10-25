@@ -296,12 +296,33 @@ func _draw() -> void:
 
 # ----------------------------------------------------------
 ## 纯文本叙事：大字号、宽行距、引文用红杠，不用 3D
+## 说话人 → 立绘 key。「妈妈」「爸爸」这类中文称谓按角色映射，
+## 映射不到就用格子的 support / ink 兜底。
+static func speaker_key(speaker: String, spec: Dictionary) -> String:
+	var table := {
+		"你": str(spec.get("ink", "lead_adult")), "我": str(spec.get("ink", "lead_adult")),
+		"妈妈": "npc_parent", "母亲": "npc_parent",
+		"爸爸": "npc_mate", "父亲": "npc_mate",
+		"老师": "npc_teacher", "班主任": "npc_teacher",
+		"同桌": "npc_friend", "同学": "npc_friend", "朋友": "npc_friend", "老同学": "npc_friend",
+		"室友": "npc_friend", "熟人": "npc_friend",
+		"医生": "npc_teacher", "管理员": "npc_teacher",
+		"老板": "npc_boss", "同事": "npc_boss",
+		"伴侣": "npc_partner", "对方": "npc_partner",
+	}
+	if table.has(speaker):
+		return str(table[speaker])
+	var support := str(spec.get("support", ""))
+	if support.begins_with("npc_"):
+		return support
+	return str(spec.get("ink", "lead_adult"))
+
+
 ## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
 func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) -> void:
 	var f := T.font_body()
 	var size: int = 16 if r.size.x >= 300 else 14
 	var pad := 12.0
-	var inner_w: float = r.size.x - 16.0 - pad * 2
 	var body := text
 	var speaker := ""
 	if not bubble.is_empty():
@@ -311,19 +332,40 @@ func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) 
 			body = text + (char(10) if not text.is_empty() else "") + bubble.substr(at + 1)
 		else:
 			body = text + (char(10) if not text.is_empty() else "") + bubble
-	var lines := _wrap_lines_manual(body, inner_w, size)
+	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
+	var portrait: Texture2D = null
+	if not speaker.is_empty() and speaker != "旁白":
+		var key := speaker_key(speaker, spec)
+		if not key.is_empty():
+			portrait = Art.portrait(key, 0)
+	var face_h := 0.0
+	var face_w := 0.0
+	if portrait != null:
+		face_h = clampf(r.size.y * 0.46, 96.0, 190.0)
+		var ts := portrait.get_size()
+		face_w = minf(face_h * (ts.x / maxf(1.0, ts.y)), r.size.x * 0.36)
+		face_h = minf(face_h, face_w * (ts.y / maxf(1.0, ts.x)))
+	var text_w: float = r.size.x - 16.0 - pad * 2 - (face_w + 12.0 if portrait != null else 0.0)
+	var lines := _wrap_lines_manual(body, text_w, size)
 	var line_h: float = size + 8.0
-	var h: float = minf(r.size.y * 0.62, lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0))
+	var text_h: float = lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0)
+	var h: float = minf(r.size.y * 0.72, maxf(text_h, face_h + pad * 2))
 	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - h, r.size.x - 16.0, h)
 	draw_rect(box, Color(T.INK, 0.90))
 	draw_rect(box, Color(T.CREAM, 0.85), false, 1.5)
+	var text_x: float = box.position.x + pad
+	if portrait != null:
+		var dest := Rect2(box.position.x + pad, box.end.y - pad - face_h, face_w, face_h)
+		draw_texture_rect(portrait, dest, false)
+		draw_rect(dest, Color(T.CREAM, 0.35), false, 1.0)
+		text_x = dest.end.x + 12.0
 	var y: float = box.position.y + pad + size
 	if not speaker.is_empty():
-		draw_string(f, Vector2(box.position.x + pad, y), speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, size - 2, T.ACCENT)
+		draw_string(f, Vector2(text_x, y), speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, size - 2, T.ACCENT)
 		y += size + 4
 	var max_lines: int = int((box.size.y - pad * 2 - (18.0 if not speaker.is_empty() else 0.0)) / line_h)
 	for i in range(mini(lines.size(), max_lines)):
-		draw_string(f, Vector2(box.position.x + pad, y), lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, size, T.CREAM)
+		draw_string(f, Vector2(text_x, y), lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, size, T.CREAM)
 		y += line_h
 
 
@@ -593,7 +635,7 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		shown_cap += "\n"+discovery
 	var dialogue := Dialogue.copy(bub,maxi(0,visible_characters-caption_length-1),str(spec.get("speaker_label","")))
 	var shown_bub := str(dialogue.shown)
-	if str(spec.get("box", "")) == "dialogue":
+	if str(spec.get("box", "")) == "dialogue" or (str(spec.get("text_channel", "")) == "dialogue" and not bub.is_empty()):
 		_draw_dialogue_box(r, shown_cap, shown_bub, cap)
 		return
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))

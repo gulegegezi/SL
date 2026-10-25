@@ -5,6 +5,8 @@
 
 ![对话框分格](dialogue-box/lc29.png)
 
+![说话人半身像在对话框左侧](dialogue-box/portrait.png)
+
 ## 一、保持什么
 
 - 每一格仍然是 **3D 舞台 / 立绘 + 墨框**；
@@ -23,6 +25,19 @@
 | 行距 | 字号 + 8 |
 | 上限 | 最多占格子高度 62%，超出按行截断（页面会先估高，正常不会截） |
 | 说话人 | 若对白是「名字：台词」，名字用红色小字放在框内第一行 |
+
+## 二·五、说话人半身像（参考 Undertale）
+
+人物说话时，把**半身像放在对话框左侧**，文字在右侧：
+
+- 立绘来源：`assets/comic_city/lead.png` / `npc.png`（就是图一那版，7 个年龄段 × 2 姿势）；
+- 说话人 → 立绘 key 的映射在 `comic_panel.speaker_key()`：
+  妈妈→`npc_parent`、爸爸→`npc_mate`、老师/班主任→`npc_teacher`、同桌/同学/朋友→`npc_friend`、
+  你/我→当前年龄的 lead；映射不到就用格子的 `support`，再不行用 `ink`；
+- 半身像高度取格子高度的 46%（96–190px），文字宽度相应让出左侧；
+- 对话框最大占 72% 高度，对白格最小高度 320px，保证脸和字都放得下。
+
+旁白（无说话人）不加立绘，保持纯文字框。
 
 ## 三、容量
 
@@ -50,6 +65,13 @@ godot --headless --path . --script res://test/text_mode_smoke.gd
 
 断言：两页每一格都是 `box == "dialogue"`、都没有被切成 `presentation == "text"`、
 正文合计 ≥120 字。
+
+另有一条立绘回归：
+
+```bash
+godot --headless --path . --script res://test/dialogue_portrait_smoke.gd
+# PASS: speaker mapping and dialogue panels present
+```
 
 ## 六、备注
 

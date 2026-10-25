@@ -80,6 +80,8 @@ func _webtoon_slots() -> Array:
 		var text_length := str(item.get("caption", "")).length() + str(item.get("bubble", "")).length()
 		var columns := maxf(14, (maxf(size.x, 280) - 56) / 15)
 		var extra := maxf(0, ceilf(text_length / columns) - 2) * 21
+		if str(item.get("text_channel","")) == "dialogue":
+			base = maxf(base, 320.0)
 		if item.get("box","") == "dialogue":
 			var dcols := maxf(12.0, (maxf(size.x, 280) - 56.0) / 16.0)
 			extra = maxf(0.0, ceilf(text_length / dcols) - 2.0) * 24.0
