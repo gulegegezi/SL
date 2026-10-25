@@ -4,6 +4,8 @@ const Director := preload("res://scripts/comic_director.gd")
 const PixelDirection := preload("res://scripts/pixel_story_direction.gd")
 const ROLE_ART := {"clinician":"mate","hobby_admin":"teacher","community_teacher":"teacher","neighbor":"friend"}
 const PROPS := {"blanket":"blanket","photo":"photo","flashlight":"flashlight","biscuit":"biscuit","tooth":"tooth","eraser":"eraser","ledger":"book","exam":"contract","notebook":"book","eggs":"eggs","plant":"plant","fridge":"fridge","phone":"phone","bill":"contract","noodles":"meal","report":"contract","key":"key","badge":"badge","bench":"bench","drum":"drum"}
+## 漫画插页只应用到前半生（0–30 岁）
+const FIRST_HALF_AGE := 30
 const ROLE_NAMES := {"parent":"妈妈","mate":"爸爸","friend":"老同学","teacher":"老师","boss":"同事","partner":"伴侣","neighbor":"邻居","clinician":"医生","hobby_admin":"排练室管理员","community_teacher":"培训班老师"}
 static var dialogue_book: Dictionary = {}
 
@@ -116,6 +118,8 @@ static func make(run, result: bool = false) -> Dictionary:
 	for p in panels: p["pixel_variant"] = special.get("variant","quiet" if str(e.id).begins_with("RX") else "day")
 	if not special.is_empty(): panels[0]["pixel_cg"] = special
 	if not result:
+		_apply_insert(run, panels, e)
+	if not result:
 		var action: Dictionary = PixelDirection.interaction(e.id)
 		if not action.is_empty():
 			panels[-1]["pixel_interaction"] = action
@@ -127,6 +131,47 @@ static func make(run, result: bool = false) -> Dictionary:
 				panels[-1]["world_solo"] = false
 	return {"no":run.s.pages.size()+1,"age":run.s.age,"stage":run.pack.rules.tiers[t].name,"title":e.title,
 		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2}
+
+## 前半生里「动作演不出来」的页：改成双格漫画（旁白框 + 气泡 + 立绘）
+static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
+	if int(run.s.age) > FIRST_HALF_AGE:
+		return
+	for p in panels:
+		if str(p.get("action", "idle")) != "idle":
+			continue
+		if p.has("pixel_interaction") or p.has("pixel_cg"):
+			continue
+		var caption := str(p.get("caption", ""))
+		if caption.is_empty() and str(p.get("bubble", "")).is_empty():
+			continue
+		var narrator := caption.trim_prefix("旁白：")
+		if narrator.is_empty():
+			var first_bits := str(e.get("facts", "")).split("。", false)
+			narrator = str(first_bits[0]) + "。" if first_bits.size() > 0 else str(e.get("title", ""))
+		var speech := str(p.get("bubble", ""))
+		var colon := speech.find("：")
+		if colon >= 0:
+			speech = speech.substr(colon + 1)
+		if speech.is_empty():
+			speech = str(e.get("npc_dialogue", ""))
+			var c2 := speech.find("：")
+			if c2 >= 0:
+				speech = speech.substr(c2 + 1)
+		var second := ""
+		var bits := str(e.get("facts", "")).split("。", false)
+		if bits.size() > 1:
+			second = str(bits[1]) + "。"
+		var lead_key := str(p.get("ink", "lead_adult"))
+		var support := str(p.get("support", ""))
+		p["presentation"] = "comic_insert"
+		p["comic_insert"] = {"panels": [
+			{"caption": narrator, "key": lead_key, "bg": "paper", "bg_art": "scene",
+				"scene": str(e.get("scene", "home"))},
+			{"caption": second, "bubble": speech,
+				"key": support if not support.is_empty() and support != "none" else lead_key, "bg": "ink"},
+		]}
+		return
+
 
 static func upgrade_legacy(spec: Dictionary) -> Dictionary:
 	if int(spec.get("dialogue_version",0)) >= 2:

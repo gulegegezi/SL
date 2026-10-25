@@ -75,6 +75,7 @@ func _webtoon_slots() -> Array:
 		var base: float = {"wide": 275.0, "medium": 250.0, "close": 280.0, "extreme": 300.0, "detail": 150.0}.get(shot, 250.0)
 		if item.has("interaction"): base = 380.0
 		if item.get("presentation","") == "pixel3d": base = maxf(base,350.0)
+		if item.get("presentation","") == "comic_insert": base = maxf(base, 360.0)
 		if item.has("pixel_interaction"): base = 430.0
 		var text_length := str(item.get("caption", "")).length() + str(item.get("bubble", "")).length()
 		var columns := maxf(14, (maxf(size.x, 280) - 56) / 15)
