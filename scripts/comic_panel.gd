@@ -12,6 +12,7 @@ const Actor := preload("res://scripts/comic_actor.gd")
 const World := preload("res://scripts/comic_world.gd")
 const PixelStage := preload("res://scripts/pixel_stage_view.gd")
 const ComicInsert := preload("res://scripts/pixel_comic_insert.gd")
+const Dialogue := preload("res://scripts/comic_dialogue.gd")
 var pixel_stage: Node
 signal interacted(progress: Dictionary)
 signal cinematic_finished
@@ -248,7 +249,9 @@ func _draw() -> void:
 	var dark := tone_kind == "black"
 	T.fill(self, r, tone_kind)
 
-	if revealed and spec.has("comic_insert"):
+	if revealed and str(spec.get("presentation", "")) == "text":
+		_draw_text_page(r, dark)
+	elif revealed and spec.has("comic_insert"):
 		ComicInsert.draw(self, r.grow(-8.0), spec.comic_insert)
 	elif revealed:
 		var background := Art.background(str(spec.get("scene", "")))
@@ -293,7 +296,7 @@ func _draw() -> void:
 	if size.x > 120:
 		T.frame(self, r.grow(-7.0), 1.0, 0.5, Color(frame_col, 0.35))
 
-	if revealed and spec.has("comic_insert"):
+	if revealed and (spec.has("comic_insert") or str(spec.get("presentation", "")) == "text"):
 		pass
 	elif revealed:
 		_draw_text(r, dark)
@@ -305,6 +308,130 @@ func _draw() -> void:
 
 
 # ----------------------------------------------------------
+## 纯文本叙事：大字号、宽行距、引文用红杠，不用 3D
+## 说话人 → 立绘 key。「妈妈」「爸爸」这类中文称谓按角色映射，
+## 映射不到就用格子的 support / ink 兜底。
+static func speaker_key(speaker: String, spec: Dictionary) -> String:
+	var table := {
+		"你": str(spec.get("ink", "lead_adult")), "我": str(spec.get("ink", "lead_adult")),
+		"妈妈": "npc_parent", "母亲": "npc_parent",
+		"爸爸": "npc_mate", "父亲": "npc_mate",
+		"老师": "npc_teacher", "班主任": "npc_teacher",
+		"同桌": "npc_friend", "同学": "npc_friend", "朋友": "npc_friend", "老同学": "npc_friend",
+		"室友": "npc_friend", "熟人": "npc_friend",
+		"医生": "npc_teacher", "管理员": "npc_teacher",
+		"老板": "npc_boss", "同事": "npc_boss",
+		"伴侣": "npc_partner", "对方": "npc_partner",
+	}
+	if table.has(speaker):
+		return str(table[speaker])
+	var support := str(spec.get("support", ""))
+	if support.begins_with("npc_"):
+		return support
+	return str(spec.get("ink", "lead_adult"))
+
+
+## 对话框：贴住格子下沿，深底浅字，长旁白都在框里说完
+func _draw_dialogue_box(r: Rect2, text: String, bubble: String, layout: String) -> void:
+	var f := T.font_body()
+	var size: int = 16 if r.size.x >= 300 else 14
+	var pad := 12.0
+	var body := text
+	var speaker := ""
+	if not bubble.is_empty():
+		var at := bubble.find("：")
+		if at > 0:
+			speaker = bubble.left(at)
+			body = text + (char(10) if not text.is_empty() else "") + bubble.substr(at + 1)
+		else:
+			body = text + (char(10) if not text.is_empty() else "") + bubble
+	# 说话人立绘：参考 Undertale，半身像贴对话框左侧
+	var portrait: Texture2D = null
+	if not speaker.is_empty() and speaker != "旁白":
+		var key := speaker_key(speaker, spec)
+		if not key.is_empty():
+			portrait = Art.portrait(key, 0)
+	var face_h := 0.0
+	var face_w := 0.0
+	if portrait != null:
+		face_h = clampf(r.size.y * 0.46, 96.0, 190.0)
+		var ts := portrait.get_size()
+		face_w = minf(face_h * (ts.x / maxf(1.0, ts.y)), r.size.x * 0.36)
+		face_h = minf(face_h, face_w * (ts.y / maxf(1.0, ts.x)))
+	var text_w: float = r.size.x - 16.0 - pad * 2 - (face_w + 12.0 if portrait != null else 0.0)
+	var lines := _wrap_lines_manual(body, text_w, size)
+	var line_h: float = size + 8.0
+	var text_h: float = lines.size() * line_h + pad * 2 + (18.0 if not speaker.is_empty() else 0.0)
+	var h: float = minf(r.size.y * 0.72, maxf(text_h, face_h + pad * 2))
+	var box := Rect2(r.position.x + 8.0, r.end.y - 8.0 - h, r.size.x - 16.0, h)
+	draw_rect(box, Color(T.INK, 0.90))
+	draw_rect(box, Color(T.CREAM, 0.85), false, 1.5)
+	var text_x: float = box.position.x + pad
+	if portrait != null:
+		var dest := Rect2(box.position.x + pad, box.end.y - pad - face_h, face_w, face_h)
+		draw_texture_rect(portrait, dest, false)
+		draw_rect(dest, Color(T.CREAM, 0.35), false, 1.0)
+		text_x = dest.end.x + 12.0
+	var y: float = box.position.y + pad + size
+	if not speaker.is_empty():
+		draw_string(f, Vector2(text_x, y), speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, size - 2, T.ACCENT)
+		y += size + 4
+	var max_lines: int = int((box.size.y - pad * 2 - (18.0 if not speaker.is_empty() else 0.0)) / line_h)
+	for i in range(mini(lines.size(), max_lines)):
+		draw_string(f, Vector2(text_x, y), lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, size, T.CREAM)
+		y += line_h
+
+
+func _draw_text_page(r: Rect2, dark: bool) -> void:
+	var f := T.font_body()
+	var big := T.font_big()
+	var pad := 18.0
+	var size: int = clampi(int(r.size.x * 0.047), 15, 20)
+	# 文本页固定纸色底 + 墨字：比网点底清楚，长文也不累眼
+	draw_rect(r, T.CREAM)
+	var fg := T.INK
+	var heading := str(spec.get("heading", ""))
+	var body := str(spec.get("caption", ""))
+	if not heading.is_empty() and body.find(heading) >= 0:
+		heading = ""
+	var quote := str(spec.get("bubble", ""))
+	var y: float = r.position.y + pad + size
+	if not heading.is_empty():
+		draw_string(big, Vector2(r.position.x + pad, y), heading,
+			HORIZONTAL_ALIGNMENT_LEFT, r.size.x - pad * 2, size + 3, T.ACCENT if not dark else T.CREAM)
+		y += size + 20
+	for line in _wrap_lines_manual(body, r.size.x - pad * 2, size):
+		draw_string(f, Vector2(r.position.x + pad, y), line,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, size, fg)
+		y += size + 9
+	if not quote.is_empty():
+		y += 10
+		var qlines := _wrap_lines_manual(quote, r.size.x - pad * 2 - 14, size - 1)
+		var qh := qlines.size() * (size + 9)
+		draw_rect(Rect2(r.position.x + pad, y - size, 3.0, qh), T.ACCENT)
+		for line in qlines:
+			draw_string(f, Vector2(r.position.x + pad + 12, y), line,
+				HORIZONTAL_ALIGNMENT_LEFT, -1, size - 1, Color(fg, 0.92))
+			y += size + 9
+
+
+func _wrap_lines_manual(text: String, width: float, size: int) -> Array:
+	var out: Array = []
+	var f := T.font_body()
+	for para in text.split(char(10)):
+		var line := ""
+		for i in range(para.length()):
+			var ch := para.substr(i, 1)
+			var test := line + ch
+			if not line.is_empty() and f.get_string_size(test, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > width:
+				out.append(line)
+				line = ch
+			else:
+				line = test
+		out.append(line)
+	return out
+
+
 func _draw_ink(r: Rect2, dark: bool) -> void:
 	var acting := Motion.kind(current_direction)
 	if acting in Motion.NAMED and not _base_ink.is_empty() and str(spec.get("shot","")) != "detail":
@@ -522,7 +649,11 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 		var discovery := "发现："+str(spec.pixel_interaction.get("reveal",""))
 		cap += "\n"+discovery
 		shown_cap += "\n"+discovery
-	var shown_bub := bub.substr(0, maxi(0, visible_characters - caption_length - 1))
+	var dialogue := Dialogue.copy(bub,maxi(0,visible_characters-caption_length-1),str(spec.get("speaker_label","")))
+	var shown_bub := str(dialogue.shown)
+	if str(spec.get("box", "")) == "dialogue" or (str(spec.get("text_channel", "")) == "dialogue" and not bub.is_empty()):
+		_draw_dialogue_box(r, shown_cap, shown_bub, cap)
+		return
 	var sfx_s := str(current_direction.get("sfx", "")) if not _full_text.is_empty() else str(spec.get("sfx", ""))
 	var shot := str(spec.get("shot", "wide"))
 	var pad := 8.0
@@ -549,9 +680,9 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 
 	if not bub.is_empty():
 		var bw: float = minf(r.size.x - pad * 2 - 10, 210.0)
-		var bub_sz := 13 if bw > 170 else 11
+		var bub_sz := 14 if bw > 170 else 11
 		var f2 := T.font_body()
-		var m2: Vector2 = f2.get_multiline_string_size(bub, HORIZONTAL_ALIGNMENT_LEFT, bw - 18, 13)
+		var m2: Vector2 = f2.get_multiline_string_size(bub, HORIZONTAL_ALIGNMENT_LEFT, bw - 18, bub_sz)
 		var bh: float = maxf(m2.y, 19) + 18
 		var bx: float = r.position.x + r.size.x - bw - pad - 8
 		var by: float = r.position.y + pad + (0.0 if cap.is_empty() else 34.0)
@@ -559,9 +690,11 @@ func _draw_text(r: Rect2, dark: bool) -> void:
 			bx = r.position.x + pad
 			by = r.position.y + pad
 		if str(spec.get("text_channel","")) == "dialogue":
-			# The protagonist stands on the left, the conversational partner on the right.
-			bx = r.position.x + pad if str(spec.get("actor","lead")) == "lead" else r.end.x - bw - pad - 8
-		T.bubble(self, Vector2(bx, by), shown_bub, bw, bub_sz, -1 if bx < r.get_center().x else 1, bub)
+			# 名牌和气泡跟随当前说话拍，而不是停留在面板最初的说话人。
+			var actor := str(current_direction.get("actor",spec.get("actor","lead")))
+			bx = r.position.x + pad if actor == "lead" else r.end.x - bw - pad - 8
+		var bubble_rect := T.bubble(self,Vector2(bx,by),shown_bub,bw,bub_sz,-1 if bx < r.get_center().x else 1,str(dialogue.full))
+		Dialogue.draw_chrome(self,bubble_rect,dialogue,_age,reduced_motion)
 
 	if not sfx_s.is_empty():
 		if bool(spec.get("vertical", false)):

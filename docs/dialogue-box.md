@@ -1,55 +1,80 @@
-# 对话框（Undertale 式）
+# 对话框叙事：剧情都在框里说
 
-`scripts/dialogue_box.gd`：分幕对话（`scene_conversation.gd`）里承载台词的对话框。
-只做「长什么样」，逐字进度由单格传入 —— 这样不会和已有的打字机各跑一套计时。
+> 按你的要求：**不切成文本页，保持上一版的分格 + 对话框**，
+> 长剧情直接放进对话框里说完。LC29 搬家、LC30 父亲的手机是第一批。
 
-## 从《传说之下》借来的五条约定
+![对话框分格](dialogue-box/lc29.png)
 
-调研来源：Undertale 对话框的公开拆解资料（文本框尺寸、边框像素、行数上限、星号前缀规则）。
+![说话人半身像在对话框左侧](dialogue-box/portrait.png)
 
-| 约定 | 本项目的落地 |
+## 一、保持什么
+
+- 每一格仍然是 **3D 舞台 / 立绘 + 墨框**；
+- 旁白、对白仍然走右下或底部的框；
+- 页面高度、翻页节奏和普通页一致，不额外切换形态。
+
+## 二、对话框怎么画
+
+`comic_panel._draw_dialogue_box()`：
+
+| 项 | 值 |
 | --- | --- |
-| 纯黑底 + **直角**白框，无圆角无阴影 | `draw_rect` 实心黑 + 3px 白描边 |
-| 旁白与台词以 `* ` 起行 | 首行 `* `，换行后的行用两个空格对齐，不重复星号 |
-| 一页最多 **3 行**，超了分页 | `LINES_PER_PAGE = 3`，`page_count()` 可查 |
-| 逐字显示，每字一声 blip | 复用字音库；进度来自 `panel.visible_characters` |
-| 打完一页右下角闪 `▼` | `is_line_done()` 为真时按 1.1s 周期闪 |
-| 说话人在框左上沿的名牌 | `speaker` 非空时画一个小牌，旁白不显示 |
+| 位置 | 贴住格子下沿，左右各留 8px |
+| 底 | 墨色 90% 不透明 + 1.5px 奶油描边 |
+| 字 | 宽格 16px / 窄格 14px，奶油色 |
+| 行距 | 字号 + 8 |
+| 上限 | 最多占格子高度 62%，超出按行截断（页面会先估高，正常不会截） |
+| 说话人 | 若对白是「名字：台词」，名字用红色小字放在框内第一行 |
 
-**没有照搬的**：字体（原作是 8bitoperator JVE，中文没法用，改用系统黑体）、
-立绘位置（我们的角色是全身纸片人，塞进方框反而看不清，先留空接口）。
+## 二·五、说话人半身像（参考 Undertale）
 
-## 接口
+人物说话时，把**半身像放在对话框左侧**，文字在右侧：
 
-```gdscript
-var box := DialogueBox.new()
-box.show_line("你回来了。饭在锅里。", "母亲")   # 第二参数留空 = 旁白
-box.set_progress(panel.visible_characters)      # 每帧喂进度
-box.is_line_done()                              # 整句读完
-box._lines / page_count() / page_index()        # 排版结果，便于测试
-```
+- 立绘来源：`assets/comic_city/lead.png` / `npc.png`（就是图一那版，7 个年龄段 × 2 姿势）；
+- 说话人 → 立绘 key 的映射在 `comic_panel.speaker_key()`：
+  妈妈→`npc_parent`、爸爸→`npc_mate`、老师/班主任→`npc_teacher`、同桌/同学/朋友→`npc_friend`、
+  你/我→当前年龄的 lead；映射不到就用格子的 `support`，再不行用 `ink`；
+- 半身像高度取格子高度的 46%（96–190px），文字宽度相应让出左侧；
+- 对话框最大占 72% 高度，对白格最小高度 320px，保证脸和字都放得下。
 
-## 接了哪些地方
+旁白（无说话人）不加立绘，保持纯文字框。
 
-`scene_conversation.gd`：
+## 三、容量
 
-- 建框：`stage_area` 底部，高度 156px，`PRESET_BOTTOM_WIDE`
-- 单格设 `hide_text = true`，画面只剩场景与人物，文字全交给框
-- 每帧 `box.set_progress(panel.visible_characters)`
-- 单格后添加会盖住框，所以在 `show_line()` 里 `box.move_to_front()`
-- 点击画面 / 空格仍然走原来的 `advance()`，翻页与「显示整句」语义不变
+- 页面估高时对 `box == "dialogue"` 的格子按 16px 字宽重算行数（每行 24px），
+  字越多格子越高，避免文字被裁；
+- 普通格子仍按原来的 15px / 21px 估算。
 
-## 两个坑
+## 四、长文本事件
 
-1. **`show_line()` 时控件宽度还是 0**：如果这时排版，每两个字就会被断成一行。
-   现在 `_draw()` 里检测宽度变化后重排一次。
-2. **`* ` 是两个装饰字符，不计入原文进度**：直接按 `visible_characters` 截断会少显示两个字。
-   取字符数时要先减掉行首缩进，再 +2 补回来。
+| id | 年龄 | 内容 | 文本量 |
+| --- | --- | --- | --- |
+| LC29 | 9–13 | 搬家那天，纸箱比人先认识新家 | 开场约 120 字 |
+| LC30 | 14–17 | 父亲的第一部手机，只会接不会打 | 开场约 110 字 |
 
-## 验证
+事件上标 `text_only: true` 只表示「长文本、整页对话框」，**不再切换 presentation**；
+`_apply_insert` 会跳过这些页，避免又叠一层漫画插页。
+
+## 五、验证
 
 ```bash
-godot --headless --path . --script res://test/dialogue_box_smoke.gd
+python tools/check_story.py
+godot --headless --path . --script res://test/text_mode_smoke.gd
+# PASS: LC29/LC30 keep dialogue boxes and carry enough text
 ```
 
-16 条断言：星号前缀、自动换行、三行一页、翻页映射、读完判定、空文本与旁白不显示名牌。
+断言：两页每一格都是 `box == "dialogue"`、都没有被切成 `presentation == "text"`、
+正文合计 ≥120 字。
+
+另有一条立绘回归：
+
+```bash
+godot --headless --path . --script res://test/dialogue_portrait_smoke.gd
+# PASS: speaker mapping and dialogue panels present
+```
+
+## 六、备注
+
+- 之前的纯文本页渲染（`_draw_text_page`）代码还在，但当前没有事件使用；
+  以后要「整页文字」可以再把 `presentation: "text"` 打开。
+- 对话框目前会盖住角色下半身；如果要做「角色不被挡」，需要按角色高度动态上移。

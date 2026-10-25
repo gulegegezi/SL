@@ -94,6 +94,10 @@ static func make(run, result: bool = false) -> Dictionary:
 			if t == 1: response = "好，"+response
 			elif t == 2: response = "这场戏按你的办法往下走。"+response
 			elif t == 3: response = "我改一下旁白。"+response
+			# 过于离谱的选择：在结果旁白后面追加一句吐槽（数据里可选）
+			var roast := str(c.get("roast", "")).strip_edges()
+			if not roast.is_empty():
+				response += "\n" + roast
 			var reaction := speak(run,e,{"shot":"wide","action":"settle"},response)
 			reaction["expr"] = "normal"
 			panels.append(reaction)
@@ -117,6 +121,12 @@ static func make(run, result: bool = false) -> Dictionary:
 	var special: Dictionary = PixelDirection.cg(e.id,result)
 	for p in panels: p["pixel_variant"] = special.get("variant","quiet" if str(e.id).begins_with("RX") else "day")
 	if not special.is_empty(): panels[0]["pixel_cg"] = special
+	if bool(e.get("text_only", false)):
+		# 长文本仍然用分格 + 对话框，不切成文本页
+		for i in range(panels.size()):
+			panels[i]["box"] = "dialogue"
+			panels[i].erase("pixel_cg")
+			panels[i].erase("pixel_interaction")
 	if not result:
 		_apply_insert(run, panels, e)
 	if not result:
@@ -130,12 +140,20 @@ static func make(run, result: bool = false) -> Dictionary:
 					if earlier.get("support","none") != "none": panels[-1]["support"] = earlier.support; break
 				panels[-1]["world_solo"] = false
 	return {"no":run.s.pages.size()+1,"age":run.s.age,"stage":run.pack.rules.tiers[t].name,"title":e.title,
-		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2}
+		"event_id":e.id,"result":result,"panels":panels,"series":0,"slots":[],"dialogue_version":2,
+		"text_only":bool(e.get("text_only", false))}
 
 ## 前半生里「动作演不出来」的页：改成双格漫画（旁白框 + 气泡 + 立绘）
 static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
+	if bool(e.get("text_only", false)):
+		return
 	if int(run.s.age) > FIRST_HALF_AGE:
 		return
+	var has_dialogue := false
+	for probe in panels:
+		if str(probe.get("text_channel", "")) == "dialogue":
+			has_dialogue = true
+			break
 	for p in panels:
 		if str(p.get("action", "idle")) != "idle":
 			continue
@@ -152,7 +170,7 @@ static func _apply_insert(run, panels: Array, e: Dictionary) -> void:
 		var colon := speech.find("：")
 		if colon >= 0:
 			speech = speech.substr(colon + 1)
-		if speech.is_empty():
+		if speech.is_empty() and not has_dialogue:
 			speech = str(e.get("npc_dialogue", ""))
 			var c2 := speech.find("：")
 			if c2 >= 0:
