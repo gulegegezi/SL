@@ -4,6 +4,7 @@
 每一格是一个独立的 3D 像素小舞台，舞台里站着二维纸片人，镜头与光照按 HD-2D 的思路处理。
 
 - **技术总览（先读这个）** → [docs/animation-overview.md](docs/animation-overview.md)
+- **像素美术风格规范（加素材前必读）** → [AIAGENT.md](AIAGENT.md)
 - **人物交流技术** → [逐句对话、听者反应与续读](docs/scene-conversation.md)
 - **原创背景音乐** → [《留白里的灯》试听、乐谱与 Godot 循环接入](docs/paper-lantern-music.md)
 - 运行形态：标题 → 掷骰决定出身 → 竖向漫画流（未活到的年份是空白分镜）→ 结局 / 图鉴 / 成就
